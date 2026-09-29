@@ -1,0 +1,9 @@
+{
+  "name": "umimi-desktop",
+  "productName": "ウミミ デスクトップ",
+  "version": "0.1.0",
+  "description": "画面の下でウミミがくらす、ちいさな水そう",
+  "main": "main.js",
+  "author": "Umimi",
+  "license": "UNLICENSED"
+}
