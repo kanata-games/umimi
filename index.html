@@ -349,6 +349,12 @@ const DECOR = {
   pot:     {name:'ちいさなつぼ',   cost:1, r:24, h:22, gift:true},
   seaflower:{name:'うみのはな',    cost:2, r:30, h:40, gift:true},
   jellylamp:{name:'クラゲのランプ',cost:3, r:30, h:60, gift:true},
+  pearl:{name:'しんじゅ貝',cost:3, r:30, h:18, gift:true},
+  icecrystal:{name:'こおりの かけら',cost:2, r:28, h:34, gift:true},
+  treasure:{name:'たからばこ',cost:4, r:36, h:30, gift:true},
+  octopot:{name:'タコつぼ',cost:2, r:28, h:30, gift:true},
+  lantern:{name:'フグちょうちん',cost:3, r:26, h:56, gift:true},
+  otterstone:{name:'ラッコの いし',cost:1, r:22, h:10, gift:true},
 };
 const COS = Object.assign({ready:false}, {"cw":240,"ch":208,"cols":8,"s":0.8,"ex":130,"ey":165,"m":{"bear":{"i":0,"g":220.0,"lid":"#fdfdff","le":[-39.0,-4.2]},"space":{"i":1,"g":230.0,"lid":"#fdfdff","le":[-39.0,-2.1]},"explorer":{"i":2,"g":221.2,"lid":"#fdfdff","le":[-39.0,-3.8]},"newyear":{"i":3,"g":227.5,"lid":"#fdfdff","le":[-39.0,-3.0]},"witch":{"i":4,"g":216.2,"lid":"#ede3fc","le":[-39.0,-3.3]},"santa":{"i":5,"g":213.8,"lid":"#fdfdff","le":[-39.0,-3.7]},"yukata":{"i":6,"g":217.5,"lid":"#fdfdff","le":[-39.0,-3.7]},"knit":{"i":7,"g":238.8,"lid":"#fdfdff","le":[-39.0,-3.2]},"hoodie":{"i":8,"g":230.0,"lid":"#fcfdff","le":[-35.9,-2.9]},"miko":{"i":9,"g":228.8,"lid":"#fcfdff","le":[-39.0,-2.4]},"idol":{"i":10,"g":233.8,"lid":"#fcfdfe","le":[-39.0,-3.1]},"maid":{"i":11,"g":188.8,"lid":"#ded9f6","le":[-47.6,-6.3]},"gothic":{"i":12,"g":225.0,"lid":"#2f2c42","le":[-39.0,-2.4]},"sakura":{"i":13,"g":220.0,"lid":"#fdecf4","le":[-39.0,-3.0]},"blueberry":{"i":14,"g":215.0,"lid":"#6658d1","le":[-39.0,-3.2]},"lemon":{"i":15,"g":215.0,"lid":"#fbf9c1","le":[-39.0,-4.1]},"strawberry":{"i":16,"g":217.5,"lid":"#fef8fc","le":[-39.0,-3.7]},"chick":{"i":17,"g":216.2,"lid":"#fdfdff","le":[-39.0,-3.8]},"dog":{"i":18,"g":215.0,"lid":"#fdfdff","le":[-39.0,-3.1]},"mango":{"i":19,"g":213.8,"lid":"#fbb910","le":[-39.0,-4.3]},"raincoat":{"i":20,"g":223.8,"lid":"#fdfdfd","le":[-39.0,-3.0]},"matcha":{"i":21,"g":216.2,"lid":"#9ed543","le":[-39.0,-2.9]},"chef":{"i":22,"g":218.8,"lid":"#fdfdff","le":[-39.0,-4.6]},"musician":{"i":23,"g":226.2,"lid":"#fdfdff","le":[-39.0,-5.0]},"nurse":{"i":24,"g":216.2,"lid":"#fbfcff","le":[-39.0,-3.0]},"camping":{"i":25,"g":232.5,"lid":"#fdfdff","le":[-35.9,-4.1]},"pajama":{"i":26,"g":225.0,"lid":"#fdfdff","le":[-39.0,-3.6]},"ghostmaid":{"i":27,"g":226.2,"lid":"#fdfbff","le":[-35.9,-3.8]},"constellation":{"i":28,"g":216.2,"lid":"#fdfdff","le":[-39.0,-3.8]},"asagao":{"i":29,"g":227.5,"lid":"#fdfdff","le":[-34.3,-2.8]},"grape":{"i":30,"g":217.5,"lid":"#fdfdff","le":[-39.0,-3.2]},"higanbana":{"i":31,"g":216.2,"lid":"#fdfdff","le":[-39.0,-3.7]},"momiji":{"i":32,"g":216.2,"lid":"#fdfdff","le":[-39.0,-3.5]},"randoseru":{"i":33,"g":221.2,"lid":"#fdfdff","le":[-39.0,-4.0]},"goldfish":{"i":34,"g":223.8,"lid":"#fdfdff","le":[-35.9,-3.5]},"angel":{"i":35,"g":218.8,"lid":"#fdfdff","le":[-39.0,-3.4]},"jugoya":{"i":36,"g":226.2,"lid":"#fcfdff","le":[-31.2,-2.3]},"devil":{"i":37,"g":216.2,"lid":"#fdfdff","le":[-39.0,-1.1]},"crown":{"i":38,"g":220.0,"lid":"#fdfdff","le":[-39.0,-3.5]},"flower":{"i":39,"g":215.0,"lid":"#fdfdff","le":[-39.0,-3.5]},"cat":{"i":40,"g":217.5,"lid":"#fcfdff","le":[-39.0,-3.2]},"sailor":{"i":41,"g":221.2,"lid":"#fdfdff","le":[-39.0,-3.4]},"rabbit":{"i":42,"g":217.5,"lid":"#fdfdff","le":[-39.0,-2.7]},"ribbon":{"i":43,"g":217.5,"lid":"#fcfdff","le":[-39.0,-3.7]},"delivery":{"i":44,"g":215.0,"lid":"#fdfdff","le":[-39.0,-3.2]},"bath":{"i":45,"g":238.8,"lid":"#fdfdff","le":[-35.1,-3.5]}}});
 const OUTFITS = {
@@ -402,7 +408,11 @@ function checkAnniv(){
 }
 const LEVEL_MSG = {3:'水をタップすると 来てくれるよ', 4:'ごはんのあと、かけらをくれることが増えるよ'};
 const WEATHERS = [{key:'clear',name:'はれ'},{key:'snow',name:'マリンスノー'},{key:'drops',name:'ひかりのしずく'},{key:'calm',name:'おだやか'}];
-const VISITORS = [{key:'jelly',name:'クラゲ',gift:'jellylamp',hello:'ふよふよ'},{key:'star',name:'ヒトデ',gift:'starfish',hello:'こんにちは'},{key:'seahorse',name:'タツノオトシゴ',gift:'seaflower',hello:'やあ'},{key:'crab',name:'カニ',gift:'pot',hello:'ちょきちょき'}];
+const VISITORS = [{key:'jelly',name:'クラゲ',gift:'jellylamp',hello:'ふよふよ'},{key:'star',name:'ヒトデ',gift:'starfish',hello:'こんにちは'},{key:'seahorse',name:'タツノオトシゴ',gift:'seaflower',hello:'やあ'},{key:'crab',name:'カニ',gift:'pot',hello:'ちょきちょき'},
+  {key:'dolphin',name:'イルカ',gift:'pearl',hello:'きゅいっ'},{key:'penguin',name:'ペンギン',gift:'icecrystal',hello:'ぺたぺた'},
+  {key:'turtle',name:'ウミガメ',gift:'treasure',hello:'のんびり いこう'},{key:'octopus',name:'タコ',gift:'octopot',hello:'にゅるん'},
+  {key:'puffer',name:'フグ',gift:'lantern',hello:'ぷくー'},{key:'otter',name:'ラッコ',gift:'otterstone',hello:'こんこん'}];
+const FLOATY_V = ['jelly','seahorse','dolphin','puffer','otter'];
 function todayStr(){ const d=new Date(); return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`; }
 function dayRng(salt){ let h=0; const s=todayStr()+salt; for(let i=0;i<s.length;i++) h=Math.imul(h^s.charCodeAt(i),2654435761); return mulberry(h)(); }
 const lvOf = u => Math.min(5, 1+Math.floor(u.aff/6));
@@ -414,6 +424,9 @@ const MOODS = Object.assign(MOODS0, {chaseL:'おいかけっこ中',chaseF:'お�
 let S = null;             // persistent state
 let foods = [], particles = [], plankton = [], glows = [];
 let mode = 'pet', decorSel = null, selId = null, drag = null;
+const VISIT_STAY = 3600, VISIT_GAP = [7200, 7200], VISIT_PAID = 3;
+function scheduleNextVisit(){ S.nextVisit = Date.now() + rand(VISIT_GAP[0],VISIT_GAP[1])*1000; save(); }
+let lastVisitorKey = null;
 let star = null, starTimer = 18, bigB = null, bigTimer = 25, visitor = null, visitorTimer = 8, weather = WEATHERS[0], dayCheck = 0;
 let PARTY = false, cake = null, balloons = [], confT = 0;
 let PARTY_WHO='lily';
@@ -444,7 +457,7 @@ function serialize(){
     umimi:S.umimi.map(u=>({id:u.id,name:u.name,color:u.color,x:Math.round(u.x),d:+u.d.toFixed(3),aff:u.aff,outfit:u.outfit,lvSeen:u.lvSeen,pers:u.pers,born:u.born,pets:u.pets,feeds:u.feeds,worn:u.worn,mem:u.mem,ann:u.ann})),
     past:S.past,
     closet:S.closet, closetNew:S.closetNew, pets:S.pets, days:S.days, feeds:S.feeds, starsCaught:S.starsCaught, metVisitors:S.metVisitors,
-    diary:S.diary.slice(0,60), day:S.day, visitorDay:S.visitorDay, unlocked:S.unlocked, diaryNew:S.diaryNew, myBday:S.myBday, evSeen:S.evSeen, omikujiDay:S.omikujiDay, wishes:S.wishes, presentYear:S.presentYear, trickDay:S.trickDay, profileOnTap:S.profileOnTap, bdayBlown:S.bdayBlown, bdayDiary:S.bdayDiary,
+    diary:S.diary.slice(0,60), day:S.day, visitorDay:S.visitorDay, visitLog:S.visitLog, nextVisit:S.nextVisit, curVisit:S.curVisit, lastVisitor:S.lastVisitor, unlocked:S.unlocked, diaryNew:S.diaryNew, myBday:S.myBday, evSeen:S.evSeen, omikujiDay:S.omikujiDay, wishes:S.wishes, presentYear:S.presentYear, trickDay:S.trickDay, profileOnTap:S.profileOnTap, bdayBlown:S.bdayBlown, bdayDiary:S.bdayDiary,
     decor:S.decor.map(o=>({id:o.id,type:o.type,x:Math.round(o.x),d:+o.d.toFixed(3)})),
     ground:S.ground.map(g=>({x:Math.round(g.x),d:+g.d.toFixed(3)}))};
 }
@@ -927,6 +940,41 @@ function drawDecor(c,type,t,ph){
         c.beginPath(); c.moveTo(-7,0); c.quadraticCurveTo(-8,11,-5,13); c.lineTo(0,10); c.lineTo(5,13); c.quadraticCurveTo(8,11,7,0); c.closePath();
         c.fillStyle='#f6e8ff'; c.fill(); c.strokeStyle='#d7b6ef'; c.lineWidth=1.5; c.stroke(); c.restore(); });
       break; }
+    case 'pearl': {
+      c.fillStyle='#e7dcf2'; c.strokeStyle='#b7a5d6'; c.lineWidth=1.6;
+      c.beginPath(); c.moveTo(-26,-2); c.quadraticCurveTo(0,6,26,-2); c.quadraticCurveTo(0,-4,-26,-2); c.fill(); c.stroke();
+      c.save(); c.translate(0,-4); c.rotate(-.35); c.beginPath(); c.moveTo(-24,0); c.quadraticCurveTo(-18,-26,4,-26); c.quadraticCurveTo(24,-20,24,0); c.closePath(); c.fill(); c.stroke();
+      c.strokeStyle='rgba(183,165,214,.7)'; for(let i=1;i<5;i++){ c.beginPath(); c.moveTo(0,0); c.lineTo(-22+i*9,-22); c.stroke(); } c.restore();
+      const g=c.createRadialGradient(-2,-9,1,0,-7,8); g.addColorStop(0,'#ffffff'); g.addColorStop(1,'#eadff8'); c.fillStyle=g; c.beginPath(); c.arc(0,-7,7,0,TAU); c.fill();
+      c.fillStyle='#fff'; c.globalAlpha=.6+.4*Math.sin(t*3+ph); sparkle(c,6,-14,3); c.globalAlpha=1; break; }
+    case 'icecrystal': {
+      [[-10,26,6,-.3],[0,36,8,0],[11,22,6,.35]].forEach(([x,h,w,a])=>{ c.save(); c.translate(x,0); c.rotate(a);
+        c.beginPath(); c.moveTo(-w,0); c.lineTo(-w*.7,-h); c.lineTo(0,-h-w); c.lineTo(w*.7,-h); c.lineTo(w,0); c.closePath();
+        c.fillStyle='rgba(205,236,255,.9)'; c.fill(); c.strokeStyle='#8fc6ea'; c.lineWidth=1.4; c.stroke();
+        c.fillStyle='rgba(255,255,255,.55)'; c.fillRect(-w*.5,-h*.9,w*.35,h*.8); c.restore(); });
+      c.fillStyle='#fff'; c.globalAlpha=.5+.5*Math.sin(t*2.5+ph); sparkle(c,4,-40,3.5); c.globalAlpha=1; break; }
+    case 'treasure': {
+      c.fillStyle='#a8743f'; c.strokeStyle='#6e4523'; c.lineWidth=2; c.beginPath(); c.roundRect(-26,-22,52,22,3); c.fill(); c.stroke();
+      c.save(); c.translate(-26,-22); c.rotate(-.5); c.beginPath(); c.moveTo(0,0); c.lineTo(52,0); c.quadraticCurveTo(52,-14,26,-16); c.quadraticCurveTo(0,-14,0,0); c.fill(); c.stroke(); c.restore();
+      c.fillStyle='#f1cf6c'; c.fillRect(-26,-14,52,4); c.fillRect(-3,-18,6,10);
+      [[-10,-26],[2,-30],[12,-24],[-4,-22]].forEach(([x,y],i)=>{ c.fillStyle=['#f5d47c','#f39ab4','#8fd0f0','#f5d47c'][i]; c.beginPath(); c.arc(x,y,4,0,TAU); c.fill(); });
+      c.fillStyle='#fffbe6'; c.globalAlpha=.6+.4*Math.sin(t*3+ph); sparkle(c,6,-34,4); c.globalAlpha=1; break; }
+    case 'octopot': {
+      c.fillStyle='#c98a5a'; c.strokeStyle='#8a5a34'; c.lineWidth=1.8;
+      c.beginPath(); c.moveTo(-10,-30); c.lineTo(10,-30); c.bezierCurveTo(24,-22,24,0,12,0); c.lineTo(-12,0); c.bezierCurveTo(-24,0,-24,-22,-10,-30); c.fill(); c.stroke();
+      c.fillStyle='#3a2a20'; c.beginPath(); c.ellipse(0,-30,10,3.5,0,0,TAU); c.fill();
+      c.strokeStyle='#f08a9a'; c.lineWidth=3.5; c.beginPath(); c.moveTo(6,-30); c.quadraticCurveTo(14+Math.sin(t*2+ph)*3,-38,10,-44); c.stroke(); break; }
+    case 'lantern': {
+      c.strokeStyle='#8a6a4a'; c.lineWidth=2; c.beginPath(); c.moveTo(0,0); c.lineTo(0,-34); c.stroke();
+      const sw=Math.sin(t*1.4+ph)*2; c.save(); c.translate(sw,-46);
+      c.fillStyle='#f6e2a8'; c.strokeStyle='#c7a25a'; c.lineWidth=1.6; c.beginPath(); c.arc(0,0,13,0,TAU); c.fill(); c.stroke();
+      c.strokeStyle='#d8b56a'; for(let i=-8;i<=8;i+=8){ c.beginPath(); c.moveTo(i,-12); c.lineTo(i,12); c.stroke(); }
+      c.fillStyle='#e8c870'; [[-9,-10],[9,-10],[-12,2],[12,2]].forEach(([a,b])=>{ c.beginPath(); c.moveTo(a,b); c.lineTo(a*1.35,b*1.35-2); c.lineTo(a*1.1+2,b*1.1); c.fill(); });
+      c.fillStyle='#2f2b4f'; c.beginPath(); c.arc(-4,-2,1.8,0,TAU); c.arc(4,-2,1.8,0,TAU); c.fill(); c.restore(); break; }
+    case 'otterstone': {
+      c.fillStyle='#b9bcc9'; c.strokeStyle=OUT; c.lineWidth=1.3; c.beginPath(); c.ellipse(0,-7,15,8,0,0,TAU); c.fill(); c.stroke();
+      c.fillStyle='rgba(255,255,255,.5)'; c.beginPath(); c.ellipse(-5,-10,5,2,-.3,0,TAU); c.fill();
+      c.save(); c.translate(12,-10); c.scale(.4,.4); c.fillStyle='#fde6d7'; c.strokeStyle='#e7b394'; c.lineWidth=3; c.beginPath(); c.moveTo(0,0); c.arc(0,0,20,Math.PI*1.07,Math.PI*1.93); c.closePath(); c.fill(); c.stroke(); c.restore(); break; }
     case 'jellylamp': {
       const bob=Math.sin(t*1.5+ph)*4, cy=-60+bob;
       c.strokeStyle='rgba(222,170,215,.8)'; c.lineWidth=2;
@@ -946,6 +994,9 @@ function drawDecor(c,type,t,ph){
 }
 function decorGlow(o,x,gy,s){
   if(o.type==='lamp') glows.push({x:x, y:gy-70*s, r:(90+10*Math.sin(T*2+o.id))*s, col:'255,226,150', a:.14+.7*night});
+  if(o.type==='lantern') glows.push({x:x, y:gy-46*s, r:60*s, col:'255,220,140', a:.1+.55*night});
+  if(o.type==='icecrystal') glows.push({x:x, y:gy-24*s, r:46*s, col:'190,230,255', a:.05+.4*night});
+  if(o.type==='pearl') glows.push({x:x, y:gy-8*s, r:30*s, col:'240,225,255', a:.05+.35*night});
   if(o.type==='jellylamp') glows.push({x:x, y:gy-60*s, r:70*s, col:'255,190,230', a:.1+.55*night});
   if(o.type==='seaflower') glows.push({x:x, y:gy-44*s, r:50*s, col:'220,200,255', a:.05+.4*night});
   if(o.type==='crystal') glows.push({x:x, y:gy-30*s, r:62*s, col:'190,180,255', a:.08+.5*night});
@@ -1249,7 +1300,7 @@ function updateWorld(dt){
   if(bigB){ bigB.t+=dt; bigB.y-=30*dt; bigB.x+=Math.sin(bigB.t*1.4)*18*dt; if(bigB.y<30){ addP({type:'ring',x:bigB.x,y:bigB.y,vx:0,vy:0,r:bigB.r,life:.5,max:.5}); bigB=null; bigTimer=rand(40,70); } }
   else { bigTimer-=dt; if(bigTimer<=0) bigB={x:rand(120,880),y:floorTop+rand(30,90),r:26*SIZE,t:0}; }
   // visitor
-  if(!visitor && S.visitorDay!==todayStr()){ visitorTimer-=dt; if(visitorTimer<=0) spawnVisitor(); }
+  if(!visitor){ visitorTimer-=dt; if(visitorTimer<=0){ if(S.curVisit && Date.now()<S.curVisit.until) spawnVisitor(S.curVisit.key); else if(!S.nextVisit || Date.now()>=S.nextVisit) spawnVisitor(); else visitorTimer=30; } }
   if(visitor) updateVisitor(dt);
 }
 function checkDay(){
@@ -1265,38 +1316,45 @@ function checkDay(){
     save();
   }
 }
-function spawnVisitor(){
-  const V = VISITORS[Math.floor(dayRng('v')*VISITORS.length)];
-  const fromLeft = Math.random()<.5, floaty = V.key==='jelly'||V.key==='seahorse';
-  visitor = {V, x:fromLeft?-60:W+60, d:rand(.25,.75), lift:floaty?rand(110,170):0, tx:rand(260,740), state:'come', t:0, dir:fromLeft?1:-1, floaty};
+function spawnVisitor(resumeKey){
+  let V = resumeKey ? VISITORS.find(x=>x.key===resumeKey) : null;
+  if(!V){ resumeKey=null; scheduleNextVisit(); const pool = VISITORS.filter(x=>x.key!==(lastVisitorKey||S.lastVisitor)); V = pool[Math.floor(Math.random()*pool.length)]; S.curVisit = {key:V.key, until:Date.now()+VISIT_STAY*1000}; save(); }
+  lastVisitorKey = V.key; S.lastVisitor = V.key;
+  const fromLeft = Math.random()<.5, floaty = FLOATY_V.includes(V.key);
+  visitor = {V, x:fromLeft?-60:W+60, d:rand(.25,.75), lift:floaty?(V.key==='otter'?Math.max(60,floorY(.5)-(typeof tankTop==='number'?tankTop:0)-24):rand(110,170)):0, tx:rand(260,740), state:'come', t:0, dir:fromLeft?1:-1, floaty};
   S.umimi.forEach(u=>{ if(['idle','walk'].includes(u.state)){ u.state='curious'; u.timer=2.5; u.dir = visitor.tx>u.x?1:-1; } });
-  toast(`${V.name}が あそびにきたよ。タップしてみてね`);
+  const seenToday = S.visitLog && S.visitLog.day===todayStr() && S.visitLog.keys.includes(V.key);
+  if(!seenToday && !resumeKey) toast(S.metVisitors.includes(V.key) ? `${V.name}が あそびにきたよ` : `はじめての ${V.name}が あそびにきたよ。タップしてみてね`);
 }
 function updateVisitor(dt){
   const v = visitor; v.t += dt;
-  const sp = v.V.key==='crab' ? 70 : 45;
+  const sp = v.V.key==='crab' ? 70 : v.V.key==='dolphin' ? 80 : v.V.key==='turtle' ? 28 : 45;
   if(v.state==='come'){ const dx=v.tx-v.x; v.x += Math.sign(dx)*Math.min(Math.abs(dx),sp*dt); if(Math.abs(dx)<2){ v.state='stay'; say(v,v.V.hello); } }
+  if(v.state!=='leave' && (!S.curVisit || Date.now() > S.curVisit.until)){ v.state='leave'; v.dir = v.x<W/2?-1:1; say(v,'またね'); }
   else if(v.state==='stay'){ if(Math.random()<dt*.15){ v.tx=clamp(v.x+rand(-120,120),120,880); v.state='come'; } }
-  else if(v.state==='leave'){ v.x += v.dir*sp*1.4*dt; if(v.floaty) v.lift += 30*dt; if(v.x<-100||v.x>W+100) visitor=null; }
+  else if(v.state==='leave'){ v.x += v.dir*sp*1.4*dt; if(v.floaty) v.lift += 30*dt; if(v.x<-100||v.x>W+100){ visitor=null; visitorTimer=30; } }
   if(v.state!=='leave' && Math.abs(v.tx-v.x)>2) v.dir = Math.sign(v.tx-v.x);
 }
 function visitorPos(v){ const s=scaleD(v.d)*1.3; return {x:v.x, y:floorY(v.d)-v.lift-(v.floaty?0:14)*s + (v.floaty?Math.sin(v.t*1.6)*6:0), s}; }
 function greetVisitor(){
-  const v = visitor, V = v.V; S.visitorDay = todayStr();
+  const v = visitor, V = v.V, today = todayStr();
+  if(!S.visitLog || S.visitLog.day!==today) S.visitLog = {day:today, paid:0, keys:[]};
   let msg;
   addMemAll(`はじめて ${V.name}に 会った`,true);
   if(!S.metVisitors.includes(V.key)){ S.metVisitors.push(V.key); setTimeout(checkUnlocks,2500); }
-  if(!S.unlocked.includes(V.gift)){ S.unlocked.push(V.gift); S.shards += 2; msg = `${V.name}が おみやげに「${DECOR[V.gift].name}」をくれたよ（かざるで置けます）`; }
-  else { S.shards += 3; msg = `${V.name}が つきのかけらを3こ くれたよ`; }
-  addDiary(`${V.name}が あそびにきた。${S.unlocked.includes(V.gift)?'おみやげは「'+DECOR[V.gift].name+'」':''}`);
+  if(!S.unlocked.includes(V.gift)){ S.unlocked.push(V.gift); S.shards += 2; S.visitLog.paid++; msg = `${V.name}が おみやげに「${DECOR[V.gift].name}」をくれたよ（かざるで置けます）`; }
+  else if(S.visitLog.paid < VISIT_PAID){ S.shards += 3; S.visitLog.paid++; msg = `${V.name}が つきのかけらを3こ くれたよ`; }
+  else { msg = `${V.name}と なかよく あそんだよ`; S.umimi.forEach(u=>{ if(u.state!=='leaving' && Math.random()<.5){ u.state='happy'; u.timer=1.6; hearts(u,1); } }); }
+  if(!S.visitLog.keys.includes(V.key)){ S.visitLog.keys.push(V.key); addDiary(`${V.name}が あそびにきた`); }
   const p = visitorPos(v); sparks(p.x,p.y-20,14,1.2); sfx('invite'); say(v,'またね');
-  v.state='leave'; v.dir = v.x<500?-1:1;
+  v.state='leave'; v.dir = v.x<W/2?-1:1; S.curVisit=null;
   refreshShards(true); toast(msg); if(mode==='decor') renderTray(); save();
 }
 function drawVisitor(c,v){
   const {x,y,s} = visitorPos(v), t = v.t, k = v.V.key;
   c.fillStyle='rgba(80,80,150,.13)'; c.beginPath(); c.ellipse(x,floorY(v.d),30*s*(v.floaty?.6:1),6*s,0,0,TAU); c.fill();
   c.save(); c.translate(x,y); c.scale(s*v.dir,s);
+  if(['dolphin','penguin','turtle','puffer','otter'].includes(k)) c.scale(-1,1);
   const eyes = (ex,ey,gap) => { c.fillStyle='#2f2b4f'; [0,gap].forEach(o=>{ c.beginPath(); c.ellipse(ex+o,ey,2.2,2.8,0,0,TAU); c.fill(); }); c.fillStyle='rgba(247,160,184,.6)'; [ -3, gap+3].forEach(o=>{ c.beginPath(); c.ellipse(ex+o,ey+5,3.5,2,0,0,TAU); c.fill(); }); };
   if(k==='jelly'){
     c.strokeStyle='rgba(215,165,215,.85)'; c.lineWidth=2.4;
@@ -1319,6 +1377,53 @@ function drawVisitor(c,v){
     c.fillStyle='#f7d9a8'; c.beginPath(); c.moveTo(-6,-10+Math.sin(t*8)*1.5); c.lineTo(-16,-4); c.lineTo(-7,4); c.closePath(); c.fill();
     c.fillStyle='#2f2b4f'; c.beginPath(); c.arc(3,-24,2.4,0,TAU); c.fill();
     c.fillStyle='rgba(247,160,184,.6)'; c.beginPath(); c.ellipse(4,-17,3.5,2,0,0,TAU); c.fill();
+  } else if(k==='dolphin'){
+    const fl=Math.sin(t*4)*.12; c.rotate(Math.sin(t*1.5)*.08);
+    c.fillStyle='#8fb6e8'; c.strokeStyle='#5f86c0'; c.lineWidth=1.8;
+    c.beginPath(); c.moveTo(-34,2); c.quadraticCurveTo(-30,-14,-4,-14); c.quadraticCurveTo(22,-14,30,-2); c.quadraticCurveTo(22,10,-4,10); c.quadraticCurveTo(-26,10,-34,2); c.fill(); c.stroke();
+    c.beginPath(); c.moveTo(-36,2); c.lineTo(-44,-1); c.lineTo(-44,5); c.closePath(); c.fill(); c.stroke();
+    c.save(); c.translate(26,-2); c.rotate(fl); c.beginPath(); c.moveTo(0,0); c.lineTo(14,-10); c.lineTo(10,0); c.lineTo(14,10); c.closePath(); c.fill(); c.stroke(); c.restore();
+    c.beginPath(); c.moveTo(-2,-13); c.quadraticCurveTo(2,-26,10,-24); c.quadraticCurveTo(6,-18,6,-12); c.fill(); c.stroke();
+    c.fillStyle='#e6f0fb'; c.beginPath(); c.ellipse(-8,5,18,4,0,0,TAU); c.fill();
+    c.fillStyle='#2f2b4f'; c.beginPath(); c.arc(-24,-4,2.4,0,TAU); c.fill(); c.fillStyle='rgba(247,160,184,.6)'; c.beginPath(); c.ellipse(-22,2,3.5,2,0,0,TAU); c.fill();
+  } else if(k==='penguin'){
+    const wob=Math.sin(t*8)*(v.state==='come'?.12:.03); c.rotate(wob);
+    c.fillStyle='#f5a53c'; c.beginPath(); c.ellipse(-6,2,6,3,0,0,TAU); c.ellipse(6,2,6,3,0,0,TAU); c.fill();
+    c.fillStyle='#3d4466'; c.beginPath(); c.ellipse(0,-18,15,20,0,0,TAU); c.fill();
+    c.fillStyle='#fbfbff'; c.beginPath(); c.ellipse(-3,-14,10,15,0,0,TAU); c.fill();
+    c.fillStyle='#3d4466'; c.beginPath(); c.ellipse(12,-16,4,11,.3+Math.sin(t*6)*.2,0,TAU); c.fill();
+    c.fillStyle='#f5a53c'; c.beginPath(); c.moveTo(-14,-26); c.lineTo(-22,-24); c.lineTo(-14,-22); c.fill();
+    eyes(-9,-30,8);
+  } else if(k==='turtle'){
+    const pd=Math.sin(t*2.5)*.3;
+    c.fillStyle='#9ad6b8'; c.strokeStyle='#5ea886'; c.lineWidth=1.6;
+    [[-14,0,pd],[14,0,-pd]].forEach(([x,y,a])=>{ c.save(); c.translate(x,y); c.rotate(a); c.beginPath(); c.ellipse(0,0,8,4,0,0,TAU); c.fill(); c.stroke(); c.restore(); });
+    c.beginPath(); c.arc(-26,-8,8,0,TAU); c.fill(); c.stroke();
+    c.fillStyle='#6fae8e'; c.strokeStyle='#467a5e'; c.beginPath(); c.ellipse(0,-10,22,14,0,Math.PI,TAU); c.lineTo(22,-6); c.lineTo(-22,-6); c.closePath(); c.fill(); c.stroke();
+    c.strokeStyle='rgba(255,255,255,.35)'; c.beginPath(); c.moveTo(-8,-22); c.lineTo(-12,-8); c.moveTo(8,-22); c.lineTo(12,-8); c.moveTo(-14,-16); c.lineTo(14,-16); c.stroke();
+    c.fillStyle='#2f2b4f'; c.beginPath(); c.arc(-29,-10,2,0,TAU); c.fill(); c.fillStyle='rgba(247,160,184,.6)'; c.beginPath(); c.ellipse(-27,-5,3,1.8,0,0,TAU); c.fill();
+  } else if(k==='octopus'){
+    c.fillStyle='#f39aa8'; c.strokeStyle='#d0707e'; c.lineWidth=1.6;
+    for(let i=0;i<6;i++){ const x0=-14+i*5.6, sw=Math.sin(t*3+i)*4; c.lineWidth=5; c.strokeStyle='#f39aa8'; c.beginPath(); c.moveTo(x0,-6); c.quadraticCurveTo(x0+sw,2,x0+sw*1.4,6); c.stroke(); }
+    c.lineWidth=1.6; c.strokeStyle='#d0707e'; c.beginPath(); c.ellipse(0,-20,16,17,0,0,TAU); c.fill(); c.stroke();
+    c.fillStyle='rgba(255,255,255,.4)'; c.beginPath(); c.ellipse(-6,-28,5,3,-.5,0,TAU); c.fill();
+    eyes(-7,-18,10);
+  } else if(k==='puffer'){
+    const pf=1+Math.max(0,Math.sin(t*1.2))*.25; c.scale(pf,pf);
+    c.fillStyle='#f6dc86'; c.strokeStyle='#caa94e'; c.lineWidth=1.6; c.beginPath(); c.arc(0,0,16,0,TAU); c.fill(); c.stroke();
+    c.fillStyle='#fff6d6'; c.beginPath(); c.ellipse(0,6,11,7,0,0,TAU); c.fill();
+    c.strokeStyle='#caa94e'; c.lineWidth=1.3; for(let i=0;i<12;i++){ const a=i/12*TAU; c.beginPath(); c.moveTo(Math.cos(a)*16,Math.sin(a)*16); c.lineTo(Math.cos(a)*20,Math.sin(a)*20); c.stroke(); }
+    c.fillStyle='#f6dc86'; c.beginPath(); c.moveTo(15,0); c.lineTo(24,-6+Math.sin(t*8)*2); c.lineTo(24,6+Math.sin(t*8)*2); c.closePath(); c.fill(); c.stroke();
+    c.fillStyle='#2f2b4f'; c.beginPath(); c.arc(-7,-4,2.4,0,TAU); c.arc(2,-4,2.4,0,TAU); c.fill(); c.fillStyle='#e98aa2'; c.beginPath(); c.ellipse(-14,2,2.4,2,0,0,TAU); c.fill();
+  } else if(k==='otter'){
+    const bob=Math.sin(t*2)*1.5; c.translate(0,bob);
+    c.fillStyle='#a47a5a'; c.strokeStyle='#76533a'; c.lineWidth=1.6;
+    c.beginPath(); c.ellipse(4,-8,24,11,-.05,0,TAU); c.fill(); c.stroke();
+    c.beginPath(); c.arc(-20,-14,11,0,TAU); c.fill(); c.stroke();
+    c.fillStyle='#e7d3bf'; c.beginPath(); c.ellipse(-22,-11,7,5.5,0,0,TAU); c.fill(); c.beginPath(); c.ellipse(4,-13,14,5,0,0,TAU); c.fill();
+    c.fillStyle='#b9bcc9'; c.strokeStyle=OUT; c.beginPath(); c.ellipse(6,-19,7,4,0,0,TAU); c.fill(); c.stroke();
+    c.fillStyle='#a47a5a'; c.beginPath(); c.ellipse(0,-19,3,4,0,0,TAU); c.ellipse(12,-19,3,4,0,0,TAU); c.fill();
+    c.fillStyle='#2f2b4f'; c.beginPath(); c.arc(-24,-17,1.8,0,TAU); c.arc(-17,-17,1.8,0,TAU); c.fill(); c.beginPath(); c.arc(-21,-12,1.6,0,TAU); c.fill();
   } else if(k==='crab'){
     const w = Math.sin(t*10)*(v.state==='come'?1:0);
     c.strokeStyle='#e0806f'; c.lineWidth=3; c.lineCap='round';
@@ -2164,7 +2269,7 @@ function renderTray(){
     Object.entries(DECOR).forEach(([key,D]) => {
       const locked = D.gift && !S.unlocked.includes(key);
       const b=document.createElement('button'); b.type='button'; b.className='item'; b.dataset.key=key; b.dataset.cost=D.cost; if(locked) b.dataset.locked='1'; b.setAttribute('aria-pressed', decorSel===key);
-      const [c,x]=thumbCanvas(64,52); x.save(); x.translate(32,49); const sc = ['coral','lamp','grass','jellylamp','seaflower'].includes(key) ? .52 : key==='rock' ? .5 : .75; x.scale(sc,sc); drawDecor(x,key,1,0); x.restore();
+      const [c,x]=thumbCanvas(64,52); x.save(); x.translate(32,49); const sc = ['coral','lamp','grass','jellylamp','seaflower','lantern'].includes(key) ? .52 : ['treasure','pearl'].includes(key) ? .65 : ['_x'].includes(key) ? .52 : key==='rock' ? .5 : .75; x.scale(sc,sc); drawDecor(x,key,1,0); x.restore();
       if(locked){ x.globalCompositeOperation='source-in'; x.fillStyle='#c3c7e6'; x.fillRect(0,0,64,52); }
       b.append(c); b.insertAdjacentHTML('beforeend', locked ? `<span>？？？</span><span class="cost" style="color:#6c6a94">おみやげ</span>` : `<span>${D.name}</span><span class="cost">${MOON_SVG}${D.cost}</span>`);
       b.addEventListener('click', () => { decorSel = decorSel===key ? null : key; renderTray(); if(decorSel) toast(`置きたい場所をタップしてね(${D.name})`); });
