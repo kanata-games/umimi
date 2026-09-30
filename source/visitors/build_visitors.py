@@ -1,9 +1,9 @@
 import sys, json
-sys.path.insert(0,'/home/claude/umimi/costumes')
+sys.path.insert(0,'../costumes')
 import numpy as np
 from PIL import Image
 from scipy import ndimage
-exec(open('/home/claude/umimi/costumes/proc4.py').read().split('names=sys.argv')[0])
+exec(open('../costumes/proc4.py').read().split('names=sys.argv')[0])
 ORDER=['jelly','star','seahorse','crab','dolphin','penguin','turtle','octopus','puffer','otter']
 # display size in game units (longest side), anchor: 'b' bottom-center (walkers) / 'c' center (floaty)
 SIZE={'jelly':105,'star':88,'seahorse':110,'crab':110,'dolphin':145,'penguin':100,'turtle':130,'octopus':100,'puffer':98,'otter':125}
@@ -38,10 +38,10 @@ for n in ORDER:
     m=meta[n]; m['y']=y
     for i,c in enumerate(frames[n]): sheet.paste(c,(i*m['w'],y))
     y+=m['h']
-sheet.save('/home/claude/umimi/visitors.png',optimize=True)
+sheet.save('../../visitors.png',optimize=True)
 json.dump({'res':RES,'m':meta},open('visitors_meta.json','w'),separators=(',',':'))
 print(SW,SH); print(json.dumps(meta))
 # preview on dark + light bg
 pv=Image.new('RGBA',(SW*2+20,SH),(60,70,120,255)); pv.paste(sheet,(0,0),sheet)
 lt=Image.new('RGBA',(SW,SH),(215,230,250,255)); lt.paste(sheet,(0,0),sheet); pv.paste(lt,(SW+20,0))
-pv.save('/tmp/claude-0/-home-claude-umimi/bc41eef5-1a2e-59db-a53d-ab76a0d631f5/scratchpad/vprev.png')
+pv.save('preview.png')

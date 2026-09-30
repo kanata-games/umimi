@@ -1,0 +1,3 @@
+source/**/preview*.png
+source/**/all-preview.png
+__pycache__/
