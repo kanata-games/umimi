@@ -603,6 +603,8 @@ sprImg.src = 'umimi-sprites.png';
 const cosImg = new Image();
 cosImg.onload = () => { COS.ready = true; if(S){ renderTray(); if(!$('closet').hidden) renderCloset(); } };
 cosImg.src = 'costumes.png';
+const VIS_SPR = {"res":1.6,"m":{"jelly":{"w":172,"h":172,"a":"c","y":0},"star":{"w":145,"h":132,"a":"b","y":172},"seahorse":{"w":121,"h":180,"a":"c","y":304},"crab":{"w":180,"h":127,"a":"b","y":484},"dolphin":{"w":236,"h":144,"a":"c","y":611},"penguin":{"w":164,"h":147,"a":"b","y":755},"turtle":{"w":212,"h":145,"a":"b","y":902},"octopus":{"w":164,"h":156,"a":"b","y":1047},"puffer":{"w":161,"h":127,"a":"c","y":1203},"otter":{"w":204,"h":156,"a":"c","y":1330}}};
+const visImg = new Image(); visImg.onload = () => { VIS_SPR.ready = true; }; visImg.src = 'visitors.png';
 const COS_KEEP = ['blueberry','grape','gothic','constellation','devil','witch','mango','matcha','lemon'];
 const cosSheets = {};
 function cosSheetFor(color){
@@ -1339,6 +1341,21 @@ function greetVisitor(){
 function drawVisitor(c,v){
   const {x,y,s} = visitorPos(v), t = v.t, k = v.V.key;
   c.fillStyle='rgba(80,80,150,.13)'; c.beginPath(); c.ellipse(x,floorY(v.d),30*s*(v.floaty?.6:1),6*s,0,0,TAU); c.fill();
+  if(VIS_SPR.ready && VIS_SPR.m[k]){
+    const m = VIS_SPR.m[k], R = VIS_SPR.res, moving = v.state==='come' || v.state==='leave';
+    let f = Math.floor(t*(moving?4:2))%2;
+    if(k==='puffer') f = Math.sin(t*1.2)>.35 ? 1 : 0;
+    c.save(); c.translate(x,y); c.scale(-s*v.dir,s);
+    if(k==='star') c.rotate(Math.sin(t*2)*.1);
+    if(k==='penguin' && moving) c.rotate(Math.sin(t*8)*.08);
+    if(k==='jelly'){ const p=1+Math.sin(t*3)*.04; c.scale(p,1/p); }
+    if(!moving && m.a==='b') c.scale(1, 1+Math.sin(t*2.4)*.02);
+    const w = m.w/R, h = m.h/R;
+    c.drawImage(visImg, f*m.w, m.y, m.w, m.h, -w/2, m.a==='b' ? 14-h : -h/2, w, h);
+    c.restore();
+    if(k==='jelly') glows.push({x, y, r:60*s, col:'255,190,230', a:.1+.5*night});
+    return;
+  }
   c.save(); c.translate(x,y); c.scale(s*v.dir,s);
   if(['dolphin','penguin','turtle','puffer','otter'].includes(k)) c.scale(-1,1);
   const eyes = (ex,ey,gap) => { c.fillStyle='#2f2b4f'; [0,gap].forEach(o=>{ c.beginPath(); c.ellipse(ex+o,ey,2.2,2.8,0,0,TAU); c.fill(); }); c.fillStyle='rgba(247,160,184,.6)'; [ -3, gap+3].forEach(o=>{ c.beginPath(); c.ellipse(ex+o,ey+5,3.5,2,0,0,TAU); c.fill(); }); };
@@ -2422,6 +2439,8 @@ function boot(data){
   evRefresh(true);
   setTimeout(checkDay, 900);
   window.addEventListener('hashchange', checkDay);
+  const testVisit = () => { const m=location.hash.match(/^#visit-(\w+)$/); if(m && VISITORS.some(x=>x.key===m[1])){ visitor=null; S.curVisit={key:m[1],until:Date.now()+36e5}; spawnVisitor(m[1]); } };
+  window.addEventListener('hashchange', testVisit); setTimeout(testVisit, 1200);
   save();
   new ResizeObserver(resize).observe(stage);
   document.addEventListener('visibilitychange', () => { if(document.hidden) save(); });

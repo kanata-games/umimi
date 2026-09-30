@@ -133,6 +133,8 @@ R("""  new ResizeObserver(resize).observe(stage);""","""  new ResizeObserver(res
 b64 = base64.b64encode(open('umimi-sprites.png','rb').read()).decode()
 R("sprImg.src = 'umimi-sprites.png';", "sprImg.src = SPRITE_DATA;")
 R("cosImg.src = 'costumes.png';", "cosImg.src = COS_DATA;")
+R("visImg.src = 'visitors.png';", "visImg.src = VIS_DATA;")
+s = "const VIS_DATA = 'data:image/png;base64," + base64.b64encode(open('visitors.png','rb').read()).decode() + "';\n" + s
 s = "const COS_DATA = 'data:image/png;base64," + base64.b64encode(open('costumes.png','rb').read()).decode() + "';\n" + s
 # desktop hooks: settings, click-through
 R("""// ---------- boot ----------""","""// ---------- desktop hooks ----------
