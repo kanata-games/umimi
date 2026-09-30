@@ -261,12 +261,14 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--peri-deep);outl
     <button class="chip" id="closetBtn" type="button">おきがえ</button>
     <button class="chip" id="diaryBtn" type="button">にっき</button>
     <button class="chip" id="albumBtn" type="button">アルバム</button>
+    <button class="chip" id="derbyBtn" type="button" hidden>ダービー</button>
     <button class="chip" id="saveBtn" type="button">ひきつぎ</button>
     <button class="chip party" id="partyBtn" type="button" hidden>おいわい</button>
     <button class="chip" id="timeBtn" type="button" hidden>じどう</button>
     <button class="chip" id="soundBtn" type="button" hidden aria-pressed="false">おと</button>
   </div>
 
+  <section class="derby ui" id="derby" hidden><button class="x" id="derbyClose" type="button">×</button><h2>ウミミダービー</h2><div id="derbyBody"></div></section>
   <div class="toast" id="toast" hidden></div>
 
   <div class="bday ui" id="bday" hidden>
@@ -324,6 +326,10 @@ const DECOR = {
   octopot:{name:'タコつぼ',cost:2, r:28, h:30, gift:true},
   lantern:{name:'フグちょうちん',cost:3, r:26, h:56, gift:true},
   otterstone:{name:'ラッコの いし',cost:1, r:22, h:10, gift:true},
+  trophy:{name:'ダービーの トロフィー',cost:2, r:26, h:46, gift:true},
+  rosette:{name:'ゆうしょうロゼット',cost:1, r:22, h:44, gift:true},
+  goalflag:{name:'ゴールフラッグ',cost:1, r:26, h:70, gift:true},
+  podium:{name:'ひょうしょうだい',cost:3, r:52, h:34, gift:true},
 };
 const COS = Object.assign({ready:false}, {"cw":240,"ch":208,"cols":8,"s":0.8,"ex":130,"ey":165,"m":{"bear":{"i":0,"g":220.0,"lid":"#fdfdff","le":[-39.0,-4.2]},"space":{"i":1,"g":230.0,"lid":"#fdfdff","le":[-39.0,-2.1]},"explorer":{"i":2,"g":221.2,"lid":"#fdfdff","le":[-39.0,-3.8]},"newyear":{"i":3,"g":227.5,"lid":"#fdfdff","le":[-39.0,-3.0]},"witch":{"i":4,"g":216.2,"lid":"#ede3fc","le":[-39.0,-3.3]},"santa":{"i":5,"g":213.8,"lid":"#fdfdff","le":[-39.0,-3.7]},"yukata":{"i":6,"g":217.5,"lid":"#fdfdff","le":[-39.0,-3.7]},"knit":{"i":7,"g":238.8,"lid":"#fdfdff","le":[-39.0,-3.2]},"hoodie":{"i":8,"g":230.0,"lid":"#fcfdff","le":[-35.9,-2.9]},"miko":{"i":9,"g":228.8,"lid":"#fcfdff","le":[-39.0,-2.4]},"idol":{"i":10,"g":233.8,"lid":"#fcfdfe","le":[-39.0,-3.1]},"maid":{"i":11,"g":188.8,"lid":"#ded9f6","le":[-47.6,-6.3]},"gothic":{"i":12,"g":225.0,"lid":"#2f2c42","le":[-39.0,-2.4]},"sakura":{"i":13,"g":220.0,"lid":"#fdecf4","le":[-39.0,-3.0]},"blueberry":{"i":14,"g":215.0,"lid":"#6658d1","le":[-39.0,-3.2]},"lemon":{"i":15,"g":215.0,"lid":"#fbf9c1","le":[-39.0,-4.1]},"strawberry":{"i":16,"g":217.5,"lid":"#fef8fc","le":[-39.0,-3.7]},"chick":{"i":17,"g":216.2,"lid":"#fdfdff","le":[-39.0,-3.8]},"dog":{"i":18,"g":215.0,"lid":"#fdfdff","le":[-39.0,-3.1]},"mango":{"i":19,"g":213.8,"lid":"#fbb910","le":[-39.0,-4.3]},"raincoat":{"i":20,"g":223.8,"lid":"#fdfdfd","le":[-39.0,-3.0]},"matcha":{"i":21,"g":216.2,"lid":"#9ed543","le":[-39.0,-2.9]},"chef":{"i":22,"g":218.8,"lid":"#fdfdff","le":[-39.0,-4.6]},"musician":{"i":23,"g":226.2,"lid":"#fdfdff","le":[-39.0,-5.0]},"nurse":{"i":24,"g":216.2,"lid":"#fbfcff","le":[-39.0,-3.0]},"camping":{"i":25,"g":232.5,"lid":"#fdfdff","le":[-35.9,-4.1]},"pajama":{"i":26,"g":225.0,"lid":"#fdfdff","le":[-39.0,-3.6]},"ghostmaid":{"i":27,"g":226.2,"lid":"#fdfbff","le":[-35.9,-3.8]},"constellation":{"i":28,"g":216.2,"lid":"#fdfdff","le":[-39.0,-3.8]},"asagao":{"i":29,"g":227.5,"lid":"#fdfdff","le":[-34.3,-2.8]},"grape":{"i":30,"g":217.5,"lid":"#fdfdff","le":[-39.0,-3.2]},"higanbana":{"i":31,"g":216.2,"lid":"#fdfdff","le":[-39.0,-3.7]},"momiji":{"i":32,"g":216.2,"lid":"#fdfdff","le":[-39.0,-3.5]},"randoseru":{"i":33,"g":221.2,"lid":"#fdfdff","le":[-39.0,-4.0]},"goldfish":{"i":34,"g":223.8,"lid":"#fdfdff","le":[-35.9,-3.5]},"angel":{"i":35,"g":218.8,"lid":"#fdfdff","le":[-39.0,-3.4]},"jugoya":{"i":36,"g":226.2,"lid":"#fcfdff","le":[-31.2,-2.3]},"devil":{"i":37,"g":216.2,"lid":"#fdfdff","le":[-39.0,-1.1]},"crown":{"i":38,"g":220.0,"lid":"#fdfdff","le":[-39.0,-3.5]},"flower":{"i":39,"g":215.0,"lid":"#fdfdff","le":[-39.0,-3.5]},"cat":{"i":40,"g":217.5,"lid":"#fcfdff","le":[-39.0,-3.2]},"sailor":{"i":41,"g":221.2,"lid":"#fdfdff","le":[-39.0,-3.4]},"rabbit":{"i":42,"g":217.5,"lid":"#fdfdff","le":[-39.0,-2.7]},"ribbon":{"i":43,"g":217.5,"lid":"#fcfdff","le":[-39.0,-3.7]},"delivery":{"i":44,"g":215.0,"lid":"#fdfdff","le":[-39.0,-3.2]},"bath":{"i":45,"g":238.8,"lid":"#fdfdff","le":[-35.1,-3.5]}}});
 const OUTFITS = {
@@ -423,10 +429,10 @@ function hydrateU(u){
 }
 function serialize(){
   return {v:1, shards:S.shards, timeMode:S.timeMode, sound:S.sound, nextId:S.nextId, decorId:S.decorId, welcomed:S.welcomed, last:Date.now(),
-    umimi:S.umimi.map(u=>({id:u.id,name:u.name,color:u.color,x:Math.round(u.x),d:+u.d.toFixed(3),aff:u.aff,outfit:u.outfit,lvSeen:u.lvSeen,pers:u.pers,born:u.born,pets:u.pets,feeds:u.feeds,worn:u.worn,mem:u.mem,ann:u.ann})),
+    umimi:S.umimi.map(u=>({id:u.id,name:u.name,color:u.color,x:Math.round(u.x),d:+u.d.toFixed(3),aff:u.aff,outfit:u.outfit,lvSeen:u.lvSeen,pers:u.pers,born:u.born,pets:u.pets,feeds:u.feeds,worn:u.worn,mem:u.mem,ann:u.ann,wins:u.wins||0,druns:u.druns||0,dbest:u.dbest||0})),
     past:S.past,
     closet:S.closet, closetNew:S.closetNew, pets:S.pets, days:S.days, feeds:S.feeds, starsCaught:S.starsCaught, metVisitors:S.metVisitors,
-    diary:S.diary.slice(0,60), day:S.day, visitorDay:S.visitorDay, visitLog:S.visitLog, nextVisit:S.nextVisit, curVisit:S.curVisit, lastVisitor:S.lastVisitor, unlocked:S.unlocked, diaryNew:S.diaryNew, myBday:S.myBday, evSeen:S.evSeen, omikujiDay:S.omikujiDay, wishes:S.wishes, presentYear:S.presentYear, trickDay:S.trickDay, profileOnTap:S.profileOnTap, bdayBlown:S.bdayBlown, bdayDiary:S.bdayDiary,
+    diary:S.diary.slice(0,60), day:S.day, visitorDay:S.visitorDay, visitLog:S.visitLog, nextVisit:S.nextVisit, curVisit:S.curVisit, lastVisitor:S.lastVisitor, unlocked:S.unlocked, diaryNew:S.diaryNew, myBday:S.myBday, evSeen:S.evSeen, derby:S.derby, omikujiDay:S.omikujiDay, wishes:S.wishes, presentYear:S.presentYear, trickDay:S.trickDay, profileOnTap:S.profileOnTap, bdayBlown:S.bdayBlown, bdayDiary:S.bdayDiary,
     decor:S.decor.map(o=>({id:o.id,type:o.type,x:Math.round(o.x),d:+o.d.toFixed(3)})),
     ground:S.ground.map(g=>({x:Math.round(g.x),d:+g.d.toFixed(3)}))};
 }
@@ -942,6 +948,29 @@ function drawDecor(c,type,t,ph){
       c.strokeStyle='#d8b56a'; for(let i=-8;i<=8;i+=8){ c.beginPath(); c.moveTo(i,-12); c.lineTo(i,12); c.stroke(); }
       c.fillStyle='#e8c870'; [[-9,-10],[9,-10],[-12,2],[12,2]].forEach(([a,b])=>{ c.beginPath(); c.moveTo(a,b); c.lineTo(a*1.35,b*1.35-2); c.lineTo(a*1.1+2,b*1.1); c.fill(); });
       c.fillStyle='#2f2b4f'; c.beginPath(); c.arc(-4,-2,1.8,0,TAU); c.arc(4,-2,1.8,0,TAU); c.fill(); c.restore(); break; }
+    case 'rosette': {
+      c.strokeStyle='#b98a4e'; c.lineWidth=2; c.beginPath(); c.moveTo(0,0); c.lineTo(0,-22); c.stroke();
+      c.fillStyle='#6f8fe0'; c.beginPath(); c.moveTo(-6,-26); c.lineTo(-10,-6); c.lineTo(-5,-10); c.lineTo(-2,-5); c.lineTo(0,-26); c.fill(); c.beginPath(); c.moveTo(6,-26); c.lineTo(10,-6); c.lineTo(5,-10); c.lineTo(2,-5); c.lineTo(0,-26); c.fill();
+      for(let i=0;i<14;i++){ const a=i/14*TAU; c.fillStyle= i%2 ? '#f7c6d2' : '#f09ab6'; c.beginPath(); c.arc(Math.cos(a)*11, -34+Math.sin(a)*11, 5, 0, TAU); c.fill(); }
+      c.fillStyle='#f4d27a'; c.strokeStyle='#c49a3c'; c.lineWidth=1.4; c.beginPath(); c.arc(0,-34,8,0,TAU); c.fill(); c.stroke();
+      c.fillStyle='#fff'; c.font='700 9px sans-serif'; c.textAlign='center'; c.fillText('1',0,-31); break; }
+    case 'goalflag': {
+      c.fillStyle='#b98a4e'; c.fillRect(-2,-70,4,70); c.fillStyle='#f4d27a'; c.beginPath(); c.arc(0,-71,3.5,0,TAU); c.fill();
+      const wv = Math.sin(T*2.4)*2;
+      for(let yy=0; yy<4; yy++) for(let xx=0; xx<5; xx++){ c.fillStyle=(xx+yy)%2?'#5b64b8':'#fff'; c.beginPath(); const x0=2+xx*6, y0=-68+yy*5+Math.sin(xx*.9+T*2.4)*1.2; c.rect(x0,y0,6,5); c.fill(); }
+      c.strokeStyle='rgba(60,60,110,.35)'; c.lineWidth=1; c.strokeRect(2,-68+wv*0,30,20); break; }
+    case 'podium': {
+      const blk=(x,w,h,col,n)=>{ c.fillStyle=col; c.strokeStyle=OUT; c.lineWidth=1.3; c.beginPath(); c.roundRect(x,-h,w,h,3); c.fill(); c.stroke(); c.fillStyle='rgba(255,255,255,.9)'; c.font='800 12px sans-serif'; c.textAlign='center'; c.fillText(n, x+w/2, -h+14); };
+      blk(-48,32,20,'#c9cde6','2'); blk(16,32,14,'#e6c9a8','3'); blk(-16,32,32,'#f4d27a','1'); break; }
+    case 'trophy': {
+      c.fillStyle='#b98a4e'; c.strokeStyle=OUT; c.lineWidth=1.3; c.beginPath(); c.roundRect(-13,-10,26,10,3); c.fill(); c.stroke();
+      c.fillStyle='#f4d27a'; c.strokeStyle='#c49a3c'; c.lineWidth=1.6;
+      c.beginPath(); c.moveTo(-4,-10); c.lineTo(-3,-20); c.lineTo(3,-20); c.lineTo(4,-10); c.closePath(); c.fill(); c.stroke();
+      c.beginPath(); c.moveTo(-14,-42); c.lineTo(14,-42); c.quadraticCurveTo(14,-20,0,-20); c.quadraticCurveTo(-14,-20,-14,-42); c.fill(); c.stroke();
+      c.lineWidth=2.4; c.beginPath(); c.arc(-15,-35,6,Math.PI*.5,Math.PI*1.5); c.moveTo(15,-41); c.arc(15,-35,6,-Math.PI*.5,Math.PI*.5); c.stroke();
+      c.fillStyle='rgba(255,255,255,.6)'; c.beginPath(); c.ellipse(-6,-35,2.5,5,0,0,TAU); c.fill();
+      crescent(c,3,-32,5,'#fff6d6',.9);
+      break; }
     case 'otterstone': {
       c.fillStyle='#b9bcc9'; c.strokeStyle=OUT; c.lineWidth=1.3; c.beginPath(); c.ellipse(0,-7,15,8,0,0,TAU); c.fill(); c.stroke();
       c.fillStyle='rgba(255,255,255,.5)'; c.beginPath(); c.ellipse(-5,-10,5,2,-.3,0,TAU); c.fill();
@@ -1571,7 +1600,7 @@ function farewell(u){
   addDiary(`${u.name}が 海のむこうへ たびだっていった。またね`);
   addMem(u,'海のむこうへ たびだった');
   if(!Array.isArray(S.past)) S.past=[];
-  S.past.unshift({name:u.name,color:u.color,outfit:u.outfit,pers:u.pers,born:u.born,left:Date.now(),days:daysWith(u),pets:u.pets,feeds:u.feeds,lv:lvOf(u),worn:(u.worn||[]).length,mem:u.mem.slice(-12)});
+  S.past.unshift({name:u.name,color:u.color,outfit:u.outfit,pers:u.pers,born:u.born,left:Date.now(),days:daysWith(u),pets:u.pets,feeds:u.feeds,lv:lvOf(u),worn:(u.worn||[]).length,mem:u.mem.slice(-12),wins:u.wins||0,druns:u.druns||0,dbest:u.dbest||0});
   S.past=S.past.slice(0,30);
   toast(`${u.name}を 見送ったよ`);
 }
@@ -1738,7 +1767,7 @@ function evTap(p){
 
 // ---------- album ----------
 let albumTab='u', albumSel=null;
-function hidePanels(except){ ['diary','closet','savep','album','shootp','studio','eventp'].forEach(id=>{ if(id!==except) $(id).hidden=true; }); }
+function hidePanels(except){ ['diary','closet','savep','album','shootp','studio','eventp','derby'].forEach(id=>{ if(id!==except) $(id).hidden=true; }); }
 function openAlbum(tab,sel){ hidePanels('album'); closeCard(); $('album').hidden=false; albumTab=tab||'u'; albumSel=sel||null; renderAlbum(); }
 $('albumBtn').addEventListener('click', () => { if(!$('album').hidden){ $('album').hidden=true; return; } openAlbum('u'); });
 $('albumClose').addEventListener('click', () => { $('album').hidden=true; });
@@ -1791,6 +1820,8 @@ function renderUmiDetail(body, sel){
   stat('なかよし', 'Lv'+(isPast?u.lv:lvOf(u)));
   stat('なでた回数', u.pets||0, '回'); stat('ごはん', u.feeds||0, '回');
   stat('着たおきがえ', isPast?u.worn:(u.worn||[]).length, `/ ${Object.keys(OUTFITS).length-1}`);
+  stat('ダービー', `${u.wins||0}勝`, `/ ${u.druns||0}レース`);
+  if(u.druns) stat('ダービー さいこう', u.dbest ? `${u.dbest}着` : '—', u.druns ? `勝率${Math.round((u.wins||0)/u.druns*100)}%` : '');
   wrap.append(back, head, st, el('div','asec','おもいで'));
   const tl=el('ol','tl');
   (u.mem||[]).slice().reverse().forEach(m => { const li=el('li'); li.append(el('span','when',fmtDate(m.t)), el('span',null,m.s)); tl.append(li); });
@@ -2258,7 +2289,7 @@ function renderTray(){
     Object.entries(DECOR).forEach(([key,D]) => {
       const locked = D.gift && !S.unlocked.includes(key);
       const b=document.createElement('button'); b.type='button'; b.className='item'; b.dataset.key=key; b.dataset.cost=D.cost; if(locked) b.dataset.locked='1'; b.setAttribute('aria-pressed', decorSel===key);
-      const [c,x]=thumbCanvas(64,52); x.save(); x.translate(32,49); const sc = ['coral','lamp','grass','jellylamp','seaflower','lantern'].includes(key) ? .52 : ['treasure','pearl'].includes(key) ? .65 : ['_x'].includes(key) ? .52 : key==='rock' ? .5 : .75; x.scale(sc,sc); drawDecor(x,key,1,0); x.restore();
+      const [c,x]=thumbCanvas(64,52); x.save(); x.translate(32,49); const sc = ['coral','lamp','grass','jellylamp','seaflower','lantern','goalflag','podium'].includes(key) ? .52 : ['treasure','pearl'].includes(key) ? .65 : ['_x'].includes(key) ? .52 : key==='rock' ? .5 : .75; x.scale(sc,sc); drawDecor(x,key,1,0); x.restore();
       if(locked){ x.globalCompositeOperation='source-in'; x.fillStyle='#c3c7e6'; x.fillRect(0,0,64,52); }
       b.append(c); b.insertAdjacentHTML('beforeend', locked ? `<span>？？？</span><span class="cost" style="color:#6c6a94">おみやげ</span>` : `<span>${D.name}</span><span class="cost">${MOON_SVG}${D.cost}</span>`);
       b.addEventListener('click', () => { decorSel = decorSel===key ? null : key; renderTray(); if(decorSel) toast(`置きたい場所をタップしてね(${D.name})`); });
@@ -2365,7 +2396,7 @@ function updateCardMeta(dt){
   cardAcc += dt; if(cardAcc<.3) return; cardAcc=0;
   const u=selU(); if(!u){ closeCard(); return; }
   $('cColor').textContent = PALS[u.color].name + 'いろ・' + (PERS[u.pers]||PERS.nonbiri).name;
-  $('cMood').textContent = MOODS[u.state] || 'のんびり';
+  $('cMood').textContent = (MOODS[u.state] || 'のんびり') + (u.wins ? `・ダービー${u.wins}勝` : '');
   const lv = lvOf(u);
   $('cHearts').innerHTML = `なかよしLv${lv} ` + Array.from({length:5},(_,i)=>`<span class="${i<lv?'on':'off'}">${HEART_SVG}</span>`).join('');
 }
@@ -2387,6 +2418,378 @@ function sfx(kind){
     g.gain.setValueAtTime(0,t0); g.gain.linearRampToValueAtTime(.09,t0+.02); g.gain.exponentialRampToValueAtTime(.0005,t0+.45);
     o.connect(g); g.connect(AC.destination); o.start(t0); o.stop(t0+.5); }); }catch(e){}
 }
+
+// ---------- ウミミダービー ----------
+const DERBY_LEN = 100, DERBY_PAID = 3, DERBY_N = 5, DERBY_MAXP = 20;
+const GUEST_NAMES = ['ルナ','シズク','ホタル','ナギ','コハク','ミオ','ソラ','ユラ','サンゴ','マリン','アワ','シオン','ツムギ','ヒカリ','モモ','クラリス'];
+const DPERS = {
+  genki:    {base:1.00, tip:'スタートダッシュが とくい'},
+  nonbiri:  {base:.97,  tip:'さいごに ぐんぐん のびる'},
+  kuishinbo:{base:1.00, tip:'とちゅうで おやつ。食べると はやい'},
+  amaenbo:  {base:1.00, tip:'おいていかれると がんばる'},
+  nebosuke: {base:1.05, tip:'はやいけど ねむくなることも'},
+  koukishin:{base:1.04, tip:'よりみち しがち'},
+};
+const COND = [{m:1.03,t:'ぜっこうちょう',s:'◎'},{m:1,t:'ふつう',s:'○'},{m:.97,t:'ちょっと ねむそう',s:'△'}];
+let derby = null;
+function dRunner(src, guest){
+  const u = hydrateU(Object.assign({}, src, {born:src.born||1, mem:[], lift:0}));
+  u.dir = 1; u.state='walk'; u.moving=true; u.guest=!!guest; u.srcId = guest ? null : src.id;
+  u.cond = COND[Math.random()<.3?0:Math.random()<.75?1:2];
+  u.aff = src.aff||0; return u;
+}
+function dSetup(){
+  const own = S.umimi.filter(u=>u.state!=='leaving').slice().sort(()=>Math.random()-.5).slice(0,3);
+  const rs = own.map(u=>dRunner(u,false));
+  const names = GUEST_NAMES.filter(n=>!S.umimi.some(u=>u.name===n)).sort(()=>Math.random()-.5);
+  const cols = Object.keys(PALS), outs = Object.keys(OUTFITS).filter(k=>COS.m && COS.m[k]);
+  while(rs.length < DERBY_N){
+    const g = {id:-rs.length, name:names.pop()||'ゲスト', color:cols[Math.floor(Math.random()*cols.length)],
+      outfit: Math.random()<.55 && outs.length ? outs[Math.floor(Math.random()*outs.length)] : 'normal',
+      pers: PERS_KEYS[Math.floor(Math.random()*PERS_KEYS.length)], x:0, d:.5, aff:rand(0,60)};
+    rs.push(dRunner(g,true));
+  }
+  rs.forEach((r,i)=>{ r.lane=i; });
+  // odds from quick simulation
+  const wins = rs.map(()=>0), N = 500, orders = [];
+  for(let k=0;k<N;k++){ const sim = rs.map(r=>dState(r)), fin = []; for(let t=0;t<80 && fin.length<3;t+=.05){ sim.forEach((x,i)=>{ if(x.done) return; dStep(x,sim,.05,false); if(x.pos>=DERBY_LEN){ x.done=1; fin.push(i); } }); } orders.push(fin); if(fin.length) wins[fin[0]]++; }
+  rs.forEach((r,i)=>{ const p=(wins[i]+8)/(N+8*rs.length); r.odds = clamp(Math.round(.8/p*10)/10, 1.2, 15); });
+  derby = {phase:'entry', runners:rs, pick:null, picks:{}, active:0, t:0, orders, btype:(derby&&derby.btype)||'win', sel:[]};
+}
+function dState(r){ return {r, pos:0, v:0, nz:1, nzT:0, ev:null, evT:0, boostT:0, fin:null, cheer:0}; }
+function dEvent(x, key, dur, say){ x.ev=key; x.evT=dur; x.say=say; x.sayT=1.6; }
+function dStep(x, all, dt, live){
+  if(x.fin!=null){ if(x.pos < DERBY_LEN+3) x.pos += 2*dt; return; }
+  const r = x.r, P = DPERS[r.pers]||DPERS.nonbiri, prog = x.pos/DERBY_LEN, lead = Math.max(...all.map(o=>o.pos));
+  x.nzT -= dt; if(x.nzT<=0){ x.nzT = 1.3; x.nz = rand(.84,1.16); }
+  if(x.sayT) x.sayT -= dt;
+  if(x.ev){ x.evT -= dt; if(x.evT<=0){ if(x.ev==='snack') { x.boostT = 1.6; } x.ev=null; } }
+  else if(prog>.08 && prog<.93){
+    const q = Math.random(), p1 = dt;
+    if(r.pers==='nebosuke' && q < .10*p1) dEvent(x,'doze',1.5,'すや…');
+    else if(r.pers==='koukishin' && q < .10*p1) dEvent(x,'look',1.0, ['あっ かいがら！','なにこれ？','きらきら！'][Math.floor(Math.random()*3)]);
+    else if(r.pers==='kuishinbo' && q < .09*p1) dEvent(x,'snack',.9,'もぐもぐ');
+    else if(r.pers==='nonbiri' && q < .05*p1) dEvent(x,'rest',.9,'ふぅ…');
+    else if(q > 1 - .035*p1){ x.boostT = 1.1; x.say='びゅーん！'; x.sayT=1.2; }
+  }
+  let m = P.base * r.cond.m * (1 + Math.min(lvOf(r),5)*.008) * x.nz;
+  if(r.pers==='genki') m *= prog<.3 ? 1.16 : .97;
+  if(r.pers==='nonbiri' && prog>.62) m *= 1.16;
+  if(r.pers==='amaenbo' && x.pos < lead-6) m *= 1.09;
+  if(x.boostT>0){ x.boostT -= dt; m *= 1.3; }
+  if(x.ev) m *= x.ev==='look' ? .15 : 0;
+  const target = 5.9*m; x.v += (target - x.v)*Math.min(1, dt*3);
+  if(x.pos < 1.5 && live===false) x.v = Math.max(x.v, 0);
+  x.pos += x.v*dt;
+}
+function openDerby(){
+  hidePanels('derby'); closeCard(); $('derby').hidden=false;
+  if(!derby || derby.phase==='result' || derby.phase==='entry') dSetup();
+  renderDerby();
+}
+function dThumb(u){ const c=document.createElement('canvas'), dpr=Math.min(2,window.devicePixelRatio||1); c.width=110*dpr; c.height=78*dpr; const x=c.getContext('2d'); x.scale(dpr,dpr); const st=u.state, mv=u.moving; u.state='idle'; u.moving=false; try{ drawUmimiAt(x,u,55,72,.42,0,0,{}); }catch(e){} u.state=st; u.moving=mv; return c; }
+function dPaidLeft(){ const d=S.derby; return (d && d.day===todayStr()) ? Math.max(0, DERBY_PAID-d.paid) : DERBY_PAID; }
+function dData(){ if(!S.derby) S.derby = {}; const d=S.derby; if(!Array.isArray(d.players) || !d.players.length) d.players=['わたし']; if(!d.pstats) d.pstats={}; return d; }
+function dPlayers(){ const d=dData(); return d.group ? d.players : [d.players[0]]; }
+const BTYPES = {
+  win:     {n:1, name:'1着あて',      desc:'1着になる子を あてる', cap:15},
+  place:   {n:1, name:'2着まで',      desc:'えらんだ子が 2着までに 入ればOK', cap:8},
+  pair:    {n:2, name:'1・2着ペア',   desc:'1着と2着の 2匹。じゅんばんは どちらでもOK', cap:60},
+  exacta:  {n:2, name:'1→2着 ぴったり', desc:'1着と2着を じゅんばんどおりに', cap:120},
+  trifecta:{n:3, name:'1→2→3着 ぴったり', desc:'3着まで じゅんばんどおり。大あな！', cap:400},
+};
+function dHit(type, sel, o){ if(!o || o.length<BTYPES[type].n) return false;
+  if(type==='win') return o[0]===sel[0];
+  if(type==='place') return o[0]===sel[0] || o[1]===sel[0];
+  if(type==='pair') return (o[0]===sel[0]&&o[1]===sel[1]) || (o[0]===sel[1]&&o[1]===sel[0]);
+  if(type==='exacta') return o[0]===sel[0] && o[1]===sel[1];
+  if(type==='trifecta') return o[0]===sel[0] && o[1]===sel[1] && o[2]===sel[2];
+  return false; }
+function dOdds(type, sel){
+  const D = derby; if(type==='win') return D.runners[sel[0]].odds;
+  const os = D.orders||[], N = os.length||1; let c = 0; os.forEach(o=>{ if(dHit(type,sel,o)) c++; });
+  const p = (c+.6)/(N+1.2); return clamp(Math.round(.8/p*10)/10, 1.1, BTYPES[type].cap); }
+const MEDAL_START = 100, MEDAL_MIN = 10, MEDAL_ALLOW = 30, BET_STEPS = [10,30,50,100];
+function dPS(name){ const d=dData(); const st = d.pstats[name] || (d.pstats[name]={plays:0,hits:0,best:0}); if(st.medals==null) st.medals = MEDAL_START; return st; }
+function dBetOf(k){ const D=derby; const pl=dPlayers(); const st=dPS(pl[k]); let b = D.bets && D.bets[k]!=null ? D.bets[k] : MEDAL_MIN; if(b==='all') b = st.medals; return Math.max(0, Math.min(b, st.medals)); }
+const DSHOP = [
+  {key:'rosette', price:150, desc:'ゆうしょうの ロゼット。かざると はなやか'},
+  {key:'goalflag', price:250, desc:'チェックの ゴールフラッグ'},
+  {key:'trophy', price:300, desc:'ぴかぴかの トロフィー（ゆうしょうでも もらえる）'},
+  {key:'podium', price:450, desc:'1・2・3の ひょうしょうだい。ウミミが のれそう'},
+];
+function renderDerbyShop(b){
+  const D = derby, dd = dData(), me = dd.players[0], st = dPS(me);
+  b.insertAdjacentHTML('beforeend', `<p class="dsub">「${esc(me)}」の メダルで こうかんできるよ。こうかんした かざりは「かざる」から おけます。</p><div class="dmedal big">🏅 ${st.medals} まい</div>`);
+  const g = document.createElement('div'); g.className='dshop'; b.appendChild(g);
+  DSHOP.forEach(it=>{
+    const own = S.unlocked.includes(it.key), can = !own && st.medals >= it.price;
+    const row = document.createElement('div'); row.className='dsrow';
+    const cv = document.createElement('canvas'); const dpr=Math.min(2,window.devicePixelRatio||1); cv.width=72*dpr; cv.height=60*dpr; const x=cv.getContext('2d'); x.scale(dpr,dpr); x.translate(36,56); x.scale(it.key==='goalflag'?.7:it.key==='podium'?.6:.9, it.key==='goalflag'?.7:it.key==='podium'?.6:.9); try{ drawDecor(x, it.key, T, 0); }catch(e){}
+    row.appendChild(cv);
+    row.insertAdjacentHTML('beforeend', `<div class="dsi"><b>${DECOR[it.key].name}</b><span>${it.desc}</span></div><button type="button" class="dbtn${own?' sub':''}" ${can?'':'disabled'}>${own?'もってるよ':`🏅${it.price}`}</button>`);
+    row.querySelector('button').addEventListener('click', ()=>{ if(!can) return; st.medals -= it.price; S.unlocked.push(it.key); save(); sfx('shard'); toast(`「${DECOR[it.key].name}」を こうかんしたよ。「かざる」から おけます`); if(mode==='decor') renderTray(); renderDerby(); });
+    g.appendChild(row);
+  });
+  b.insertAdjacentHTML('beforeend', `<div class="dbar"><button class="dbtn" type="button" id="dBack2">もどる</button></div>`);
+  $('dBack2').addEventListener('click', ()=>{ D.phase='entry'; renderDerby(); });
+}
+function esc(t){ return String(t).replace(/[&<>"]/g, ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[ch]); }
+function renderDerby(){
+  const b = $('derbyBody'); b.innerHTML='';
+  const D = derby, dd = dData();
+  if(!D.picks) D.picks = {};
+  if(D.active==null) D.active = 0;
+  if(!D.bets) D.bets = {};
+  if(D.phase==='stats') return renderDerbyStats(b);
+  if(D.phase==='shop') return renderDerbyShop(b);
+  if(D.phase==='entry'){
+    const left = dPaidLeft(), pl = dPlayers();
+    if(D.active >= pl.length) D.active = 0;
+    b.insertAdjacentHTML('beforeend', `<div class="dmode"><button type="button" class="dm ${dd.group?'':'on'}" id="dmSolo">ひとりで</button><button type="button" class="dm ${dd.group?'on':''}" id="dmGroup">みんなで</button><span style="flex:1"></span><button type="button" class="dm" id="dmShop">こうかんじょ</button><button type="button" class="dm" id="dmStats">せいせき</button></div>`);
+    b.insertAdjacentHTML('beforeend', `<p class="dsub">${dd.group ? 'ひとりずつ 名前をえらんでから、1着だと思う子を タップしてね。' : 'どの子が 1着になるか 予想してね。'}メダルを かけて、あたると 倍率ぶん ふえるよ。${dd.group?`（つきのかけらの ごほうびは「${esc(pl[0])}」の予想で 決まるよ）`:'つきのかけらの ごほうびも あるよ'}。${left>0?`（きょうの ごほうびレース：のこり ${left}かい）`:'（きょうの ごほうびは おしまい。れんしゅうレースだよ）'}</p>`);
+    if(dd.group){
+      const row = document.createElement('div'); row.className='dplayers';
+      pl.forEach((n,i)=>{ const p=D.picks[i]; const bt=document.createElement('button'); bt.type='button'; bt.className='dpl'+(i===D.active?' on':'')+(p!=null?' done':'');
+        bt.innerHTML = `<b>${esc(n)}</b><span>${p!=null?`${p+1} ${esc(D.runners[p].name)}・${dBetOf(i)}枚`:'まだ'}</span><i>🏅${dPS(n).medals}</i>`; bt.addEventListener('click',()=>{ D.active=i; renderDerby(); }); row.appendChild(bt); });
+      if(pl.length<DERBY_MAXP){ const add=document.createElement('button'); add.type='button'; add.className='dpl add'; add.textContent='＋ ひと'; add.addEventListener('click',()=>{ const used=new Set(dd.players); let k=dd.players.length+1, nm; do{ nm=`ともだち${k++}`; }while(used.has(nm)); dd.players.push(nm); D.active=dd.players.length-1; save(); renderDerby(); setTimeout(()=>{ const i=$('dName'); if(i){ i.focus(); i.select(); } },30); }); row.appendChild(add); }
+      b.appendChild(row);
+      const ed = document.createElement('div'); ed.className='dedit';
+      ed.innerHTML = `<label>なまえ <input id="dName" maxlength="10" value="${esc(pl[D.active])}"></label>${D.active>0?'<button type="button" class="dm" id="dDel">この人を けす</button>':''}`;
+      b.appendChild(ed);
+      const bulk = document.createElement('details'); bulk.className='dbulk'; bulk.open = !!D.bulkOpen;
+      bulk.innerHTML = `<summary>まとめて入力（配信むけ）</summary><p class="dsub">「なまえ 番号」を 1人ずつ 改行か「、」で くぎって 貼りつけてね。うしろに かけるメダルも かけるよ。例：<b>カナ 3、ユウ 1番 50、ミオ ３ ぜんぶ</b>（いまは ${pl.length}/${DERBY_MAXP}人）</p><textarea id="dBulkIn" rows="3" placeholder="カナ 3&#10;ユウ 1"></textarea><div class="dbar"><button type="button" class="dm" id="dClear">わたし 以外を けす</button><button type="button" class="dbtn" id="dBulkGo">とうろく</button></div><p class="dsub" id="dBulkMsg"></p>`;
+      bulk.addEventListener('toggle', ()=>{ D.bulkOpen = bulk.open; });
+      b.appendChild(bulk);
+      $('dBulkGo').addEventListener('click', ()=>{ const r = dBulk($('dBulkIn').value); save(); renderDerby(); const m=$('dBulkMsg'); if(m) m.textContent = r; });
+      $('dClear').addEventListener('click', ()=>{ const old = dd.players.length; dd.players = [dd.players[0]]; const p0 = D.picks[0], b0 = D.bets[0]; D.picks = {}; D.bets = {}; if(p0!=null) D.picks[0]=p0; if(b0!=null) D.bets[0]=b0; D.active=0; save(); renderDerby(); const m=$('dBulkMsg'); if(m && old>1) m.textContent = `${old-1}人を けしたよ（せいせきは のこっています）`; });
+      $('dName').addEventListener('change', e=>{ const v=e.target.value.trim().slice(0,10); if(v){ const old=dd.players[D.active]; dd.players[D.active]=v; if(dd.pstats[old] && !dd.pstats[v]){ dd.pstats[v]=dd.pstats[old]; delete dd.pstats[old]; } save(); } renderDerby(); });
+      if($('dDel')) $('dDel').addEventListener('click', ()=>{ dd.players.splice(D.active,1); const np={}; Object.keys(D.picks).forEach(k=>{ const i=+k; if(i<D.active) np[i]=D.picks[k]; else if(i>D.active) np[i-1]=D.picks[k]; }); D.picks=np; const nb={}; Object.keys(D.bets).forEach(k=>{ const i=+k; if(i<D.active) nb[i]=D.bets[k]; else if(i>D.active) nb[i-1]=D.bets[k]; }); D.bets=nb; D.active=0; save(); renderDerby(); });
+    }
+    const solo = !dd.group, BT = BTYPES[D.btype]||BTYPES.win;
+    if(solo){
+      const tr = document.createElement('div'); tr.className='dbt';
+      tr.innerHTML = `<div class="dbtrow">${Object.entries(BTYPES).map(([k,v])=>`<button type="button" class="dm${D.btype===k?' on':''}" data-t="${k}">${v.name}</button>`).join('')}</div><p class="dsub">${BT.desc}${BT.n>1?`（カードを ${BT.n}まい じゅんばんに タップ）`:''}</p>`;
+      tr.querySelectorAll('button').forEach(btn=>btn.addEventListener('click',()=>{ D.btype=btn.dataset.t; D.sel = D.sel.slice(0, BTYPES[D.btype].n); renderDerby(); }));
+      b.appendChild(tr);
+    }
+    { const k = D.active, nm = pl[k], st = dPS(nm), cur = D.bets[k]!=null ? D.bets[k] : MEDAL_MIN;
+      const br = document.createElement('div'); br.className='dbet';
+      br.innerHTML = `<span class="dmedal">🏅 ${esc(nm)}：${st.medals} まい${st.medals<MEDAL_MIN?`（スタートで おこづかい ${MEDAL_ALLOW}まい）`:''}</span><span class="lbl">かける</span>` + BET_STEPS.map(v=>`<button type="button" class="dm${cur===v?' on':''}" data-b="${v}">${v}</button>`).join('') + `<button type="button" class="dm${cur==='all'?' on':''}" data-b="all">ぜんぶ</button>`;
+      br.querySelectorAll('button').forEach(btn=>btn.addEventListener('click',()=>{ const v=btn.dataset.b; D.bets[k] = v==='all' ? 'all' : +v; renderDerby(); }));
+      b.appendChild(br); }
+    const g = document.createElement('div'); g.className='dgrid'; b.appendChild(g);
+    D.runners.forEach((r,i)=>{
+      const card = document.createElement('button'); card.type='button';
+      const si = solo ? D.sel.indexOf(i) : -1; const mine = solo ? si>=0 : D.picks[D.active]===i; card.className='dcard'+(mine?' sel':'');
+      const who = pl.map((n,k)=>D.picks[k]===i?n:null).filter(Boolean);
+      card.innerHTML = `${r.guest?'':'<span class="own">うちの子</span>'}`; card.appendChild(dThumb(r));
+      card.insertAdjacentHTML('beforeend', `<span class="num">${i+1}</span><span class="nm">${esc(r.name)}</span><span class="tg">${(PERS[r.pers]||PERS.nonbiri).name}・ちょうし ${r.cond.s}</span><span class="tg">${(DPERS[r.pers]||DPERS.nonbiri).tip}</span><span class="od">${solo && D.btype==='place' ? `${dOdds('place',[i]).toFixed(1)} 倍（2着まで）` : `${r.odds.toFixed(1)} 倍`}</span>${solo && si>=0 && BT.n>1 ? `<span class="ord">${D.btype==='pair' ? 'えらんだ' : (si+1)+'着'}</span>` : ''}${dd.group&&who.length?`<span class="who">${who.map(esc).join('・')}</span>`:''}`);
+      card.addEventListener('click', ()=>{ if(solo){ if(BT.n===1) D.sel=[i]; else { const j=D.sel.indexOf(i); if(j>=0) D.sel.splice(j,1); else { if(D.sel.length>=BT.n) D.sel.pop(); D.sel.push(i); } } D.picks[0] = D.sel[0]; renderDerby(); return; } D.picks[D.active]=i; if(dd.group){ const nx = pl.findIndex((_,k)=>D.picks[k]==null); if(nx>=0) D.active=nx; } renderDerby(); });
+      g.appendChild(card);
+    });
+    const ready = solo ? D.sel.length===BT.n : pl.every((_,k)=>D.picks[k]!=null);
+    if(solo && ready){ const od = dOdds(D.btype, D.sel); const bet = dBetOf(0); b.insertAdjacentHTML('beforeend', `<div class="dsum">${BT.name}：<b>${D.sel.map(i=>`${i+1} ${esc(D.runners[i].name)}`).join(D.btype==='pair'?' ＆ ':' → ')}</b>　<span>${od.toFixed(1)}倍</span>　${bet}まい → あたれば <b>${Math.floor(bet*od)}まい</b></div>`); }
+    const bar = document.createElement('div'); bar.className='dbar';
+    bar.innerHTML = `<button class="dbtn sub" type="button" id="dRe">メンバーをかえる</button><button class="dbtn" type="button" id="dGo" ${ready?'':'disabled'}>${ready?'スタート！':(dd.group?'みんなの予想を えらんでね':'予想する子を えらんでね')}</button>`;
+    b.appendChild(bar);
+    $('dmSolo').addEventListener('click', ()=>{ dd.group=false; D.active=0; save(); renderDerby(); });
+    $('dmGroup').addEventListener('click', ()=>{ dd.group=true; save(); renderDerby(); });
+    $('dmStats').addEventListener('click', ()=>{ D.back='entry'; D.phase='stats'; renderDerby(); });
+    $('dmShop').addEventListener('click', ()=>{ D.phase='shop'; renderDerby(); });
+    $('dRe').addEventListener('click', ()=>{ dSetup(); derby.active=0; renderDerby(); });
+    $('dGo').addEventListener('click', ()=>{ if(ready){ if(solo){ D.picks = {0:D.sel[0]}; D.bt = {type:D.btype, sel:D.sel.slice(), odds:dOdds(D.btype, D.sel)}; } else D.bt = null; D.pick = D.picks[0]; D.players = pl.slice(); dStart(); } });
+    return;
+  }
+  const cvs = document.createElement('canvas'); cvs.className='dcv'; cvs.id='derbyCv'; b.appendChild(cvs);
+  const info = document.createElement('div'); info.id='dInfo'; b.appendChild(info);
+  if(D.phase==='result') dRenderResult();
+}
+function dBulk(text){
+  const D = derby, dd = dData(); const z2h = t => t.replace(/[０-９]/g, ch=>String.fromCharCode(ch.charCodeAt(0)-0xFEE0));
+  const parts = z2h(String(text||'')).split(/[\n、,，;；]+/).map(t=>t.trim()).filter(Boolean);
+  let ok=0, bad=[], full=0;
+  if(!D.bets) D.bets = {};
+  parts.forEach(t=>{
+    let bet = null; const bm = t.match(/^(.*?[1-9]\s*番?)[\s:：]+(\d+|ぜんぶ|全部|オールイン)\s*(?:枚|まい)?$/); if(bm){ t = bm[1].trim(); bet = /^\d+$/.test(bm[2]) ? Math.max(1, +bm[2]) : 'all'; }
+    const m = t.match(/^(.+?)[\s:：=＝→>]*([1-9])\s*番?\s*$/) || t.match(/^([1-9])\s*番?[\s:：]+(.+)$/);
+    let name, num;
+    if(m){ if(/^[1-9]$/.test(m[1])){ num=+m[1]; name=m[2]; } else { name=m[1]; num=+m[2]; } }
+    else { const r = D.runners.findIndex(r=>t.endsWith(r.name) && t.length>r.name.length); if(r>=0){ name=t.slice(0,t.length-D.runners[r].name.length); num=r+1; } }
+    name = (name||'').replace(/[\s:：=＝→>]+$/,'').replace(/さん$/,'').trim().slice(0,10);
+    if(!name || !num || num>D.runners.length){ bad.push(t); return; }
+    let k = dd.players.indexOf(name);
+    if(k<0){ if(dd.players.length>=DERBY_MAXP){ full++; return; } dd.players.push(name); k = dd.players.length-1; }
+    D.picks[k] = num-1; if(bet!=null) D.bets[k] = bet; ok++;
+  });
+  dd.group = true;
+  return `${ok}人ぶん とうろくしたよ` + (full?`／${DERBY_MAXP}人を こえたので ${full}人は はいれなかったよ`:'') + (bad.length?`／よめなかった：${bad.slice(0,3).join('、')}${bad.length>3?' ほか':''}`:'');
+}
+function renderDerbyStats(b){
+  const D = derby, dd = dData();
+  const races = dd.races||0, hits = dd.hits||0;
+  const us = S.umimi.filter(u=>u.state!=='leaving').slice().sort((a,b)=>(b.wins||0)-(a.wins||0) || (b.druns||0)-(a.druns||0));
+  const ps = Object.entries(dd.pstats||{}).filter(([,v])=>v.plays>0).sort((a,b)=>(b[1].medals??MEDAL_START)-(a[1].medals??MEDAL_START) || b[1].hits-a[1].hits);
+  b.insertAdjacentHTML('beforeend', `
+    <div class="dstat">
+      <div class="dsbox"><b>${races}</b><span>レース</span></div>
+      <div class="dsbox"><b>${hits}</b><span>予想あたり</span></div>
+      <div class="dsbox"><b>${races?Math.round(hits/races*100):0}%</b><span>あたり率</span></div>
+      <div class="dsbox"><b>${dd.best?dd.best.toFixed(1)+'倍':'—'}</b><span>さいこう配当</span></div>
+      <div class="dsbox"><b>${dPS(dd.players[0]).medals}</b><span>${esc(dd.players[0])}の メダル</span></div>
+    </div>
+    <h3 class="dh3">うちの子の せいせき</h3>
+    <ol class="dres">${us.map((u,i)=>`<li><span class="rk">${(u.wins||0)>0 && i===0 ? '👑' : ''}</span><span style="flex:1">${esc(u.name)} <span style="color:var(--ink2);font-size:12px">${(PERS[u.pers]||PERS.nonbiri).name}</span></span><span>${u.wins||0}勝 / ${u.druns||0}レース</span></li>`).join('')}</ol>
+    <h3 class="dh3">メダル ランキング</h3>
+    ${ps.length ? `<ol class="dres">${ps.map(([n,v],i)=>`<li><span class="rk">${i+1}い</span><span style="flex:1">${esc(n)}</span><span>🏅${v.medals??MEDAL_START}まい・${v.hits}/${v.plays} あたり${v.best?`・さいこう ${v.best.toFixed(1)}倍`:''}</span></li>`).join('')}</ol>` : '<p class="dsub">まだ きろくが ないよ。</p>'}
+    <div class="dbar"><button class="dbtn" type="button" id="dBack">もどる</button></div>`);
+  $('dBack').addEventListener('click', ()=>{ D.phase = D.back||'entry'; renderDerby(); });
+}
+function dStart(){
+  const D = derby; const pl = D.players || dPlayers(); D.allow = [];
+  D.stake = pl.map((n,k)=>{ const st = dPS(n); if(st.medals < MEDAL_MIN){ st.medals += MEDAL_ALLOW; D.allow.push(n); } const b = dBetOf(k); st.medals -= b; return b; });
+  save();
+  D.phase='race'; D.t=-3.2; D.sim = D.runners.map(r=>dState(r)); D.order=[]; D.done=false; D.cam=0;
+  renderDerby(); sfx('invite');
+}
+function dFinish(){
+  const D = derby; D.phase='result';
+  const first = D.order[0], pick = D.runners[D.pick]; const oi = D.order.map(r=>D.runners.indexOf(r));
+  const bt = D.bt && D.bt.type!=='win' ? D.bt : null; const hit = bt ? dHit(bt.type, bt.sel, oi) : first===pick; const hodds = bt ? bt.odds : pick.odds;
+  const dd = dData(), today = todayStr();
+  if(dd.day!==today){ dd.day=today; dd.paid=0; }
+  const paid = (dd.paid||0) < DERBY_PAID; dd.races=(dd.races||0)+1;
+  let msg;
+  if(hit){ dd.hits=(dd.hits||0)+1; dd.best=Math.max(dd.best||0, hodds); const n = paid ? clamp(Math.round(1+Math.min(hodds,12)*.6),2,8) : 0; if(n){ S.shards+=n; refreshShards(true); sfx('shard'); } msg = bt ? `「${BTYPES[bt.type].name}」 あたり！ ${hodds.toFixed(1)}倍！${n?` つきのかけらも ${n}こ もらったよ`:''}` : `${D.players.length>1?esc(D.players[0])+'の ':''}よそう あたり！ ${esc(pick.name)}が 1着！${n?` つきのかけらを ${n}こ もらったよ`:''}`; }
+  else { const n = paid ? 1 : 0; if(n){ S.shards+=n; refreshShards(true); } msg = bt ? `ざんねん…「${BTYPES[bt.type].name}」は はずれ。1着 ${esc(first.name)}・2着 ${esc(D.order[1].name)}${bt.type==='trifecta'?`・3着 ${esc(D.order[2].name)}`:''}。${n?'さんかしょうで かけらを 1こ':''}` : `1着は ${esc(first.name)}でした。${n?'さんかしょうで かけらを 1こ もらったよ':''}`; }
+  if(paid) dd.paid=(dd.paid||0)+1;
+  // みんなの予想
+  const pl = D.players || [dd.players[0]];
+  D.hitters = [];
+  D.gain = [];
+  pl.forEach((n,k)=>{ const r = D.runners[D.picks[k]]; const st = dPS(n); st.plays++; const bet = (D.stake||[])[k]||0; let win = 0; const ok = (k===0 && bt) ? hit : r===first, od = (k===0 && bt) ? hodds : r.odds; if(ok){ st.hits++; st.best=Math.max(st.best||0, od); D.hitters.push(n); win = Math.floor(bet*od); st.medals += win; st.bestWin = Math.max(st.bestWin||0, win); } D.gain[k] = win - bet; });
+  if(pl.length>1) msg = (D.hitters.length ? `あたり：${D.hitters.length>8 ? D.hitters.slice(0,7).map(esc).join('・')+` ほか${D.hitters.length-7}人` : D.hitters.map(esc).join('・')}（${D.hitters.length}/${pl.length}人）！ ` : 'みんな はずれ… ') + msg.replace(/^.*?よそう あたり！ /,'');
+  D.runners.forEach(r=>{ if(!r.guest){ const u=S.umimi.find(o=>o.id===r.srcId); if(u){ u.druns=(u.druns||0)+1; const rk=D.order.indexOf(r)+1; if(rk>0 && (!u.dbest || rk<u.dbest)) u.dbest=rk; } } });
+  if(!first.guest){
+    const u = S.umimi.find(o=>o.id===first.srcId);
+    if(u){ u.wins=(u.wins||0)+1; addMem(u, u.wins===1 ? 'ウミミダービーで はじめて 1着になった' : `ウミミダービーで ${u.wins}かいめの 1着`, false); addDiary(`ウミミダービーで ${u.name}が 1着になった`);
+      dd.wins=(dd.wins||0)+1;
+      if(!S.unlocked.includes('trophy')){ S.unlocked.push('trophy'); setTimeout(()=>toast('はじめての ゆうしょう！「ダービーの トロフィー」を かざれるようになったよ'),1200); if(mode==='decor') renderTray(); }
+    }
+  }
+  D.msg = msg; save(); renderDerby();
+}
+function dMedalTable(){
+  const D = derby, pl = D.players || ['わたし'];
+  const rows = pl.map((n,k)=>({n, k, g:(D.gain||[])[k]||0, bet:(D.stake||[])[k]||0, r:D.runners[D.picks[k]], m:dPS(n).medals})).sort((a,b)=>b.g-a.g);
+  return `<div class="dmt"><div class="dmth">🏅 メダルの ゆくえ${D.allow && D.allow.length ? `<small>（おこづかい：${D.allow.map(esc).join('・')}）</small>` : ''}</div>${rows.map(o=>`<div class="dmr ${o.g>0?'up':o.g<0?'down':''}"><b>${esc(o.n)}</b><span>${o.k===0 && D.bt && D.bt.type!=='win' ? `${BTYPES[D.bt.type].name} ${D.bt.sel.map(i=>i+1).join(D.bt.type==='pair'?'＆':'→')}` : (o.r?`${D.runners.indexOf(o.r)+1} ${esc(o.r.name)}`:'')}・${o.bet}枚</span><em>${o.g>0?'+':''}${o.g}</em><span class="tot">→ ${o.m}</span></div>`).join('')}</div>`;
+}
+function dRenderResult(){
+  const D = derby, info = $('dInfo'); const pl = D.players || ['わたし'];
+  const pickers = r => { if(D.bt && D.bt.type!=='win'){ const j=D.bt.sel.indexOf(D.runners.indexOf(r)); return j<0 ? [] : [`${pl[0]}${D.bt.type==='pair'||D.bt.type==='place'?'':`（${j+1}着よそう）`}`]; } return pl.map((n,k)=>D.runners[D.picks[k]]===r?n:null).filter(Boolean); };
+  info.innerHTML = `<p class="dmsg">${D.msg}</p><ol class="dres">${D.order.map((r,i)=>{ const who=pickers(r); return `<li class="${who.length?'me':''}"><span class="rk">${i+1}着</span><span>${D.runners.indexOf(r)+1}番 ${esc(r.name)}</span><span class="tg" style="color:var(--ink2);font-size:12px;flex:1">${r.guest?'ゲスト':'うちの子'}・${r.odds.toFixed(1)}倍</span>${who.length?`<span class="who">${i===0?'◎ ':''}${who.length>6 ? who.slice(0,5).map(esc).join('・')+` ほか${who.length-5}人` : who.map(esc).join('・')}</span>`:''}</li>`; }).join('')}</ol>
+  ${dMedalTable()}
+  <div class="dbar"><button class="dbtn sub" type="button" id="dStats2">せいせき</button><button class="dbtn sub" type="button" id="dPhoto">ゴールの しゃしんを のこす</button><button class="dbtn" type="button" id="dAgain">もういちど</button></div>`;
+  $('dAgain').addEventListener('click', ()=>{ dSetup(); renderDerby(); });
+  $('dStats2').addEventListener('click', ()=>{ D.back='result'; D.phase='stats'; renderDerby(); });
+  $('dPhoto').addEventListener('click', (e)=>{
+    const src = D.shot; if(!src) return;
+    const names = D.order.filter(r=>!r.guest).map(r=>r.name);
+    photos.unshift({t:Date.now(), data:src, names}); while(photos.length>12) photos.pop();
+    let ok=savePhotos(); while(!ok && photos.length>1){ photos.pop(); ok=savePhotos(); }
+    e.target.disabled=true; e.target.textContent='アルバムに いれたよ'; sfx('shard');
+  });
+}
+function dSnap(){
+  const cv2 = $('derbyCv'); if(!cv2) return; const sc = Math.min(1, 960/cv2.width);
+  const oc=document.createElement('canvas'); oc.width=Math.round(cv2.width*sc); oc.height=Math.round(cv2.height*sc); const x=oc.getContext('2d');
+  x.drawImage(cv2,0,0,oc.width,oc.height);
+  const label=`${fmtDate(Date.now())}  ウミミダービー`; x.font=`600 ${Math.round(oc.height*.05)+8}px "Klee One","Zen Maru Gothic",sans-serif`;
+  x.textAlign='right'; x.lineWidth=4; x.strokeStyle='rgba(255,255,255,.9)'; x.strokeText(label,oc.width-12,oc.height-12); x.fillStyle='#5b64b8'; x.fillText(label,oc.width-12,oc.height-12);
+  derby.shot = oc.toDataURL('image/jpeg',.82);
+}
+const DPX = 30; // px per meter
+function updateDerby(dt){
+  const D = derby; if(!D || D.phase==='entry' || D.phase==='stats' || $('derby').hidden && D.phase!=='race') return;
+  if(D.phase==='race'){
+    D.t += dt;
+    if(D.t>0){
+      D.sim.forEach(x=>{ const before = x.fin; dStep(x,D.sim,dt,true); if(before==null && x.pos>=DERBY_LEN){ x.fin=D.t; D.order.push(x.r); if(D.order.length===1){ x.r.state='happy'; D.firstT=D.t; } } });
+      if(D.order.length===1 && !D.shotDone && D.t - D.firstT > .15){ D.shotDone = true; D.snapNext = true; }
+      if(D.order.length===D.sim.length || (D.firstT && D.t-D.firstT>6)){
+        if(D.order.length<D.sim.length) D.sim.filter(x=>x.fin==null).sort((a,b)=>b.pos-a.pos).forEach(x=>{ x.fin=D.t; D.order.push(x.r); });
+        if(!D.endT) D.endT = D.t;
+      }
+      if(D.endT && D.t - D.endT > 1.2){ dFinish(); return; }
+    }
+    D.sim.forEach(x=>{ const r=x.r; if(x.fin!=null){ r.state = D.order[0]===r ? 'happy' : 'idle'; r.moving = false; } else if(x.ev==='doze'){ r.state='sleep'; r.moving=false; } else if(x.ev){ r.state='idle'; r.moving=false; } else if(D.t>0){ r.state='walk'; r.moving=true; } else { r.state='idle'; r.moving=false; } });
+  }
+  drawDerby(dt);
+}
+function drawDerby(dt){
+  const cv2 = $('derbyCv'); if(!cv2) return; const D = derby;
+  const dpr = Math.min(2, window.devicePixelRatio||1), cw = cv2.clientWidth, ch = cv2.clientHeight;
+  if(!cw || !ch) return;
+  if(cv2.width !== Math.round(cw*dpr) || cv2.height !== Math.round(ch*dpr)){ cv2.width=Math.round(cw*dpr); cv2.height=Math.round(ch*dpr); }
+  const c = cv2.getContext('2d'); const sc = Math.max(cv2.width/1000, cv2.height/430), VW = cv2.width/sc, VH = cv2.height/sc;
+  c.setTransform(sc,0,0,sc,0,0);
+  const t = T;
+  // camera follows the leader
+  const lead = D.sim ? Math.min(DERBY_LEN+3, Math.max(...D.sim.map(x=>x.pos))) : 0;
+  const tgt = clamp(90 + lead*DPX - VW*.62, 0, DERBY_LEN*DPX + 260 - VW);
+  D.cam = D.cam==null ? tgt : D.cam + (tgt - D.cam)*Math.min(1,(dt||.016)*3);
+  const cam = D.cam;
+  const g = c.createLinearGradient(0,0,0,VH); g.addColorStop(0,'#bfe0f5'); g.addColorStop(.55,'#9fc6ec'); g.addColorStop(1,'#8fb2e4');
+  c.fillStyle=g; c.fillRect(0,0,VW,VH);
+  // light rays
+  c.fillStyle='rgba(255,255,255,.12)'; for(let i=0;i<5;i++){ const x0 = ((i*260 - cam*.2)%1300+1300)%1300 - 150; c.beginPath(); c.moveTo(x0,0); c.lineTo(x0+60,0); c.lineTo(x0+180,VH); c.lineTo(x0+100,VH); c.fill(); }
+  // far seaweed
+  const top = VH*.36;
+  for(let i=-1;i<40;i++){ const x0 = i*110 - (cam*.5)%110; c.fillStyle='rgba(110,160,200,.35)'; c.beginPath(); c.ellipse(x0, top+4, 30, 26, 0, Math.PI, TAU); c.fill(); }
+  // sand
+  const sg = c.createLinearGradient(0,top,0,VH); sg.addColorStop(0,'#f1e6cf'); sg.addColorStop(1,'#e3d2b0'); c.fillStyle=sg; c.fillRect(0,top,VW,VH-top);
+  const n = D.runners.length, laneH = (VH-top-14)/n;
+  const laneY = i => top + 10 + laneH*(i+.82);
+  // lane lines
+  c.strokeStyle='rgba(255,255,255,.7)'; c.lineWidth=2; c.setLineDash([14,12]);
+  for(let i=1;i<n;i++){ const y = top+10+laneH*i; c.beginPath(); c.moveTo(0,y); c.lineTo(VW,y); c.stroke(); }
+  c.setLineDash([]);
+  // distance markers / start / goal
+  const X = m => 90 + m*DPX - cam;
+  c.font='700 15px "Zen Maru Gothic",sans-serif'; c.textAlign='center';
+  for(let m=25;m<DERBY_LEN;m+=25){ const x=X(m); if(x<-40||x>VW+40) continue; c.fillStyle='rgba(255,255,255,.8)'; c.fillRect(x-1.5,top,3,VH-top); c.fillStyle='#8a7a5a'; c.fillText(`${m}m`, x, top-6); }
+  const sx = X(0); if(sx>-20){ c.fillStyle='#fff'; c.fillRect(sx-3,top,6,VH-top); c.fillStyle='#6574cf'; c.fillText('スタート', sx, top-6); }
+  const gx = X(DERBY_LEN);
+  if(gx < VW+80){
+    for(let y=top; y<VH; y+=12){ for(let k=0;k<2;k++){ c.fillStyle = ((y-top)/12+k)%2<1 ? '#fff' : '#5b64b8'; c.fillRect(gx-6+k*6, y, 6, 12); } }
+    c.strokeStyle='#f4d27a'; c.lineWidth=7; c.beginPath(); c.moveTo(gx-4,VH); c.lineTo(gx-4,top-70); c.moveTo(gx+4,top-70); c.stroke();
+    c.fillStyle='#f7c6d2'; c.strokeStyle='#e79ab3'; c.lineWidth=2; c.beginPath(); c.roundRect(gx-70,top-100,140,40,14); c.fill(); c.stroke();
+    c.fillStyle='#fff'; c.font='800 24px "Zen Maru Gothic",sans-serif'; c.fillText('GOAL', gx, top-72);
+  }
+  // runners (back lanes first)
+  const s = clamp(laneH/78, .34, .72);
+  D.runners.forEach((r,i)=>{
+    const x = D.sim ? D.sim[i] : {pos:0}; const px = X(x.pos) - 10, py = laneY(i);
+    try{ drawUmimiAt(c, r, px, py, s, t, 0, {}); }catch(e){}
+    // name tag
+    const pick = D.bt && D.bt.type!=='win' ? D.bt.sel.includes(i) : D.pick===i; const whoP = (D.players||[]).length>1 ? D.players.filter((n,k)=>D.picks[k]===i) : [];
+    c.font = `700 ${Math.round(13+s*6)}px "Zen Maru Gothic",sans-serif`; c.textAlign='center';
+    const narrow = VW < 640; const label = (pick?'★ ':'') + `${i+1} ` + r.name + (whoP.length ? (narrow ? ` (${whoP.length}人)` : ` ← ${whoP.length>3 ? whoP.slice(0,2).join('・')+` ほか${whoP.length-2}人` : whoP.join('・')}`) : ''), tw = c.measureText(label).width + 14, ty = py - 150*s;
+    c.fillStyle = (pick||whoP.length) ? 'rgba(247,198,210,.95)' : r.guest ? 'rgba(255,255,255,.85)' : 'rgba(199,196,242,.95)';
+    const lx = clamp(px, tw/2+4, VW-tw/2-4); c.beginPath(); c.roundRect(lx-tw/2, ty-15, tw, 21, 10); c.fill();
+    c.fillStyle = (pick||whoP.length) ? '#a8406a' : '#4d4a7a'; c.fillText(label, lx, ty);
+    if(x.say && x.sayT>0){ c.font='700 14px "Zen Maru Gothic",sans-serif'; const w2=c.measureText(x.say).width+14; c.fillStyle='rgba(255,255,255,.95)'; c.beginPath(); c.roundRect(px+30*s, ty-40, w2, 22, 10); c.fill(); c.fillStyle='#5b64b8'; c.textAlign='left'; c.fillText(x.say, px+30*s+7, ty-24); c.textAlign='center'; }
+    if(x.fin!=null){ const rk = D.order.indexOf(r)+1; if(rk>0){ c.fillStyle = rk===1 ? '#e9b949' : '#8f95c8'; c.beginPath(); c.arc(px-70*s, py-60*s, 13, 0, TAU); c.fill(); c.fillStyle='#fff'; c.font='800 14px sans-serif'; c.fillText(rk, px-70*s, py-55*s); } }
+  });
+  // countdown
+  if(D.phase==='race' && D.t<.8){
+    const n2 = D.t<0 ? Math.ceil(-D.t) : 0, txt = D.t<0 ? (n2>3?'':String(n2)) : 'スタート！';
+    if(txt){ c.font=`800 ${Math.round(Math.min(64,VW/6))}px "Zen Maru Gothic",sans-serif`; c.textAlign='center'; c.lineWidth=8; c.strokeStyle='rgba(255,255,255,.95)'; c.strokeText(txt, VW/2, VH*.3); c.fillStyle='#6574cf'; c.fillText(txt, VW/2, VH*.3); }
+  }
+  if(D.snapNext){ D.snapNext=false; dSnap(); }
+}
+$('derbyBtn').addEventListener('click', () => { if(!$('derby').hidden){ if(derby && derby.phase==='race') return; $('derby').hidden=true; return; } openDerby(); });
+$('derbyClose').addEventListener('click', () => { if(derby && derby.phase==='race'){ derby.t = Math.max(derby.t, 0); /* let it finish quietly */ } $('derby').hidden=true; });
 
 // ---------- desktop hooks ----------
 let interactive = null;
@@ -2420,7 +2823,7 @@ function deskHooks(){
 let last = performance.now();
 function frame(now){ requestAnimationFrame(frame);
   const minGap = SET.eco ? 1000/24 : 1000/60; if(now-last < minGap-2) return;
-  const dt=Math.min(.08,(now-last)/1000); last=now; if(document.hidden) return; T+=dt; update(dt); draw(); }
+  const dt=Math.min(.08,(now-last)/1000); last=now; if(document.hidden) return; T+=dt; update(dt); draw(); if(derby) updateDerby(dt); }
 function awayDiary(){
   const us = S.umimi, n = us[Math.floor(Math.random()*us.length)].name, others = us.filter(u=>u.name!==n), m = others.length ? others[Math.floor(Math.random()*others.length)].name : '';
   const hasLamp = S.decor.some(o=>o.type==='lamp'||o.type==='jellylamp');

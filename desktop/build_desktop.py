@@ -118,10 +118,10 @@ R("""    umimi:[{id:1,name:'ウミミ',color:'lavender',x:380,d:0.6,aff:0},{id:2
            {id:4,type:'shell',x:W*.25,d:0.88},{id:5,type:'pebble',x:W*.72,d:0.8},{id:6,type:'lamp',x:W*.52,d:0.04}],
     ground:[{x:W*.18,d:0.55}],""")
 # frame rate cap + pause when hidden
-R("function frame(now){ const dt=Math.min(.05,(now-last)/1000); last=now; T+=dt; update(dt); draw(); requestAnimationFrame(frame); }",
+R("function frame(now){ const dt=Math.min(.05,(now-last)/1000); last=now; T+=dt; update(dt); draw(); if(derby) updateDerby(dt); requestAnimationFrame(frame); }",
   """function frame(now){ requestAnimationFrame(frame);
   const minGap = SET.eco ? 1000/24 : 1000/60; if(now-last < minGap-2) return;
-  const dt=Math.min(.08,(now-last)/1000); last=now; if(document.hidden) return; T+=dt; update(dt); draw(); }""")
+  const dt=Math.min(.08,(now-last)/1000); last=now; if(document.hidden) return; T+=dt; update(dt); draw(); if(derby) updateDerby(dt); }""")
 # boot: resize before state, desktop hooks
 R("""  S = Object.assign(defaultState(), saved || {});""","""  resize();
   S = Object.assign(defaultState(), saved || {});""")
