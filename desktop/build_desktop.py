@@ -32,7 +32,7 @@ for a,b in [("clamp(u.x,50,950)","clamp(u.x,50,W-50)"),
             ("confetti(rand(200,400),H*.3,60,300)","confetti(rand(W*.2,W*.4),H*.4,60,300)"),
             ("confetti(rand(600,800),H*.3,60,300)","confetti(rand(W*.6,W*.8),H*.4,60,300)"),
             ("u.x=clamp(p.x,40,960);","u.x=clamp(p.x,40,W-40);"),
-            ("o.x=clamp(p.x,20,980);","o.x=clamp(p.x,20,W-20);"),
+            ("const px=clamp(p.x,20,980);","const px=clamp(p.x,20,W-20);"),
             ("u.tx=clamp(p.x+rand(-70,70),60,940)","u.tx=clamp(p.x+rand(-70,70),60,W-60)"),
             ("x:clamp(p.x,30,970), y:","x:clamp(p.x,30,W-30), y:"),
             ("x:clamp(p.x,20,980), d};","x:clamp(p.x,20,W-20), d};"),
@@ -118,10 +118,10 @@ R("""    umimi:[{id:1,name:'ウミミ',color:'lavender',x:380,d:0.6,aff:0},{id:2
            {id:4,type:'shell',x:W*.25,d:0.88},{id:5,type:'pebble',x:W*.72,d:0.8},{id:6,type:'lamp',x:W*.52,d:0.04}],
     ground:[{x:W*.18,d:0.55}],""")
 # frame rate cap + pause when hidden
-R("function frame(now){ const dt=Math.min(.05,(now-last)/1000); last=now; T+=dt; update(dt); draw(); if(derby) updateDerby(dt); requestAnimationFrame(frame); }",
+R("function frame(now){ const dt=Math.min(.05,(now-last)/1000); last=now; T+=dt; update(dt); draw(); if(derby) updateDerby(dt); updateLesson(dt); updateRoom(dt); requestAnimationFrame(frame); }",
   """function frame(now){ requestAnimationFrame(frame);
   const minGap = SET.eco ? 1000/24 : 1000/60; if(now-last < minGap-2) return;
-  const dt=Math.min(.08,(now-last)/1000); last=now; if(document.hidden) return; T+=dt; update(dt); draw(); if(derby) updateDerby(dt); }""")
+  const dt=Math.min(.08,(now-last)/1000); last=now; if(document.hidden) return; T+=dt; update(dt); draw(); if(derby) updateDerby(dt); updateLesson(dt); updateRoom(dt); }""")
 # boot: resize before state, desktop hooks
 R("""  S = Object.assign(defaultState(), saved || {});""","""  resize();
   S = Object.assign(defaultState(), saved || {});""")

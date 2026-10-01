@@ -35,8 +35,10 @@
   - 緑色の衣装は Grok でマゼンタ背景にしてもらう
   - ウミミの色に合わせた色変え：`recolorSheet()`。色を変えない衣装は `COS_KEEP`。チョコとマントはコードで描いている
 - `visitors.png` … 訪問者10種×2コマ。作り直すときは `source/visitors/build_visitors.py`。出力された visitors_meta.json を game.html の `const VIS_SPR = {...}` に貼る。絵がまだ読み込まれていないときは、コードで描いた旧訪問者を表示する
+- `f_base.png` `f_pearl.png` `f_autumn.png` `f_halloween.png` … 家具・飾りのシリーズ別シート（ピッちゃん=ChatGPT作の絵を背景抜き・色数圧縮）。**使うときだけ読み込む**（`fsheet()`）。作り直しは `source/furniture/build_furniture2.py`（SERIES に「キー:(おへや幅, 水そう幅[, コマ数, 基準])」を足す）→ 出力 furniture_meta.json を game.html の `const FIMG = {m:...}` に貼る（jbox/chandelier は _0 のエイリアスも）
+- `roomtex.png` … おへやの壁紙・床の模様タイル4枚（`source/furniture/build_tex.py`）
 - `desktop/` … Windows デスクトップ版（Electron）。`python3 build_desktop.py` で、game.html から画面の下に出る細長い水そう版の `desktop/app/index.html` を作る（画像は data URI で埋め込む。置き換える文字列が合わないと assert で止まるので、本体を変えたら置き換え側も直す）
-  - 配布は小さい zip：`はじめにダブルクリック.bat` を実行すると `_files/setup.ps1` が Electron v33.2.1 を取ってくる（SHA256 で確認）。更新のときは `_files/app/index.html` を差し替えるだけ。最新は 0.9.6
+  - 配布は小さい zip：`はじめにダブルクリック.bat` を実行すると `_files/setup.ps1` が Electron v33.2.1 を取ってくる（SHA256 で確認）。更新のときは `_files/app/index.html` を差し替えるだけ。最新は 0.9.7（家具の画像は app フォルダに png として同梱。更新時は _files/app の中身を全部上書き）
 
 ## ゲームの中身（game.html の主な定数）
 - `OUTFITS` おきがえ49種、`HEADWEAR`、`PERS` 性格、`DECOR` 飾り、`RECOLOR`/`PALS` ウミミの色
@@ -46,7 +48,13 @@
 - 誕生日：リリィさん 9/29 はパーティー。プレイヤー自身の誕生日は `S.myBday {m,d,name}`（名前はそのまま使われる。例：「カナタさん」）
 - `VISITORS` 訪問者10種：クラゲ、ヒトデ、タツノオトシゴ、カニ、イルカ、ペンギン、ウミガメ、タコ、フグ、ラッコ。2時間おきに1種ランダムで来て、1時間いる（`VISIT_GAP` と `VISIT_STAY`）。触らなくても時間になったら帰る。初めて会うとおみやげの飾りをくれる。それ以降は1日3回まで、かけらを3こくれる
 - ウミミダービー（ヘッダーの「ダービー」）：うちの子最大3＋ゲストで5匹。倍率はレースを裏で500回シミュレーションして決める。ひとりで＝賭け方5種（1着あて／2着まで／1・2着ペア／1→2着／1→2→3着）、みんなで＝最大20人・1着あてのみ・まとめて入力（「カナ 3 50」）。ダービーメダルは人ごと（初期100、10未満で次レースにおこづかい30）、`S.derby.pstats[名前].medals`。こうかんじょ（ロゼット150／ゴールフラッグ250／トロフィー300／ひょうしょうだい450）はプレイヤー1人目のメダルで交換。つきのかけらは1日3回まで。成績は u.wins / u.druns / u.dbest（アルバムに表示）。スマホ（幅700px以下）はダービー画面が全画面。デスクトップ版は高さが足りないのでダービーボタンを隠している
-- テスト用のハッシュ：`#birthday` `#mybday` `#ev-<イベント名>` `#visit-<訪問者>`（例 `#visit-crab`）
+- あそびば（ヘッダー「あそびば」）：ウミミダービー／おけいこ／おへや をまとめたメニュー
+- おけいこ：うちの子に芸（ジャンプ・くるくる・おじぎ・ぷかぷか・ぴょんぴょん・ハートぽわぽわ）を1日1回練習。5ポイントで習得し水そうで自分から披露。性格ごとに得意芸。u.tricks / u.learned / u.lessonDay
+- おへや：うちの子ごとの部屋（u.room = {wall, floor, items:[{k,x,y,id,on,dx}]}）。家具は FURN、購入済みは S.furn（つきのかけらで1回買えば全員の部屋で使える）。壁紙・床は WALLS / FLOORS（tex は roomtex の番号）。ベッド・椅子・クッションで休む（REST）。写真をアルバムへ
+- 水そうの飾り DECOR：img:1 の物は画像。かざるはシリーズタブ（DSERIES：きほん/おみやげ/ダービー/パール/あきまつり/ハロウィン）
+- テーブルの上に小物を置ける：テーブル=SURF（shelltable, table）、小物=SMALLS。水そうは o.on=テーブルid, o.dx、おへやは it.on, it.dx
+- 動く家具はコマ切り替えだけ（animKey：かぼちゃびっくりばこ）。シャンデリアは静止に変更済み
+- テスト用のハッシュ：`#birthday` `#mybday` `#ev-<イベント名>` `#visit-<訪問者>` `#okeiko`（おけいこの1日1回制限を外す）（例 `#visit-crab`）
 
 ## Grok 用のプロンプト（新しい素材を頼むとき）
 - 衣装：「Pixel art sprite sheet of this exact character (attached Umimi)… Wearing 〔衣装〕. 2 frames side by side, idle, side view facing left… Solid pure green background (#00FF00), no shadows, no effects, no text.」

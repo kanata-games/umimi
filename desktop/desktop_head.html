@@ -246,7 +246,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--peri-deep);outl
     <ol id="diaryList"></ol>
   </section>
 
-  <div class="tray ui" id="tray"></div>
+  <div class="dcats" id="decorCats" hidden></div><div class="tray ui" id="tray"></div>
 
   <div class="dock ui" id="dock">
     <span class="chip" id="shardChip" title="つきのかけら"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M11 2a8 8 0 1 0 7 11.5A7 7 0 0 1 11 2z" fill="#f1cf6c" stroke="#d6b04e"/></svg><span id="shardN">0</span></span>
@@ -262,12 +262,14 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--peri-deep);outl
     <button class="chip" id="diaryBtn" type="button">にっき</button>
     <button class="chip" id="albumBtn" type="button">アルバム</button>
     <button class="chip" id="derbyBtn" type="button" hidden>ダービー</button>
+    <button class="chip" id="asobiBtn" type="button" hidden>あそびば</button>
     <button class="chip" id="saveBtn" type="button">ひきつぎ</button>
     <button class="chip party" id="partyBtn" type="button" hidden>おいわい</button>
     <button class="chip" id="timeBtn" type="button" hidden>じどう</button>
     <button class="chip" id="soundBtn" type="button" hidden aria-pressed="false">おと</button>
   </div>
 
+  <section class="derby ui" id="asobi" hidden><button class="x" id="asobiClose" type="button">×</button><h2 id="asobiTitle">あそびば</h2><div id="asobiBody"></div></section>
   <section class="derby ui" id="derby" hidden><button class="x" id="derbyClose" type="button">×</button><h2>ウミミダービー</h2><div id="derbyBody"></div></section>
   <div class="toast" id="toast" hidden></div>
 

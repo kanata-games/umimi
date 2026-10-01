@@ -207,6 +207,25 @@ button.chip:hover{border-color:var(--lav)}
 .dmr b{min-width:5em}.dmr span{color:var(--ink2);font-size:12px;flex:1}.dmr em{font-style:normal;font-weight:800;min-width:3.5em;text-align:right}
 .dmr.up em{color:#d0507a}.dmr.down em{color:#7f86b8}.dmr .tot{flex:none;min-width:4em;text-align:right}
 .dshop{display:grid;gap:6px}
+.atiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.atile{border:1.5px solid var(--line);background:#fff;border-radius:16px;padding:14px 12px;font:inherit;color:var(--ink);cursor:pointer;display:flex;flex-direction:column;gap:4px;align-items:flex-start;text-align:left}
+.atile:hover{border-color:#c7c4f2;box-shadow:0 2px 10px rgba(80,90,170,.12)}
+.atile .ai{font-size:28px}.atile b{font-size:16px;color:#5b64b8}.atile span{font-size:12.5px;color:var(--ink2)}
+.dcard.dim{opacity:.6}
+.tlist{display:grid;gap:6px}
+.trow{display:grid;grid-template-columns:auto 1fr auto;grid-template-rows:auto auto;column-gap:10px;align-items:center;border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:8px 12px;font:inherit;color:var(--ink);cursor:pointer;text-align:left}
+.trow b{grid-row:1;font-size:14.5px}.trow>span:not(.tbar){grid-column:2;grid-row:1;font-size:12px;color:var(--ink2)}
+.trow .tbar{grid-column:1/3;grid-row:2}.trow em{grid-column:3;grid-row:1/3;font-style:normal;font-weight:800;color:#b0507a}
+.trow.has{background:#fff8e6;border-color:#f3e1b5}
+.tbar{display:flex;gap:4px;margin-top:4px}.tbar i{width:18px;height:8px;border-radius:4px;background:#e4e6f6}.tbar i.on{background:#f09ab6}
+.tbar.big i{width:30px;height:12px;border-radius:6px}
+.derby .lcv{flex:none;height:min(52vh,360px);min-height:260px;touch-action:manipulation;cursor:pointer}
+.lres{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 0;text-align:center}
+.lbig{font-size:44px}
+.derby .rcv{flex:none;height:auto;aspect-ratio:640/370;max-height:min(56vh,440px);min-height:0;touch-action:none;background:#e9ecfd}
+.redit{display:flex;flex-direction:column;gap:5px;background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:8px 10px}
+.rrow{display:flex;gap:5px;flex-wrap:wrap;align-items:center}.rrow .lbl{font-size:12.5px;color:var(--ink2);width:2.6em}
+.dm.fb.lock{background:#fffaf0;border-color:#f3e1b5;color:#a0701a}
 .dbt{display:flex;flex-direction:column;gap:4px}
 .dbtrow{display:flex;gap:6px;flex-wrap:wrap}
 .dcard .ord{position:absolute;left:6px;bottom:6px;font-size:11.5px;font-weight:800;color:#fff;background:#e0789c;border-radius:8px;padding:1px 7px}
@@ -231,6 +250,8 @@ button.chip:hover{border-color:var(--lav)}
 .tool svg{width:20px;height:20px;flex:0 0 auto}
 .tool[aria-pressed="true"]{background:var(--peri);border-color:var(--peri);color:#fff}
 .tool:not([aria-pressed="true"]):hover{border-color:var(--lav)}
+.dcats{display:flex;gap:6px;overflow-x:auto;padding:2px 2px 6px}
+.dcats .dm{white-space:nowrap}
 .tray{min-height:92px;display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;align-items:stretch}
 .hint{align-self:center;margin:0;color:var(--ink2);font-size:14px;line-height:1.7;max-width:62ch}
 .hint b{color:var(--ink)}
@@ -270,7 +291,8 @@ button:focus-visible,input:focus-visible{outline:2.5px solid var(--peri-deep);ou
       <button class="chip" id="closetBtn" type="button">おきがえ</button>
       <button class="chip" id="diaryBtn" type="button">にっき</button>
       <button class="chip" id="albumBtn" type="button">アルバム</button>
-      <button class="chip" id="derbyBtn" type="button">ダービー</button>
+      <button class="chip" id="asobiBtn" type="button">あそびば</button>
+      <button class="chip" id="derbyBtn" type="button" hidden>ダービー</button>
       <button class="chip" id="saveBtn" type="button">ひきつぎ</button>
       <button class="chip party" id="partyBtn" type="button" hidden>おいわい</button>
       <button class="chip" id="soundBtn" type="button" aria-pressed="false">おと OFF</button>
@@ -312,6 +334,11 @@ button:focus-visible,input:focus-visible{outline:2.5px solid var(--peri-deep);ou
       <h2 id="albumTitle">ウミミアルバム</h2>
       <div class="atabs" role="tablist"><button class="atab" id="tabU" type="button" role="tab" aria-selected="true">ウミミたち</button><button class="atab" id="tabP" type="button" role="tab" aria-selected="false">しゃしん</button></div>
       <div id="albumBody"></div>
+    </section>
+    <section class="derby asobi" id="asobi" hidden aria-labelledby="asobiTitle">
+      <button class="x" id="asobiClose" type="button" aria-label="とじる">×</button>
+      <h2 id="asobiTitle">あそびば</h2>
+      <div id="asobiBody" style="display:flex;flex-direction:column;gap:8px"></div>
     </section>
     <section class="derby" id="derby" hidden aria-labelledby="derbyTitle">
       <button class="x" id="derbyClose" type="button" aria-label="とじる">×</button>
@@ -371,6 +398,7 @@ button:focus-visible,input:focus-visible{outline:2.5px solid var(--peri-deep);ou
     <button class="tool" type="button" data-mode="friends" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="8.5" cy="14" rx="6" ry="4.5" fill="currentColor"/><ellipse cx="16" cy="12" rx="5.5" ry="4.2" fill="currentColor" opacity=".6"/><path d="M6 10 5 4M9 10l1-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg><span>なかま</span></button>
   </nav>
 
+  <div class="dcats" id="decorCats" hidden></div>
   <div class="tray" id="tray"></div>
 </div>
 
@@ -414,6 +442,27 @@ const DECOR = {
   octopot:{name:'タコつぼ',cost:2, r:28, h:30, gift:true},
   lantern:{name:'フグちょうちん',cost:3, r:26, h:56, gift:true},
   otterstone:{name:'ラッコの いし',cost:1, r:22, h:10, gift:true},
+  shellbed:{name:'シェルベッド',cost:4, r:55, h:103, img:1},
+  shelltable:{name:'シェルテーブル',cost:3, r:41, h:52, img:1},
+  shellchair:{name:'シェルチェア',cost:3, r:36, h:68, img:1},
+  bottle:{name:'メッセージボトル',cost:2, r:21, h:49, img:1},
+  crystal2:{name:'パールクリスタル',cost:3, r:31, h:56, img:1},
+  shellcake:{name:'シェルケーキ',cost:3, r:27, h:56, img:1},
+  lanternstand:{name:'とうろうスタンド',cost:3, r:48, h:126, img:1},
+  stall:{name:'うみべの やたい',cost:5, r:90, h:141, img:1},
+  kingyo:{name:'クラゲすくい',cost:4, r:80, h:124, img:1},
+  mcushion:{name:'もみじクッション',cost:2, r:45, h:56, img:1},
+  chochin:{name:'ちょうちん',cost:2, r:40, h:164, img:1},
+  omen:{name:'おめんやさん',cost:5, r:90, h:157, img:1},
+  acorn:{name:'どんぐりかご',cost:2, r:21, h:36, img:1},
+  yakiimo:{name:'やきいも',cost:2, r:24, h:31, img:1},
+  bridge:{name:'もみじの はし',cost:4, r:100, h:90, img:1},
+  pumpkinstand:{name:'かぼちゃランタン',cost:3, r:40, h:162, img:1, series:'halloween'},
+  hrug:{name:'まほうのラグ',cost:2, r:60, h:71, img:1, series:'halloween'},
+  ghostcushion:{name:'おばけクッション',cost:2, r:36, h:63, img:1, series:'halloween'},
+  candytable:{name:'おかしのテーブル',cost:4, r:41, h:95, img:1, series:'halloween'},
+  hshelf:{name:'まほうのほんだな',cost:4, r:50, h:134, img:1, series:'halloween'},
+  jbox:{name:'かぼちゃびっくりばこ',cost:4, r:37, h:74, img:1, series:'halloween'},
   trophy:{name:'ダービーの トロフィー',cost:2, r:26, h:46, gift:true},
   rosette:{name:'ゆうしょうロゼット',cost:1, r:22, h:44, gift:true},
   goalflag:{name:'ゴールフラッグ',cost:1, r:26, h:70, gift:true},
@@ -482,7 +531,7 @@ const lvOf = u => Math.min(5, 1+Math.floor(u.aff/6));
 const INVITE_COST = 5, MAX_UMIMI = 8, MAX_DECOR = 30;
 const NAMES = ['ミナモ','ソラ','コモモ','ルナ','シズク','ホタル','ナギ','ユラ','マシロ','ツキミ','フワリ','アワ'];
 const MOODS0 = {idle:'のんびり',walk:'おさんぽ中',seek:'ごはんへ向かってる',eat:'ごはん中',sleep:'すやすや',swim:'ふわふわ泳いでる',happy:'にっこり',curious:'きょとん',surprise:'びっくり',held:'だっこされてる',shine:'きらきら'};
-const MOODS = Object.assign(MOODS0, {chaseL:'おいかけっこ中',chaseF:'おいかけっこ中'});
+const MOODS = Object.assign(MOODS0, {chaseL:'おいかけっこ中',chaseF:'おいかけっこ中',trick:'げいを みせてる'});
 
 let S = null;             // persistent state
 let foods = [], particles = [], plankton = [], glows = [];
@@ -517,11 +566,11 @@ function hydrateU(u){
 }
 function serialize(){
   return {v:1, shards:S.shards, timeMode:S.timeMode, sound:S.sound, nextId:S.nextId, decorId:S.decorId, welcomed:S.welcomed, last:Date.now(),
-    umimi:S.umimi.map(u=>({id:u.id,name:u.name,color:u.color,x:Math.round(u.x),d:+u.d.toFixed(3),aff:u.aff,outfit:u.outfit,lvSeen:u.lvSeen,pers:u.pers,born:u.born,pets:u.pets,feeds:u.feeds,worn:u.worn,mem:u.mem,ann:u.ann,wins:u.wins||0,druns:u.druns||0,dbest:u.dbest||0})),
+    umimi:S.umimi.map(u=>({id:u.id,name:u.name,color:u.color,x:Math.round(u.x),d:+u.d.toFixed(3),aff:u.aff,outfit:u.outfit,lvSeen:u.lvSeen,pers:u.pers,born:u.born,pets:u.pets,feeds:u.feeds,worn:u.worn,mem:u.mem,ann:u.ann,wins:u.wins||0,druns:u.druns||0,dbest:u.dbest||0,tricks:u.tricks,learned:u.learned,lessonDay:u.lessonDay,room:u.room})),
     past:S.past,
     closet:S.closet, closetNew:S.closetNew, pets:S.pets, days:S.days, feeds:S.feeds, starsCaught:S.starsCaught, metVisitors:S.metVisitors,
-    diary:S.diary.slice(0,60), day:S.day, visitorDay:S.visitorDay, visitLog:S.visitLog, nextVisit:S.nextVisit, curVisit:S.curVisit, lastVisitor:S.lastVisitor, unlocked:S.unlocked, diaryNew:S.diaryNew, myBday:S.myBday, evSeen:S.evSeen, derby:S.derby, omikujiDay:S.omikujiDay, wishes:S.wishes, presentYear:S.presentYear, trickDay:S.trickDay, profileOnTap:S.profileOnTap, bdayBlown:S.bdayBlown, bdayDiary:S.bdayDiary,
-    decor:S.decor.map(o=>({id:o.id,type:o.type,x:Math.round(o.x),d:+o.d.toFixed(3)})),
+    diary:S.diary.slice(0,60), day:S.day, visitorDay:S.visitorDay, visitLog:S.visitLog, nextVisit:S.nextVisit, curVisit:S.curVisit, lastVisitor:S.lastVisitor, unlocked:S.unlocked, diaryNew:S.diaryNew, myBday:S.myBday, evSeen:S.evSeen, derby:S.derby, furn:S.furn, omikujiDay:S.omikujiDay, wishes:S.wishes, presentYear:S.presentYear, trickDay:S.trickDay, profileOnTap:S.profileOnTap, bdayBlown:S.bdayBlown, bdayDiary:S.bdayDiary,
+    decor:S.decor.map(o=>Object.assign({id:o.id,type:o.type,x:Math.round(o.x),d:+o.d.toFixed(3)}, o.on!=null?{on:o.on,dx:+(o.dx||0).toFixed(1)}:{})),
     ground:S.ground.map(g=>({x:Math.round(g.x),d:+g.d.toFixed(3)}))};
 }
 function save(){ try{ localStorage.setItem('umimi-hakoniwa-v1', JSON.stringify(serialize())); }catch(e){} }
@@ -681,6 +730,22 @@ const cosImg = new Image();
 cosImg.onload = () => { COS.ready = true; if(S){ renderTray(); if(!$('closet').hidden) renderCloset(); } };
 cosImg.src = 'costumes.png';
 const VIS_SPR = {"res":1.6,"m":{"jelly":{"w":172,"h":172,"a":"c","y":0},"star":{"w":145,"h":132,"a":"b","y":172},"seahorse":{"w":121,"h":180,"a":"c","y":304},"crab":{"w":180,"h":127,"a":"b","y":484},"dolphin":{"w":236,"h":144,"a":"c","y":611},"penguin":{"w":164,"h":147,"a":"b","y":755},"turtle":{"w":212,"h":145,"a":"b","y":902},"octopus":{"w":164,"h":156,"a":"b","y":1047},"puffer":{"w":161,"h":127,"a":"c","y":1203},"otter":{"w":204,"h":156,"a":"c","y":1330}}};
+const FIMG = {m:{"rug":{"s":"base","x":0,"y":0,"w":340,"h":190,"rw":170,"rh":95,"tw":0,"th":0},"bed":{"s":"base","x":0,"y":192,"w":300,"h":283,"rw":150,"rh":142,"tw":0,"th":0},"lamp":{"s":"base","x":0,"y":477,"w":132,"h":234,"rw":66,"rh":117,"tw":0,"th":0},"cushion":{"s":"base","x":0,"y":713,"w":160,"h":113,"rw":80,"rh":56,"tw":0,"th":0},"plant":{"s":"base","x":0,"y":828,"w":124,"h":153,"rw":62,"rh":76,"tw":0,"th":0},"shelf":{"s":"base","x":0,"y":983,"w":210,"h":332,"rw":105,"rh":166,"tw":0,"th":0},"window":{"s":"base","x":0,"y":1317,"w":270,"h":232,"rw":135,"rh":116,"tw":0,"th":0},"windowday":{"s":"base","x":0,"y":1551,"w":270,"h":232,"rw":135,"rh":116,"tw":0,"th":0},"frame":{"s":"base","x":0,"y":1785,"w":144,"h":148,"rw":72,"rh":74,"tw":0,"th":0},"table":{"s":"base","x":342,"y":0,"w":230,"h":187,"rw":115,"rh":94,"tw":0,"th":0},"shellbed":{"s":"pearl","x":0,"y":0,"w":350,"h":326,"rw":175,"rh":163,"tw":110,"th":102},"shelltable":{"s":"pearl","x":0,"y":328,"w":250,"h":160,"rw":125,"rh":80,"tw":82,"th":52},"shellchair":{"s":"pearl","x":0,"y":490,"w":210,"h":198,"rw":105,"rh":99,"tw":72,"th":68},"bottle":{"s":"pearl","x":0,"y":690,"w":116,"h":136,"rw":58,"rh":68,"tw":42,"th":49},"crystal2":{"s":"pearl","x":0,"y":828,"w":180,"h":164,"rw":90,"rh":82,"tw":62,"th":56},"shellcake":{"s":"pearl","x":0,"y":994,"w":156,"h":161,"rw":78,"rh":80,"tw":54,"th":55},"lanternstand":{"s":"autumn","x":0,"y":0,"w":200,"h":266,"rw":100,"rh":133,"tw":95,"th":126},"stall":{"s":"autumn","x":0,"y":268,"w":400,"h":313,"rw":200,"rh":156,"tw":180,"th":140},"kingyo":{"s":"autumn","x":0,"y":583,"w":380,"h":295,"rw":190,"rh":148,"tw":160,"th":125},"mcushion":{"s":"autumn","x":0,"y":880,"w":230,"h":142,"rw":115,"rh":71,"tw":90,"th":56},"garland":{"s":"autumn","x":0,"y":1024,"w":600,"h":198,"rw":300,"rh":99,"tw":200,"th":66},"chochin":{"s":"autumn","x":0,"y":1224,"w":160,"h":329,"rw":80,"rh":164,"tw":80,"th":164},"omen":{"s":"autumn","x":0,"y":1555,"w":400,"h":349,"rw":200,"rh":174,"tw":180,"th":157},"acorn":{"s":"autumn","x":602,"y":0,"w":120,"h":103,"rw":60,"rh":52,"tw":42,"th":36},"yakiimo":{"s":"autumn","x":602,"y":105,"w":140,"h":90,"rw":70,"rh":45,"tw":48,"th":31},"bridge":{"s":"autumn","x":602,"y":197,"w":460,"h":206,"rw":230,"rh":103,"tw":200,"th":90},"pumpkinstand":{"s":"halloween","x":0,"y":0,"w":170,"h":344,"rw":85,"rh":172,"tw":80,"th":162},"hrug":{"s":"halloween","x":0,"y":346,"w":340,"h":200,"rw":170,"rh":100,"tw":120,"th":71},"ghostcushion":{"s":"halloween","x":0,"y":548,"w":170,"h":149,"rw":85,"rh":74,"tw":72,"th":63},"hframe":{"s":"halloween","x":0,"y":699,"w":160,"h":187,"rw":80,"rh":94,"tw":0,"th":0},"candytable":{"s":"halloween","x":0,"y":888,"w":210,"h":244,"rw":105,"rh":122,"tw":82,"th":95},"hshelf":{"s":"halloween","x":0,"y":1134,"w":230,"h":309,"rw":115,"rh":154,"tw":100,"th":134},"jbox_0":{"s":"halloween","x":0,"y":1445,"w":170,"h":170,"rw":85,"rh":85,"tw":74,"th":74},"jbox_1":{"s":"halloween","x":0,"y":1617,"w":170,"h":170,"rw":85,"rh":85,"tw":74,"th":74},"jbox_2":{"s":"halloween","x":0,"y":1789,"w":170,"h":170,"rw":85,"rh":85,"tw":74,"th":74},"jbox_3":{"s":"halloween","x":342,"y":0,"w":170,"h":170,"rw":85,"rh":85,"tw":74,"th":74},"chandelier_0":{"s":"halloween","x":342,"y":172,"w":260,"h":375,"rw":130,"rh":188,"tw":0,"th":0},"chandelier_1":{"s":"halloween","x":342,"y":549,"w":260,"h":375,"rw":130,"rh":188,"tw":0,"th":0},"chandelier_2":{"s":"halloween","x":342,"y":926,"w":260,"h":375,"rw":130,"rh":188,"tw":0,"th":0},"jbox":{"s":"halloween","x":0,"y":1445,"w":170,"h":170,"rw":85,"rh":85,"tw":74,"th":74},"chandelier":{"s":"halloween","x":342,"y":172,"w":260,"h":375,"rw":130,"rh":188,"tw":0,"th":0}}};
+const FSHEETS = {};
+function fsheet(n){ let im=FSHEETS[n]; if(!im){ im=FSHEETS[n]=new Image(); im.onload=()=>{ if(S && mode==='decor') renderTray(); if(typeof asobiView!=='undefined' && asobiView==='room' && room && room.edit) renderAsobi(); }; im.src='f_'+n+'.png'; } return (im.complete && im.naturalWidth) ? im : null; }
+function animKey(k,seed){
+  if(k==='jbox'){ const t=((T+(seed||0)*1.7)%9+9)%9; return 'jbox_'+(t<7?0: t<7.2?1: t<8.4?2: t<8.6?1: 3); }
+  if(k==='chandelier') return 'chandelier_0';
+  return k; }
+function drawFImg(c,k,w,h,seed){ const m=FIMG.m[animKey(k,seed)]||FIMG.m[k]; if(!m) return; const im=fsheet(m.s); if(im) c.drawImage(im, m.x, m.y, m.w, m.h, -w/2, -h, w, h); else { c.fillStyle='rgba(247,198,210,.6)'; c.beginPath(); c.roundRect(-w/2,-h,w,h,10); c.fill(); }
+  if(k==='shellcake'){ const fy=-h*.86, fx=w*.03; c.fillStyle=`rgba(255,220,150,${.25+.1*Math.sin(T*9)})`; c.beginPath(); c.arc(fx,fy,8+Math.sin(T*7)*1.5,0,TAU); c.fill(); }
+  if(k==='crystal2' && Math.sin(T*1.7)>.85){ c.fillStyle='rgba(255,255,255,.9)'; const sx=-w*.05, sy=-h*.75; c.beginPath(); c.moveTo(sx,sy-6); c.lineTo(sx+1.5,sy-1.5); c.lineTo(sx+6,sy); c.lineTo(sx+1.5,sy+1.5); c.lineTo(sx,sy+6); c.lineTo(sx-1.5,sy+1.5); c.lineTo(sx-6,sy); c.lineTo(sx-1.5,sy-1.5); c.fill(); } }
+const SURF = {shelltable:.62, table:.66};
+const SMALLS = new Set(['bottle','shellcake','acorn','yakiimo','crystal2','plant','shell','conch','starfish','pearl','crystal','pot','otterstone','rosette','trophy','octopot','icecrystal']);
+// --- tank: small decor can sit on table-like decor
+function decorTable(o){ if(o.on==null) return null; const t=S.decor.find(x=>x.id===o.on); if(!t){ o.on=null; return null; } return t; }
+function decorPos(o){ const t=decorTable(o); if(!t){ const s=scaleD(o.d); return {x:o.x, gy:floorY(o.d), s, lift:0, sortY:floorY(o.d)}; } const s=scaleD(t.d); return {x:t.x+o.dx*s, gy:floorY(t.d), s, lift:SURF[t.type]*DECOR[t.type].h*s, sortY:floorY(t.d)+.5}; }
+function tankSnap(o, px, footY){ if(!SMALLS.has(o.type)) return false; for(const t of S.decor){ if(t===o || !SURF[t.type]) continue; const s=scaleD(t.d), gy=floorY(t.d), top=gy-SURF[t.type]*DECOR[t.type].h*s; if(Math.abs(px-t.x) < DECOR[t.type].r*s*.85 && Math.abs(footY-top) < 26*s){ o.on=t.id; o.dx=(px-t.x)/s; o.x=px; o.d=t.d+.001; return true; } } o.on=null; return false; }
 const visImg = new Image(); visImg.onload = () => { VIS_SPR.ready = true; }; visImg.src = 'visitors.png';
 const COS_KEEP = ['blueberry','grape','gothic','constellation','devil','witch','mango','matcha','lemon'];
 const cosSheets = {};
@@ -696,7 +761,7 @@ function spriteFrame(u,t){
   const st=u.state, q=(p)=>Math.floor(t/p+u.ph*3);
   if(st==='sleep') return 5+q(1.1)%2;
   if(st==='shine') return 4;
-  if(st==='happy') return [7,8,9][q(.32)%3];
+  if(st==='happy' || st==='trick') return [7,8,9][q(.32)%3];
   if(u.moving && u.lift<4) return 2+q(.38)%2;
   return q(.75)%2;
 }
@@ -896,6 +961,10 @@ function drawOutfit(c,key,ox,oy,t,layer){
 }
 function drawUmimiAt(c,u,x,gy,s,t,lift,opt){
   opt = opt || {};
+  if(u.state==='trick' && u.trickK && !opt._tr && TRICKS[u.trickK]){ const k=u.trickK, p=clamp(1-u.timer/u.trickDur,0,1); const L2 = lift + trickLift(k,p,s); c.save();
+    if(k==='spin'){ c.translate(x, gy-L2-40*s); c.scale(Math.cos(p*TAU*2)||.01,1); c.translate(-x, -(gy-L2-40*s)); }
+    if(k==='bow'){ c.translate(x, gy-L2); c.rotate(-Math.sin(Math.PI*Math.min(1,p*1.2))*.38*(u.dir||1)); c.translate(-x, -(gy-L2)); }
+    const r2 = drawUmimiAt(c,u,x,gy,s,t,L2,Object.assign({},opt,{_tr:1})); c.restore(); return r2; }
   if(SPR.ready) return drawSpriteUmimi(c,u,x,gy,s,t,lift,opt);
   const pal = PALS[u.color] || PALS.lavender;
   const sh = Math.max(.25, 1 - lift/260);
@@ -1036,6 +1105,7 @@ function drawDecor(c,type,t,ph){
       c.strokeStyle='#d8b56a'; for(let i=-8;i<=8;i+=8){ c.beginPath(); c.moveTo(i,-12); c.lineTo(i,12); c.stroke(); }
       c.fillStyle='#e8c870'; [[-9,-10],[9,-10],[-12,2],[12,2]].forEach(([a,b])=>{ c.beginPath(); c.moveTo(a,b); c.lineTo(a*1.35,b*1.35-2); c.lineTo(a*1.1+2,b*1.1); c.fill(); });
       c.fillStyle='#2f2b4f'; c.beginPath(); c.arc(-4,-2,1.8,0,TAU); c.arc(4,-2,1.8,0,TAU); c.fill(); c.restore(); break; }
+    default: if(DECOR[type] && DECOR[type].img && FIMG.m[type]){ const m=FIMG.m[type]; drawFImg(c,type,m.tw,m.th,ph); } break;
     case 'rosette': {
       c.strokeStyle='#b98a4e'; c.lineWidth=2; c.beginPath(); c.moveTo(0,0); c.lineTo(0,-22); c.stroke();
       c.fillStyle='#6f8fe0'; c.beginPath(); c.moveTo(-6,-26); c.lineTo(-10,-6); c.lineTo(-5,-10); c.lineTo(-2,-5); c.lineTo(0,-26); c.fill(); c.beginPath(); c.moveTo(6,-26); c.lineTo(10,-6); c.lineTo(5,-10); c.lineTo(2,-5); c.lineTo(0,-26); c.fill();
@@ -1081,6 +1151,12 @@ function drawDecor(c,type,t,ph){
   }
 }
 function decorGlow(o,x,gy,s){
+  if(o.type==='pumpkinstand') glows.push({x:x, y:gy-50*s, r:45*s, col:'255,190,120', a:.1+.55*night});
+  if(o.type==='lanternstand') glows.push({x:x+8*s, y:gy-45*s, r:50*s, col:'255,200,150', a:.1+.55*night});
+  if(o.type==='chochin') glows.push({x:x-8*s, y:gy-55*s, r:40*s, col:'255,210,160', a:.1+.55*night});
+  if(o.type==='stall') glows.push({x:x, y:gy-60*s, r:90*s, col:'255,215,170', a:.05+.35*night});
+  if(o.type==='crystal2') glows.push({x:x, y:gy-30*s, r:55*s, col:'225,215,255', a:.06+.45*night});
+  if(o.type==='shellcake') glows.push({x:x, y:gy-50*s, r:30*s, col:'255,220,150', a:.08+.5*night});
   if(o.type==='lamp') glows.push({x:x, y:gy-70*s, r:(90+10*Math.sin(T*2+o.id))*s, col:'255,226,150', a:.14+.7*night});
   if(o.type==='lantern') glows.push({x:x, y:gy-46*s, r:60*s, col:'255,220,140', a:.1+.55*night});
   if(o.type==='icecrystal') glows.push({x:x, y:gy-24*s, r:46*s, col:'190,230,255', a:.05+.4*night});
@@ -1166,12 +1242,12 @@ function draw(){
   if(EVON.length) evSky(c);
   // depth-sorted entities
   const items = [];
-  S.decor.forEach(o => items.push({y:floorY(o.d)-.01, f:() => { const s=scaleD(o.d), gy=floorY(o.d);
-    c.fillStyle='rgba(80,80,150,.12)'; c.beginPath(); c.ellipse(o.x,gy,DECOR[o.type].r*s*.9,7*s,0,0,TAU); c.fill();
+  S.decor.forEach(o => { const P0=decorPos(o); items.push({y:P0.sortY-.01, f:() => { const P=decorPos(o), s=P.s, gy=P.gy-P.lift; if(P.lift) o.x=P.x;
+    if(!P.lift){ c.fillStyle='rgba(80,80,150,.12)'; c.beginPath(); c.ellipse(o.x,gy,DECOR[o.type].r*s*.9,7*s,0,0,TAU); c.fill(); }
     c.save(); c.translate(o.x,gy); c.scale(s,s); drawDecor(c,o.type,T,o.id); c.restore(); decorGlow(o,o.x,gy,s);
     if(drag && drag.kind==='decor' && drag.obj===o && drag.moved){ c.strokeStyle='rgba(127,143,224,.8)'; c.setLineDash([6,6]); c.lineWidth=2; c.beginPath(); c.ellipse(o.x,gy,DECOR[o.type].r*s,10*s,0,0,TAU); c.stroke(); c.setLineDash([]); }
     if(mode==='decor' && decorSel==='remove'){ c.fillStyle='rgba(233,120,150,.9)'; c.beginPath(); c.arc(o.x+DECOR[o.type].r*s*.7, gy-DECOR[o.type].h*s*1.6, 9*s,0,TAU); c.fill(); c.strokeStyle='#fff'; c.lineWidth=2.2; const cx=o.x+DECOR[o.type].r*s*.7, cy=gy-DECOR[o.type].h*s*1.6, q=4*s; c.beginPath(); c.moveTo(cx-q,cy-q); c.lineTo(cx+q,cy+q); c.moveTo(cx+q,cy-q); c.lineTo(cx-q,cy+q); c.stroke(); }
-  }}));
+  }}); });
   foods.filter(f=>f.landed).forEach(f => items.push({y:floorY(f.d), f:() => drawFood(c,f)}));
   S.ground.forEach(g => items.push({y:floorY(g.d)+.01, f:() => drawShard(c,g)}));
   if(visitor) items.push({y:floorY(visitor.d)+.015, f:() => drawVisitor(c,visitor)});
@@ -1276,7 +1352,8 @@ function updateU(u,dt){
   else if(u.lift>0){ u.lift = Math.max(0, u.lift-(20+u.lift*.45)*dt); }
   if(['idle','walk','swim','curious'].includes(u.state) && foods.length){ const f=findFood(u); if(f){ f.claim=u.id; u.target=f; u.state='seek'; } }
   switch(u.state){
-    case 'idle': u.timer-=dt; if(u.timer<=0) pickNext(u); break;
+    case 'trick': { u.timer-=dt; const s=scaleD(u.d); const fx=updTrickFx(u,dt,u.x,floorY(u.d)-u.lift,s); if(fx) addP(Object.assign(fx,{r:(fx.type==='heart'?9:4)*s,life:1.2,max:1.2})); if(u.timer<=0){ u.state='idle'; u.timer=rand(1,2.5); u.trickK=null; u.trickDone=0; } break; }
+    case 'idle': u.timer-=dt; if(u.timer<=0){ const L=learnedOf(u); if(L.length && night<.6 && Math.random()<.13){ startTrick(u, L[Math.floor(Math.random()*L.length)]); if(Math.random()<.4) say(u,'♪'); } else pickNext(u); } break;
     case 'walk': u.timer-=dt; if(moveTo(u,u.tx,u.td,38,dt) || u.timer<=0){ u.state='idle'; u.timer=rand(1,3); } break;
     case 'swim': u.timer-=dt; moveTo(u,u.tx,u.td,50,dt); if(u.timer<=0){ u.state='idle'; u.timer=2; } break;
     case 'seek': {
@@ -1682,7 +1759,7 @@ function farewell(u){
   addDiary(`${u.name}が 海のむこうへ たびだっていった。またね`);
   addMem(u,'海のむこうへ たびだった');
   if(!Array.isArray(S.past)) S.past=[];
-  S.past.unshift({name:u.name,color:u.color,outfit:u.outfit,pers:u.pers,born:u.born,left:Date.now(),days:daysWith(u),pets:u.pets,feeds:u.feeds,lv:lvOf(u),worn:(u.worn||[]).length,mem:u.mem.slice(-12),wins:u.wins||0,druns:u.druns||0,dbest:u.dbest||0});
+  S.past.unshift({name:u.name,color:u.color,outfit:u.outfit,pers:u.pers,born:u.born,left:Date.now(),days:daysWith(u),pets:u.pets,feeds:u.feeds,lv:lvOf(u),worn:(u.worn||[]).length,mem:u.mem.slice(-12),learned:learnedOf(u),wins:u.wins||0,druns:u.druns||0,dbest:u.dbest||0});
   S.past=S.past.slice(0,30);
   toast(`${u.name}を 見送ったよ`);
 }
@@ -1849,7 +1926,7 @@ function evTap(p){
 
 // ---------- album ----------
 let albumTab='u', albumSel=null;
-function hidePanels(except){ ['diary','closet','savep','album','shootp','studio','eventp','derby'].forEach(id=>{ if(id!==except) $(id).hidden=true; }); }
+function hidePanels(except){ ['diary','closet','savep','album','shootp','studio','eventp','derby','asobi'].forEach(id=>{ if(id!==except) $(id).hidden=true; }); }
 function openAlbum(tab,sel){ hidePanels('album'); closeCard(); $('album').hidden=false; albumTab=tab||'u'; albumSel=sel||null; renderAlbum(); }
 $('albumBtn').addEventListener('click', () => { if(!$('album').hidden){ $('album').hidden=true; return; } openAlbum('u'); });
 $('albumClose').addEventListener('click', () => { $('album').hidden=true; });
@@ -1902,6 +1979,7 @@ function renderUmiDetail(body, sel){
   stat('なかよし', 'Lv'+(isPast?u.lv:lvOf(u)));
   stat('なでた回数', u.pets||0, '回'); stat('ごはん', u.feeds||0, '回');
   stat('着たおきがえ', isPast?u.worn:(u.worn||[]).length, `/ ${Object.keys(OUTFITS).length-1}`);
+  stat('おぼえた芸', learnedOf(u).length, `/ ${Object.keys(TRICKS).length}`);
   stat('ダービー', `${u.wins||0}勝`, `/ ${u.druns||0}レース`);
   if(u.druns) stat('ダービー さいこう', u.dbest ? `${u.dbest}着` : '—', u.druns ? `勝率${Math.round((u.wins||0)/u.druns*100)}%` : '');
   wrap.append(back, head, st, el('div','asec','おもいで'));
@@ -2253,7 +2331,7 @@ function hitUmimi(p){
 }
 function hitDecor(p){
   const list = [...S.decor].sort((a,b)=>b.d-a.d);
-  return list.find(o => { const s=scaleD(o.d), D=DECOR[o.type], cx=o.x, cy=floorY(o.d)-D.h*s; return Math.hypot(p.x-cx,(p.y-cy)*1.1) < D.r*s+6; });
+  return list.find(o => { const P=decorPos(o), s=P.s, D=DECOR[o.type], cx=P.x, cy=P.gy-P.lift-D.h*s; return Math.hypot(p.x-cx,(p.y-cy)*1.1) < D.r*s+6; });
 }
 function hitShard(p){ return S.ground.find(g => { const s=scaleD(g.d); return Math.hypot(p.x-g.x, p.y-(floorY(g.d)-16*s)) < 38*s; }); }
 function collect(g){
@@ -2285,7 +2363,7 @@ cv.addEventListener('pointermove', e => {
     if(drag.kind==='u'){ const u=drag.obj; u.state='held'; u.target=null; sfx('boing'); if(profileOn()) openCard(u); } }
   if(!drag.moved) return;
   if(drag.kind==='u'){ const u=drag.obj, s=scaleD(u.d); u.x=clamp(p.x,40,960); u.d=invFloor(p.y+28*s); u.lift=Math.max(16, floorY(u.d)-p.y-26*s); }
-  else if(drag.kind==='decor'){ const o=drag.obj; o.x=clamp(p.x,20,980); o.d=invFloor(p.y+14); }
+  else if(drag.kind==='decor'){ const o=drag.obj; const px=clamp(p.x,20,980); if(!tankSnap(o,px,p.y+14)){ o.x=px; o.d=invFloor(p.y+14); } }
 });
 let lastTap = {id:null,t:-9};
 function profileOn(){ return S.profileOnTap !== false; }
@@ -2326,9 +2404,11 @@ function placeDecor(p){
   S.shards -= D.cost;
   const d = p.y > floorTop ? invFloor(p.y) : .05;
   const o = {id:S.decorId++, type:decorSel, x:clamp(p.x,20,980), d};
+  if(tankSnap(o, o.x, p.y+10)) toast('テーブルの うえに おいたよ');
   S.decor.push(o); sparks(o.x, floorY(d)-20, 8, 1); sfx('place'); refreshShards(); renderTray(); save();
 }
 function removeDecor(o){
+  S.decor.forEach(x=>{ if(x.on===o.id){ x.x=o.x+(x.dx||0)*scaleD(o.d); x.d=Math.min(1,o.d+.01); x.on=null; } });
   S.decor = S.decor.filter(x=>x!==o); S.shards += DECOR[o.type].cost;
   addP({type:'puff',x:o.x,y:floorY(o.d),vx:0,vy:0,r:14,life:.6,max:.6}); sfx('pop'); refreshShards(); renderTray(); save();
 }
@@ -2364,17 +2444,23 @@ document.querySelectorAll('.tool').forEach(b => b.addEventListener('click', () =
 
 function thumbCanvas(w,h){ const c=document.createElement('canvas'); c.width=w*2; c.height=h*2; const x=c.getContext('2d'); x.scale(2,2); return [c,x]; }
 const MOON_SVG = '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M11 2a8 8 0 1 0 7 11.5A7 7 0 0 1 11 2z" fill="#f1cf6c"/></svg>';
+const DSERIES = [['kihon','きほん'],['omiyage','おみやげ'],['derby','ダービー'],['pearl','パール'],['autumn','あきまつり'],['halloween','ハロウィン']];
+const DERBY_DECOR = ['trophy','rosette','goalflag','podium'];
+function decorSeries(k){ const D=DECOR[k]; if(DERBY_DECOR.includes(k)) return 'derby'; if(D.img && FIMG.m[k]) return FIMG.m[k].s; if(D.gift) return 'omiyage'; return 'kihon'; }
+let decorCat = 'kihon';
 function renderTray(){
   const tr = $('tray'); tr.innerHTML = '';
+  const dc = $('decorCats'); dc.hidden = mode!=='decor';
+  if(mode==='decor'){ dc.innerHTML = DSERIES.filter(([k])=>Object.keys(DECOR).some(x=>decorSeries(x)===k)).map(([k,n])=>`<button type="button" class="dm${decorCat===k?' on':''}" data-cat="${k}">${n}</button>`).join(''); dc.querySelectorAll('[data-cat]').forEach(b=>b.addEventListener('click',()=>{ decorCat=b.dataset.cat; renderTray(); })); }
   if(mode==='pet'){ tr.innerHTML = '<div class="hintwrap"><p class="hint"><b>タップ</b>でなでなで、<b>ドラッグ</b>でだっこして運べます。砂の上で光る<b>つきのかけら</b>はタップで拾えます。</p><label class="opt" for="optProfile"><input type="checkbox" id="optProfile"> タップしたら プロフィールを出す<span>（オフのときは ダブルタップで出せます）</span></label></div>';
     const cb=$('optProfile'); cb.checked=profileOn(); cb.addEventListener('change',()=>{ S.profileOnTap=cb.checked; if(!cb.checked) closeCard(); save(); toast(cb.checked?'タップで プロフィールを出すよ':'プロフィールは ダブルタップで出るよ'); });
     return; }
   if(mode==='food'){ tr.innerHTML = '<p class="hint">水の中をタップすると、<b>アオサ</b>がふわっと沈みます。ウミミたちが気づいて食べにきます。</p>'; return; }
   if(mode==='decor'){
-    Object.entries(DECOR).forEach(([key,D]) => {
+    Object.entries(DECOR).filter(([key])=>decorSeries(key)===decorCat).forEach(([key,D]) => {
       const locked = D.gift && !S.unlocked.includes(key);
       const b=document.createElement('button'); b.type='button'; b.className='item'; b.dataset.key=key; b.dataset.cost=D.cost; if(locked) b.dataset.locked='1'; b.setAttribute('aria-pressed', decorSel===key);
-      const [c,x]=thumbCanvas(64,52); x.save(); x.translate(32,49); const sc = ['coral','lamp','grass','jellylamp','seaflower','lantern','goalflag','podium'].includes(key) ? .52 : ['treasure','pearl'].includes(key) ? .65 : ['_x'].includes(key) ? .52 : key==='rock' ? .5 : .75; x.scale(sc,sc); drawDecor(x,key,1,0); x.restore();
+      const [c,x]=thumbCanvas(64,52); x.save(); x.translate(32,49); const sc = ['coral','lamp','grass','jellylamp','seaflower','lantern','goalflag','podium','shellbed','shelltable','stall','omen','kingyo','bridge'].includes(key) ? (['stall','omen','bridge'].includes(key)?.4:.5) : ['shellchair','crystal2','lanternstand','mcushion','chochin','pumpkinstand','ghostcushion','candytable','hshelf','jbox','hrug'].includes(key) ? .62 : ['treasure','pearl'].includes(key) ? .65 : ['_x'].includes(key) ? .52 : key==='rock' ? .5 : .75; x.scale(sc,sc); drawDecor(x,key,1,0); x.restore();
       if(locked){ x.globalCompositeOperation='source-in'; x.fillStyle='#c3c7e6'; x.fillRect(0,0,64,52); }
       b.append(c); b.insertAdjacentHTML('beforeend', locked ? `<span>？？？</span><span class="cost" style="color:#6c6a94">おみやげ</span>` : `<span>${D.name}</span><span class="cost">${MOON_SVG}${D.cost}</span>`);
       b.addEventListener('click', () => { decorSel = decorSel===key ? null : key; renderTray(); if(decorSel) toast(`置きたい場所をタップしてね(${D.name})`); });
@@ -2876,9 +2962,382 @@ function drawDerby(dt){
 $('derbyBtn').addEventListener('click', () => { if(!$('derby').hidden){ if(derby && derby.phase==='race') return; $('derby').hidden=true; return; } openDerby(); });
 $('derbyClose').addEventListener('click', () => { if(derby && derby.phase==='race'){ derby.t = Math.max(derby.t, 0); /* let it finish quietly */ } $('derby').hidden=true; });
 
+// ---------- あそびば / おけいこ ----------
+const TRICKS = {
+  jump: {name:'ジャンプ',      good:'genki',     dur:1.3, desc:'ぴょーんと 高く とぶ'},
+  spin: {name:'くるくる',      good:'koukishin', dur:1.6, desc:'その場で くるっと まわる'},
+  bow:  {name:'おじぎ',        good:'nebosuke',  dur:1.6, desc:'ぺこり。ていねいな ごあいさつ'},
+  float:{name:'ぷかぷか',      good:'nonbiri',   dur:2.4, desc:'ふわっと うかんで きらきら'},
+  hop:  {name:'ぴょんぴょん',  good:'kuishinbo', dur:1.6, desc:'ちいさく 3かい はねる'},
+  heart:{name:'ハートぽわぽわ',good:'amaenbo',   dur:1.8, desc:'ハートを ぽわぽわ とばす'},
+};
+const TRICK_NEED = 5;
+function trickLift(k,p,s){ if(k==='jump') return Math.sin(Math.PI*p)*130*s; if(k==='float') return Math.sin(Math.PI*p)*60*s; if(k==='hop') return Math.abs(Math.sin(Math.PI*p*3))*34*s; return 0; }
+function startTrick(u,k){ const T0=TRICKS[k]; if(!T0) return; u.state='trick'; u.trickK=k; u.trickDur=T0.dur; u.timer=T0.dur; u.trickFx=0; u.trickDone=0; }
+function learnedOf(u){ return Array.isArray(u.learned) ? u.learned : []; }
+function updTrickFx(u,dt,px,py,s){ // particles during a trick (used in tank and lesson)
+  const k=u.trickK, p=1-u.timer/u.trickDur; u.trickFx=(u.trickFx||0)+dt;
+  if(k==='heart' && u.trickFx>.28){ u.trickFx=0; return {type:'heart',x:px+rand(-24,24)*s,y:py-70*s,vx:rand(-12,12),vy:rand(-50,-30)}; }
+  if(k==='float' && u.trickFx>.18){ u.trickFx=0; return {type:'spark',x:px+rand(-40,40)*s,y:py-rand(10,70)*s,vx:0,vy:-20}; }
+  if(k==='spin' && p>.9 && !u.trickDone){ u.trickDone=1; return {type:'spark',x:px,y:py-50*s,vx:0,vy:-30}; }
+  return null;
+}
+let asobiView = 'menu', lesson = null;
+function openAsobi(view){ hidePanels('asobi'); closeCard(); $('asobi').hidden=false; asobiView = view||'menu'; renderAsobi(); }
+function renderAsobi(){
+  const b = $('asobiBody'); b.innerHTML='';
+  if(asobiView==='menu'){
+    $('asobiTitle').textContent='あそびば';
+    b.insertAdjacentHTML('beforeend', `<div class="atiles">
+      <button type="button" class="atile" id="goDerby"><span class="ai">🏁</span><b>ウミミダービー</b><span>だれが 1着か 予想して メダルを かけよう</span></button>
+      <button type="button" class="atile" id="goRoom"><span class="ai">🏠</span><b>おへや</b><span>うちの子ごとの おへやを かざって しゃしんに のこそう</span></button>
+      <button type="button" class="atile" id="goLesson"><span class="ai">🎀</span><b>おけいこ</b><span>うちの子に 芸を おしえよう（1日1かい）</span></button>
+    </div>`);
+    $('goDerby').addEventListener('click', ()=>{ $('asobi').hidden=true; openDerby(); });
+    $('goLesson').addEventListener('click', ()=>{ asobiView='pick'; renderAsobi(); });
+    $('goRoom').addEventListener('click', ()=>{ asobiView='roompick'; renderAsobi(); });
+    return;
+  }
+  if(asobiView==='roompick'){
+    $('asobiTitle').textContent='おへや';
+    b.insertAdjacentHTML('beforeend', `<p class="dsub">だれの おへやに あそびにいく？</p>`);
+    const g = document.createElement('div'); g.className='dgrid'; b.appendChild(g);
+    S.umimi.filter(u=>u.state!=='leaving').forEach(u=>{ const card=document.createElement('button'); card.type='button'; card.className='dcard'; card.appendChild(dThumb(u)); card.insertAdjacentHTML('beforeend', `<span class="nm">${esc(u.name)}</span><span class="tg">かぐ ${roomOf(u).items.length}こ</span>`); card.addEventListener('click',()=>openRoom(u)); g.appendChild(card); });
+    b.insertAdjacentHTML('beforeend', `<div class="dbar"><button class="dbtn sub" type="button" id="aBack">もどる</button></div>`);
+    $('aBack').addEventListener('click', ()=>{ asobiView='menu'; renderAsobi(); });
+    return;
+  }
+  if(asobiView==='room') return renderRoomView(b);
+  $('asobiTitle').textContent='おけいこ';
+  const today = todayStr();
+  if(asobiView==='pick'){
+    b.insertAdjacentHTML('beforeend', `<p class="dsub">どの子と おけいこする？ 1匹につき 1日1かい。${TRICK_NEED}ポイント たまると 芸を おぼえて、水そうで ときどき 見せてくれるよ。</p>`);
+    const g = document.createElement('div'); g.className='dgrid'; b.appendChild(g);
+    S.umimi.filter(u=>u.state!=='leaving').forEach(u=>{
+      const done = u.lessonDay===today && location.hash!=='#okeiko', L = learnedOf(u);
+      const card = document.createElement('button'); card.type='button'; card.className='dcard'+(done?' dim':'');
+      card.appendChild(dThumb(u));
+      card.insertAdjacentHTML('beforeend', `<span class="nm">${esc(u.name)}</span><span class="tg">${(PERS[u.pers]||PERS.nonbiri).name}</span><span class="tg">おぼえた芸 ${L.length}/${Object.keys(TRICKS).length}</span>${done?'<span class="who">きょうは おけいこずみ</span>':''}`);
+      card.addEventListener('click', ()=>{ if(done){ toast(`${u.name}は きょうは もう がんばったよ。また あしたね`); return; } lesson={uid:u.id}; asobiView='trick'; renderAsobi(); });
+      g.appendChild(card);
+    });
+    b.insertAdjacentHTML('beforeend', `<div class="dbar"><button class="dbtn sub" type="button" id="aBack">もどる</button></div>`);
+    $('aBack').addEventListener('click', ()=>{ asobiView='menu'; renderAsobi(); });
+    return;
+  }
+  const u = S.umimi.find(o=>o.id===(lesson&&lesson.uid)); if(!u){ asobiView='pick'; return renderAsobi(); }
+  if(asobiView==='trick'){
+    const L = learnedOf(u), tp = u.tricks||{};
+    b.insertAdjacentHTML('beforeend', `<p class="dsub">${esc(u.name)}に どの芸を おしえる？ ★は ${(PERS[u.pers]||PERS.nonbiri).name}な子の とくいな芸（おぼえるのが はやい）。</p>`);
+    const g = document.createElement('div'); g.className='tlist'; b.appendChild(g);
+    Object.entries(TRICKS).forEach(([k,T0])=>{
+      const has = L.includes(k), pts = Math.min(TRICK_NEED, tp[k]||0), good = T0.good===u.pers;
+      const row = document.createElement('button'); row.type='button'; row.className='trow'+(has?' has':'');
+      row.innerHTML = `<b>${good?'★ ':''}${T0.name}</b><span>${T0.desc}</span><span class="tbar">${Array.from({length:TRICK_NEED},(_,i)=>`<i class="${i<pts?'on':''}"></i>`).join('')}</span><em>${has?'おぼえた！':`${pts}/${TRICK_NEED}`}</em>`;
+      row.addEventListener('click', ()=>{ if(has){ toast(`${u.name}は もう「${T0.name}」を おぼえているよ`); return; } lesson={uid:u.id, k, tries:0, best:0, res:[]}; asobiView='play'; renderAsobi(); });
+      g.appendChild(row);
+    });
+    b.insertAdjacentHTML('beforeend', `<div class="dbar"><button class="dbtn sub" type="button" id="aBack">もどる</button></div>`);
+    $('aBack').addEventListener('click', ()=>{ asobiView='pick'; renderAsobi(); });
+    return;
+  }
+  if(asobiView==='play'){
+    const T0 = TRICKS[lesson.k];
+    b.insertAdjacentHTML('beforeend', `<p class="dsub">わっかが まんなかの 円に かさなった しゅんかんに タップ！ ${esc(u.name)}が「${T0.name}」に ちょうせんするよ（3かい）。</p>`);
+    const cv2 = document.createElement('canvas'); cv2.className='dcv lcv'; cv2.id='lessonCv'; b.appendChild(cv2);
+    b.insertAdjacentHTML('beforeend', `<div class="dbar"><span class="dmsg" id="lMsg" style="flex:1"></span><button class="dbtn" type="button" id="lTap">タップ！</button></div>`);
+    const L = lesson; L.fig = hydrateU(Object.assign({}, u, {mem:[], lift:0})); L.fig.dir=-1; L.fig.state='idle'; L.ring=0; L.phase='ring'; L.wait=.8; L.fx=[]; L.done=false;
+    const tap = e => { if(e) e.preventDefault(); lessonTap(); };
+    cv2.addEventListener('pointerdown', tap); $('lTap').addEventListener('click', ()=>lessonTap());
+    return;
+  }
+  if(asobiView==='result'){
+    const L = lesson, T0 = TRICKS[L.k];
+    b.insertAdjacentHTML('beforeend', `<div class="lres"><div class="lbig">${L.learnedNow?'🎉':'✨'}</div><p class="dmsg">${L.msg}</p><p class="dsub">けっか：${L.res.map(r=>r===2?'◎':r===1?'○':'×').join(' ')}</p><span class="tbar big">${Array.from({length:TRICK_NEED},(_,i)=>`<i class="${i<Math.min(TRICK_NEED,(u.tricks||{})[L.k]||0)?'on':''}"></i>`).join('')}</span></div>
+      <div class="dbar"><button class="dbtn sub" type="button" id="aPick">ほかの子と おけいこ</button>${L.learnedNow?'<button class="dbtn" type="button" id="aShow">水そうで 見せてもらう</button>':''}</div>`);
+    $('aPick').addEventListener('click', ()=>{ asobiView='pick'; renderAsobi(); });
+    if($('aShow')) $('aShow').addEventListener('click', ()=>{ $('asobi').hidden=true; startTrick(u, L.k); say(u,'みてみて！'); });
+  }
+}
+function lessonTap(){
+  const L = lesson; if(!L || asobiView!=='play' || L.phase!=='ring') return;
+  const d = Math.abs(L.ring - 1), q = d < .09 ? 2 : d < .22 ? 1 : 0;
+  L.res.push(q); L.tries++; L.phase='act'; L.fig.state = q ? 'trick' : 'idle';
+  if(q){ startTrick(L.fig, L.k); L.fig.trickDone=0; } else { L.fig.trickK=null; L.fig.timer=1.1; L.fig.trickDur=1.1; L.fig.state='idle'; L.oops=1.1; }
+  const m = $('lMsg'); if(m) m.textContent = q===2 ? 'ばっちり！' : q===1 ? 'いいかんじ！' : 'あれれ…';
+  sfx(q ? 'shard' : 'pop');
+}
+function lessonFinish(){
+  const L = lesson, u = S.umimi.find(o=>o.id===L.uid); if(!u) return;
+  const T0 = TRICKS[L.k], good = T0.good===u.pers;
+  let pts = L.res.reduce((a,b)=>a+b,0) >= 4 ? 2 : L.res.some(r=>r>0) ? 1 : 0; if(pts && good) pts++;
+  if(!pts) pts = 1; // がんばったので すこしは すすむ
+  u.tricks = u.tricks || {}; u.tricks[L.k] = Math.min(TRICK_NEED, (u.tricks[L.k]||0) + pts); u.lessonDay = todayStr();
+  u.aff = (u.aff||0) + 1;
+  L.learnedNow = false;
+  if(u.tricks[L.k] >= TRICK_NEED && !learnedOf(u).includes(L.k)){ u.learned = learnedOf(u).concat(L.k); L.learnedNow = true; addMem(u, `「${T0.name}」を おぼえた`, true); addDiary(`${u.name}が「${T0.name}」を おぼえた`); }
+  L.msg = L.learnedNow ? `${esc(u.name)}が「${T0.name}」を おぼえた！ 水そうで ときどき 見せてくれるよ` : `${esc(u.name)}は「${T0.name}」を れんしゅうした。+${pts}ポイント${good?'（とくいな芸！）':''}。また あしたね`;
+  save(); asobiView='result'; renderAsobi();
+}
+function updateLesson(dt){
+  if(asobiView!=='play' || $('asobi').hidden) return; const L = lesson; if(!L || !L.fig) return;
+  const cv2 = $('lessonCv'); if(!cv2) return;
+  const f = L.fig; f.t += dt;
+  if(L.phase==='ring'){ if(L.wait>0){ L.wait-=dt; L.ring=0; } else { L.ring += dt*.85; if(L.ring>1.45){ lessonTapMiss(); } } }
+  else if(L.phase==='act'){
+    if(f.state==='trick'){ f.timer -= dt; const fx = updTrickFx(f,dt,0,0,1); if(fx) L.fx.push(Object.assign(fx,{life:1})); if(f.timer<=0){ f.state='happy'; f.timer=.6; } }
+    else { f.timer -= dt; if(f.timer<=0){ nextTry(); } }
+  }
+  L.fx.forEach(p=>{ p.x+=p.vx*dt; p.y+=p.vy*dt; p.life-=dt*.8; }); L.fx = L.fx.filter(p=>p.life>0);
+  // draw
+  const dpr = Math.min(2, window.devicePixelRatio||1), cw = cv2.clientWidth, ch = cv2.clientHeight; if(!cw||!ch) return;
+  if(cv2.width!==Math.round(cw*dpr) || cv2.height!==Math.round(ch*dpr)){ cv2.width=Math.round(cw*dpr); cv2.height=Math.round(ch*dpr); }
+  const c = cv2.getContext('2d'), sc = cv2.height/360, VW = cv2.width/sc, VH = 360; c.setTransform(sc,0,0,sc,0,0);
+  const g = c.createLinearGradient(0,0,0,VH); g.addColorStop(0,'#fde8f0'); g.addColorStop(.6,'#e8e6fb'); g.addColorStop(1,'#d9dcf7'); c.fillStyle=g; c.fillRect(0,0,VW,VH);
+  c.fillStyle='rgba(255,255,255,.6)'; c.beginPath(); c.ellipse(VW/2, VH-50, 170, 26, 0, 0, TAU); c.fill();
+  const cx = VW/2, gy = VH-52, s = .95;
+  // ring target
+  const R0 = 70, ry = gy-90;
+  if(L.phase==='ring'){
+    c.strokeStyle='rgba(240,160,190,.55)'; c.lineWidth=6; c.beginPath(); c.arc(cx, ry, R0, 0, TAU); c.stroke();
+    if(L.wait<=0){ const r = R0*(2.6 - 1.6*L.ring); c.strokeStyle= Math.abs(L.ring-1)<.09 ? '#f06a9a' : '#8f95e0'; c.lineWidth=4; c.beginPath(); c.arc(cx, ry, Math.max(4,r), 0, TAU); c.stroke(); }
+  }
+  let lift = 0; const fk = f.state==='trick' ? f.trickK : null;
+  const p = fk ? 1 - f.timer/f.trickDur : 0;
+  if(fk) lift = trickLift(fk, p, s);
+  if(L.oops && f.state==='idle'){ L.oops -= dt; }
+  c.save();
+  if(fk==='spin'){ c.translate(cx, gy-40); c.scale(Math.cos(p*TAU*2),1); c.translate(-cx, -(gy-40)); }
+  if(fk==='bow'){ c.translate(cx, gy); c.rotate(-Math.sin(Math.PI*Math.min(1,p*1.2))*.38); c.translate(-cx, -gy); }
+  if(L.oops>0 && f.state==='idle'){ c.translate(cx, gy); c.rotate(Math.sin(L.oops*18)*.08); c.translate(-cx, -gy); }
+  try{ drawUmimiAt(c, f, cx, gy, s, T, lift, {}); }catch(e){}
+  c.restore();
+  L.fx.forEach(q=>{ c.globalAlpha=Math.max(0,q.life); if(q.type==='heart'){ c.fillStyle='#f28bb0'; const x=cx+q.x, y=gy+q.y; c.beginPath(); c.moveTo(x,y+5); c.bezierCurveTo(x-10,y-4,x-5,y-12,x,y-6); c.bezierCurveTo(x+5,y-12,x+10,y-4,x,y+5); c.fill(); } else { c.fillStyle='#f4d27a'; c.beginPath(); c.arc(cx+q.x, gy+q.y, 3.5, 0, TAU); c.fill(); } c.globalAlpha=1; });
+  c.fillStyle='#6574cf'; c.font='700 16px "Zen Maru Gothic",sans-serif'; c.textAlign='left'; c.fillText(`${Math.min(3,L.tries+ (L.phase==='ring'?1:0))} / 3かいめ`, 14, 26);
+  c.textAlign='right'; c.fillText(L.res.map(r=>r===2?'◎':r===1?'○':'×').join(' '), VW-14, 26);
+}
+function lessonTapMiss(){ const L=lesson; L.res.push(0); L.tries++; L.phase='act'; L.fig.state='idle'; L.fig.timer=1.1; L.oops=1.1; const m=$('lMsg'); if(m) m.textContent='まにあわなかった…'; }
+function nextTry(){ const L=lesson; L.fig.state='idle'; if(L.tries>=3){ L.phase='end'; setTimeout(lessonFinish, 300); return; } L.phase='ring'; L.wait=.6; L.ring=0; const m=$('lMsg'); if(m) m.textContent=''; }
+// ---------- おへや ----------
+const RW = 640, RH = 370, RWALL = 205;
+const WALLS = {
+  moon:  {name:'つきよ',     a:'#3c4380', b:'#5a62a8', dot:'rgba(255,248,215,.8)'},
+  pastel:{name:'パステル',   a:'#fbe3ee', b:'#e6e4fb', dot:'rgba(255,255,255,.9)'},
+  stars: {name:'ほしぞら',   a:'#1f2350', b:'#3a3f7e', dot:'rgba(255,240,180,.95)'},
+  pearlstripe:{name:'パールストライプ', a:'#fbe3ee', b:'#e6e4fb', tex:2},
+  pearlnight:{name:'パールのよぞら', a:'#3c4380', b:'#6a74c8', tex:3},
+};
+const FLOORS = {
+  sand:  {name:'すなはま',   a:'#f1e4c6', b:'#e2d0a8'},
+  wood:  {name:'フローリング',a:'#e3c6a0', b:'#caa47c'},
+  cloud: {name:'くも',       a:'#ffffff', b:'#dfe3f8'},
+  shelltile:{name:'かいがらタイル', a:'#ece6fb', b:'#d9d4f5', tex:0},
+  pinkwood:{name:'さくらフローリング', a:'#f6d9c8', b:'#ecc4b4', tex:1},
+};
+const FURN = {
+  rug:    {name:'まるいラグ',     spot:'floor', w:170, h:95,  price:0, flat:true, img:true},
+  bed:    {name:'ふかふかベッド', spot:'floor', w:150, h:142,  price:0, img:true},
+  lamp:   {name:'つきのランプ',   spot:'floor', w:66, h:117, price:0, img:true},
+  table:  {name:'まるテーブル',   spot:'floor', w:115, h:94,  price:2, img:true},
+  cushion:{name:'クッション',     spot:'floor', w:80, h:56,  price:1, img:true},
+  plant:  {name:'はちうえ',       spot:'floor', w:62, h:76,  price:1, img:true},
+  shelf:  {name:'ほんだな',       spot:'floor', w:105, h:166, price:3, img:true},
+  shellbed:{name:'シェルベッド', spot:'floor', w:175, h:164, price:4, img:true},
+  shelltable:{name:'シェルテーブル', spot:'floor', w:125, h:80, price:3, img:true},
+  shellchair:{name:'シェルチェア', spot:'floor', w:105, h:98, price:3, img:true},
+  bottle:{name:'メッセージボトル', spot:'floor', w:58, h:68, price:2, img:true},
+  crystal2:{name:'パールクリスタル', spot:'floor', w:90, h:82, price:3, img:true},
+  shellcake:{name:'シェルケーキ', spot:'floor', w:78, h:80, price:3, img:true},
+  lanternstand:{name:'とうろうスタンド', spot:'floor', w:100, h:133, price:3, img:true},
+  stall:{name:'うみべの やたい', spot:'floor', w:200, h:156, price:5, img:true},
+  kingyo:{name:'クラゲすくい', spot:'floor', w:190, h:148, price:4, img:true},
+  mcushion:{name:'もみじクッション', spot:'floor', w:115, h:71, price:2, img:true},
+  chochin:{name:'ちょうちん', spot:'floor', w:80, h:164, price:2, img:true},
+  omen:{name:'おめんやさん', spot:'floor', w:200, h:174, price:5, img:true},
+  acorn:{name:'どんぐりかご', spot:'floor', w:60, h:52, price:2, img:true},
+  yakiimo:{name:'やきいも', spot:'floor', w:70, h:45, price:2, img:true},
+  bridge:{name:'もみじの はし', spot:'floor', w:230, h:103, price:4, img:true},
+  garland:{name:'あきの ガーランド', spot:'wall', w:300, h:99, price:3, img:true},
+  pumpkinstand:{name:'かぼちゃランタン', spot:'floor', w:85, h:172, price:3, img:true},
+  hrug:{name:'まほうのラグ', spot:'floor', w:170, h:100, price:2, img:true, flat:true},
+  ghostcushion:{name:'おばけクッション', spot:'floor', w:85, h:74, price:2, img:true},
+  candytable:{name:'おかしのテーブル', spot:'floor', w:105, h:122, price:4, img:true},
+  hshelf:{name:'まほうのほんだな', spot:'floor', w:115, h:154, price:4, img:true},
+  jbox:{name:'かぼちゃびっくりばこ', spot:'floor', w:85, h:85, price:4, img:true},
+  hframe:{name:'つきよの がくぶち', spot:'wall', w:80, h:94, price:2, img:true},
+  chandelier:{name:'かぼちゃシャンデリア', spot:'wall', w:95, h:137, price:5, img:true},
+  window: {name:'まど',           spot:'wall',  w:135, h:116, price:2, img:true},
+  frame:  {name:'しゃしんたて',   spot:'wall',  w:72, h:74,  price:1, img:true},
+};
+let roomItemId = 1;
+function riId(it){ if(!it.id) it.id = Date.now().toString(36)+(roomItemId++); return it.id; }
+function roomPos(R,it){ if(it.on){ const t=R.items.find(x=>x.id===it.on); if(t && SURF[t.k]){ return {x:t.x+(it.dx||0), y:t.y-SURF[t.k]*FURN[t.k].h, sort:t.y+.5}; } it.on=null; } return {x:it.x, y:it.y, sort:it.y}; }
+function roomSnap(R,it,px,py){ if(!SMALLS.has(it.k)) return false; for(const t of R.items){ if(t===it || !SURF[t.k]) continue; const F=FURN[t.k], top=t.y-SURF[t.k]*F.h; if(Math.abs(px-t.x)<F.w*.42 && Math.abs(py-top)<24){ riId(t); it.on=t.id; it.dx=px-t.x; return true; } } it.on=null; return false; }
+function roomOf(u){ if(!u.room) u.room = {wall:'pastel', floor:'sand', items:[{k:'rug',x:320,y:340},{k:'bed',x:150,y:330},{k:'lamp',x:520,y:320}]}; return u.room; }
+function furnOwned(k){ return FURN[k].price===0 || (S.furn||[]).includes(k); }
+function drawFurn(c,k,x,y,t){
+  c.save(); c.translate(x,y); c.lineJoin='round'; c.lineCap='round';
+  if(FURN[k] && FURN[k].img){ if(FURN[k].spot==='wall' || FURN[k].flat) c.translate(0,FURN[k].h/2);
+    if(k==='lamp'){ c.fillStyle=`rgba(255,236,170,${.18+.25*night})`; c.beginPath(); c.arc(-FURN[k].w*.12,-FURN[k].h*.68,38+Math.sin(t*2)*2,0,TAU); c.fill(); }
+    drawFImg(c, k==='window' && night<.5 ? 'windowday' : k, FURN[k].w, FURN[k].h, x*.013); c.restore(); return; }
+  const O='#5a5480';
+  switch(k){
+    case 'rug': c.fillStyle='#f7c6d2'; c.beginPath(); c.ellipse(0,0,75,15,0,0,TAU); c.fill(); c.strokeStyle='#fff'; c.lineWidth=3; c.setLineDash([6,6]); c.beginPath(); c.ellipse(0,0,62,11,0,0,TAU); c.stroke(); c.setLineDash([]); break;
+    case 'bed':
+      c.fillStyle='#c9a27a'; c.strokeStyle=O; c.lineWidth=2; c.beginPath(); c.roundRect(-75,-62,14,62,5); c.fill(); c.stroke();
+      c.fillStyle='#fff'; c.beginPath(); c.roundRect(-66,-34,140,28,10); c.fill(); c.stroke();
+      c.fillStyle='#b7c3f2'; c.beginPath(); c.roundRect(-20,-38,94,30,12); c.fill(); c.stroke();
+      c.fillStyle='rgba(255,255,255,.5)'; for(let i=0;i<3;i++){ c.beginPath(); c.arc(0+i*24,-24,4,0,TAU); c.fill(); }
+      c.fillStyle='#fde3ec'; c.beginPath(); c.ellipse(-44,-38,20,10,0,0,TAU); c.fill(); c.stroke();
+      c.fillStyle='#c9a27a'; c.fillRect(-66,-6,6,6); c.fillRect(66,-6,6,6); break;
+    case 'lamp':
+      c.fillStyle='#c9a27a'; c.strokeStyle=O; c.lineWidth=2; c.beginPath(); c.ellipse(0,-3,14,5,0,0,TAU); c.fill(); c.stroke(); c.fillRect(-2,-80,4,78);
+      c.fillStyle='rgba(255,236,170,.25)'; c.beginPath(); c.arc(0,-92,40+Math.sin(t*2)*2,0,TAU); c.fill();
+      c.fillStyle='#fff3c4'; c.beginPath(); c.arc(0,-92,18,0,TAU); c.fill(); c.stroke();
+      crescent(c,-2,-92,11,'#f4d27a',.3); break;
+    case 'table':
+      c.fillStyle='#e3c6a0'; c.strokeStyle=O; c.lineWidth=2; c.fillRect(-4,-40,8,40); c.strokeRect(-4,-40,8,40);
+      c.beginPath(); c.ellipse(0,-2,20,5,0,0,TAU); c.fill(); c.stroke();
+      c.fillStyle='#f3dcbc'; c.beginPath(); c.ellipse(0,-44,45,11,0,0,TAU); c.fill(); c.stroke();
+      c.fillStyle='#fff'; c.beginPath(); c.roundRect(-8,-62,16,16,4); c.fill(); c.stroke(); c.fillStyle='#f7c6d2'; c.fillRect(-6,-58,12,5); break;
+    case 'cushion':
+      c.fillStyle='#fbd3a8'; c.strokeStyle=O; c.lineWidth=2; c.beginPath(); c.ellipse(0,-12,30,13,0,0,TAU); c.fill(); c.stroke();
+      c.fillStyle='rgba(255,255,255,.6)'; c.beginPath(); c.ellipse(-8,-16,10,4,0,0,TAU); c.fill(); break;
+    case 'plant':
+      c.fillStyle='#e8a38a'; c.strokeStyle=O; c.lineWidth=2; c.beginPath(); c.moveTo(-18,-30); c.lineTo(18,-30); c.lineTo(13,0); c.lineTo(-13,0); c.closePath(); c.fill(); c.stroke();
+      c.fillStyle='#8fd0ae'; [[-12,-52,-.5],[12,-54,.5],[0,-68,0],[-4,-44,-.2]].forEach(([a,b,r])=>{ c.save(); c.translate(a,b+Math.sin(t*1.5+a)*1.5); c.rotate(r); c.beginPath(); c.ellipse(0,0,9,18,0,0,TAU); c.fill(); c.stroke(); c.restore(); }); break;
+    case 'shelf':
+      c.fillStyle='#d9b58c'; c.strokeStyle=O; c.lineWidth=2; c.beginPath(); c.roundRect(-45,-130,90,130,5); c.fill(); c.stroke();
+      c.fillStyle='#b98f66'; [-88,-46].forEach(yy=>c.fillRect(-40,yy,80,5));
+      const bk=['#f09ab6','#9fb3f0','#8fd0ae','#f4d27a','#c7a8ef'];
+      for(let i=0;i<5;i++){ c.fillStyle=bk[i]; c.fillRect(-38+i*9,-120,7,30); }
+      for(let i=0;i<4;i++){ c.fillStyle=bk[(i+2)%5]; c.fillRect(-36+i*10,-78,8,30); }
+      c.fillStyle='#fff'; c.beginPath(); c.arc(22,-60,9,0,TAU); c.fill(); c.stroke(); crescent(c,20,-60,6,'#f4d27a',.3);
+      c.fillStyle='#f7c6d2'; c.beginPath(); c.arc(-20,-24,10,0,TAU); c.fill(); c.stroke(); c.fillStyle='#9fb3f0'; c.beginPath(); c.roundRect(4,-36,26,30,4); c.fill(); c.stroke(); break;
+    case 'window': {
+      const nt = night>.5;
+      c.fillStyle = nt ? '#2a2f6a' : '#bfe3fb'; c.strokeStyle='#fff'; c.lineWidth=7; c.beginPath(); c.roundRect(-55,-45,110,90,10); c.fill(); c.stroke();
+      if(nt){ c.fillStyle='#fff3c4'; c.beginPath(); c.arc(24,-18,11,0,TAU); c.fill(); c.fillStyle='rgba(255,248,215,.9)'; [[-30,-20],[-12,10],[-38,20],[10,24]].forEach(([a,b])=>{ c.beginPath(); c.arc(a,b,1.8,0,TAU); c.fill(); }); }
+      else { c.fillStyle='#fff'; c.beginPath(); c.ellipse(-18+Math.sin(t*.3)*6,-10,18,8,0,0,TAU); c.fill(); c.beginPath(); c.ellipse(20,14,14,6,0,0,TAU); c.fill(); }
+      c.strokeStyle='#fff'; c.lineWidth=4; c.beginPath(); c.moveTo(0,-45); c.lineTo(0,45); c.moveTo(-55,0); c.lineTo(55,0); c.stroke();
+      c.fillStyle='#f7c6d2'; c.beginPath(); c.moveTo(-62,-50); c.quadraticCurveTo(-40,0,-66,48); c.lineTo(-70,-50); c.fill(); c.beginPath(); c.moveTo(62,-50); c.quadraticCurveTo(40,0,66,48); c.lineTo(70,-50); c.fill(); break; }
+    case 'frame':
+      c.fillStyle='#e3c6a0'; c.strokeStyle=O; c.lineWidth=2; c.beginPath(); c.roundRect(-28,-28,56,56,6); c.fill(); c.stroke();
+      c.fillStyle='#e6e4fb'; c.fillRect(-20,-20,40,40); crescent(c,0,0,12,'#f4d27a',.3);
+      c.fillStyle='#f7c6d2'; c.beginPath(); c.arc(12,12,4,0,TAU); c.fill(); break;
+  }
+  c.restore();
+}
+const roomTexImg = new Image(); let roomTexPat = {}; roomTexImg.onload = () => { roomTexPat = {}; }; roomTexImg.src = 'roomtex.png';
+function roomPattern(c, i){ if(!roomTexImg.complete || !roomTexImg.naturalWidth) return null; if(!roomTexPat[i]){ const t=document.createElement('canvas'); t.width=256; t.height=256; t.getContext('2d').drawImage(roomTexImg, i*256, 0, 256, 256, 0, 0, 256, 256); roomTexPat[i]=t; } return c.createPattern(roomTexPat[i], 'repeat'); }
+let room = null;
+function furnSeries(k){ const F=FURN[k]; if(F.img && FIMG.m[k] && FIMG.m[k].s!=='base') return FIMG.m[k].s; return 'kihon'; }
+function openRoom(u){ room = {cat:'kihon', uid:u.id, edit:false, sel:null, drag:null, fig:null, tx:320, ty:330, timer:2, mode:'walk'}; asobiView='room'; renderAsobi(); }
+function renderRoomView(b){
+  const u = S.umimi.find(o=>o.id===room.uid); if(!u){ asobiView='roompick'; return renderAsobi(); }
+  const R = roomOf(u);
+  $('asobiTitle').textContent = `${u.name}の おへや`;
+  const cv2 = document.createElement('canvas'); cv2.className='dcv rcv'; cv2.id='roomCv'; b.appendChild(cv2);
+  if(!room.fig){ room.fig = hydrateU(Object.assign({}, u, {mem:[], lift:0})); room.fig.x=320; room.fig.y=340; room.fig.state='idle'; room.fig.timer=1.5; }
+  if(room.edit){
+    const ed = document.createElement('div'); ed.className='redit';
+    ed.innerHTML = `<div class="rrow"><span class="lbl">かべ</span>${Object.entries(WALLS).map(([k,v])=>`<button type="button" class="dm${R.wall===k?' on':''}" data-w="${k}">${v.name}</button>`).join('')}</div>
+      <div class="rrow"><span class="lbl">ゆか</span>${Object.entries(FLOORS).map(([k,v])=>`<button type="button" class="dm${R.floor===k?' on':''}" data-f="${k}">${v.name}</button>`).join('')}</div>
+      <div class="rrow"><span class="lbl">シリーズ</span>${DSERIES.filter(([k])=>Object.keys(FURN).some(x=>furnSeries(x)===k)).map(([k,n])=>`<button type="button" class="dm${room.cat===k?' on':''}" data-rc="${k}">${n}</button>`).join('')}</div>
+      <div class="rrow"><span class="lbl">かぐ</span>${Object.entries(FURN).filter(([k])=>furnSeries(k)===room.cat).map(([k,v])=>{ const own=furnOwned(k); return `<button type="button" class="dm fb${own?'':' lock'}" data-k="${k}">${v.name}${own?'':` 🌙${v.price}`}</button>`; }).join('')}</div>
+      <p class="dsub">かぐを タップすると おへやに おけるよ（🌙は つきのかけらで かう）。おへやの かぐは ドラッグで うごかせます。${room.sel!=null?'':''}</p>`;
+    b.appendChild(ed);
+    ed.querySelectorAll('[data-rc]').forEach(x=>x.addEventListener('click',()=>{ room.cat=x.dataset.rc; renderAsobi(); }));
+    ed.querySelectorAll('[data-w]').forEach(x=>x.addEventListener('click',()=>{ R.wall=x.dataset.w; save(); renderAsobi(); }));
+    ed.querySelectorAll('[data-f]').forEach(x=>x.addEventListener('click',()=>{ R.floor=x.dataset.f; save(); renderAsobi(); }));
+    ed.querySelectorAll('[data-k]').forEach(x=>x.addEventListener('click',()=>{ const k=x.dataset.k, F=FURN[k];
+      if(!furnOwned(k)){ if(S.shards < F.price){ toast(`つきのかけらが たりないよ（${F.price}こ ひつよう）`); return; } S.shards-=F.price; refreshShards(true); S.furn=(S.furn||[]).concat(k); sfx('shard'); toast(`「${F.name}」を かったよ`); }
+      if(R.items.length>=14){ toast('おへやが いっぱい。なにか しまってね'); renderAsobi(); return; }
+      let bx=320, bd=-1; for(let t2=0;t2<12;t2++){ const cx=rand(F.w/2+8, RW-F.w/2-8); const dmin=Math.min(999,...R.items.filter(it=>FURN[it.k].spot===F.spot && !FURN[it.k].flat).map(it=>Math.abs(it.x-cx)-(FURN[it.k].w+F.w)/2)); if(dmin>bd){ bd=dmin; bx=cx; } }
+      const ni={k, x:bx, y: F.spot==='wall' ? 110 : rand(300,345)}; riId(ni);
+      if(SMALLS.has(k)){ const tb=R.items.find(t=>SURF[t.k] && R.items.filter(o=>t.id && o.on===t.id).length<2); if(tb){ riId(tb); const n2=R.items.filter(o=>o.on===tb.id).length; ni.on=tb.id; ni.dx=n2? FURN[tb.k].w*.22 : -FURN[tb.k].w*.12; toast('テーブルの うえに おいたよ'); } }
+      R.items.push(ni); room.sel = R.items.length-1; save(); renderAsobi(); }));
+  }
+  const bar = document.createElement('div'); bar.className='dbar';
+  bar.innerHTML = room.edit
+    ? `${room.sel!=null && R.items[room.sel] ? `<button class="dbtn sub" type="button" id="rDel">「${FURN[R.items[room.sel].k].name}」を しまう</button>` : ''}<button class="dbtn" type="button" id="rDone">できた！</button>`
+    : `<button class="dbtn sub" type="button" id="rBack">もどる</button><button class="dbtn sub" type="button" id="rPhoto">しゃしんを とる</button><button class="dbtn" type="button" id="rEdit">もようがえ</button>`;
+  b.appendChild(bar);
+  if(room.edit){
+    $('rDone').addEventListener('click', ()=>{ room.edit=false; room.sel=null; save(); renderAsobi(); });
+    if($('rDel')) $('rDel').addEventListener('click', ()=>{ const gone=R.items[room.sel]; R.items.forEach(x=>{ if(gone && x.on && x.on===gone.id){ x.x=gone.x+(x.dx||0); x.y=gone.y+4; x.on=null; } }); R.items.splice(room.sel,1); room.sel=null; save(); renderAsobi(); });
+  } else {
+    $('rBack').addEventListener('click', ()=>{ asobiView='roompick'; renderAsobi(); });
+    $('rEdit').addEventListener('click', ()=>{ room.edit=true; renderAsobi(); });
+    $('rPhoto').addEventListener('click', (e)=>{ const src=cv2; const sc=Math.min(1,960/src.width); const oc=document.createElement('canvas'); oc.width=Math.round(src.width*sc); oc.height=Math.round(src.height*sc); const x=oc.getContext('2d'); x.drawImage(src,0,0,oc.width,oc.height);
+      const label=`${fmtDate(Date.now())}  ${u.name}の おへや`; x.font=`600 ${Math.round(oc.height*.05)+8}px "Klee One","Zen Maru Gothic",sans-serif`; x.textAlign='right'; x.lineWidth=4; x.strokeStyle='rgba(255,255,255,.9)'; x.strokeText(label,oc.width-12,oc.height-12); x.fillStyle='#5b64b8'; x.fillText(label,oc.width-12,oc.height-12);
+      photos.unshift({t:Date.now(), data:oc.toDataURL('image/jpeg',.82), names:[u.name]}); while(photos.length>12) photos.pop(); let ok=savePhotos(); while(!ok && photos.length>1){ photos.pop(); ok=savePhotos(); }
+      const f=$('flash'); f.hidden=false; f.style.animation='none'; void f.offsetWidth; f.style.animation=''; setTimeout(()=>f.hidden=true,520); sfx('shard'); e.target.textContent='アルバムに いれたよ'; e.target.disabled=true; addMem(u,'おへやで しゃしんを とった',true); });
+  }
+  // pointer
+  const toRoom = ev => { const r=cv2.getBoundingClientRect(); const sc = Math.min(r.height/RH, r.width/RW), ox = (r.width - RW*sc)/2, oy = (r.height - RH*sc)/2; return {x:(ev.clientX-r.left-ox)/sc, y:(ev.clientY-r.top-oy)/sc}; };
+  cv2.addEventListener('pointerdown', ev=>{ const p=toRoom(ev);
+    if(room.edit){ let hit=null, best=-1e9; for(let i=R.items.length-1;i>=0;i--){ const it=R.items[i], F=FURN[it.k], P=roomPos(R,it); const top = F.spot==='wall' ? P.y-F.h/2 : P.y-F.h; const bot = F.spot==='wall' ? P.y+F.h/2 : P.y+8; const pri = (F.spot==='wall'?-1000:0) + P.sort + (F.flat?-500:0); if(p.x>P.x-F.w/2 && p.x<P.x+F.w/2 && p.y>top && p.y<bot && pri>best){ hit=i; best=pri; } }
+      if(hit!=null){ const P=roomPos(R,R.items[hit]); room.sel=hit; room.drag={i:hit, dx:p.x-P.x, dy:p.y-P.y}; cv2.setPointerCapture(ev.pointerId); renderRoomBar(); } else { room.sel=null; renderRoomBar(); } ev.preventDefault(); }
+    else { const f=room.fig; if(Math.abs(p.x-f.x)<55 && p.y>f.y-90 && p.y<f.y+10){ f.state='happy'; f.timer=1.6; const L=learnedOf(u); if(L.length && Math.random()<.5){ startTrick(f, L[Math.floor(Math.random()*L.length)]); } room.hearts=(room.hearts||[]).concat([{x:f.x,y:f.y-80,life:1.2}]); sfx('pet'); } }
+  });
+  cv2.addEventListener('pointermove', ev=>{ if(!room.drag) return; const p=toRoom(ev), it=R.items[room.drag.i], F=FURN[it.k]; const nx=clamp(p.x-room.drag.dx, F.w/2, RW-F.w/2), ny=p.y-room.drag.dy; if(F.spot==='floor' && roomSnap(R,it,nx,ny)) return; it.x = nx; it.y = F.spot==='wall' ? clamp(ny, F.h/2+10, RWALL-F.h/2-6) : clamp(ny, RWALL+20, RH-6); });
+  cv2.addEventListener('pointerup', ()=>{ if(room.drag){ room.drag=null; save(); } });
+}
+function renderRoomBar(){ // refresh only the "しまう" button without rebuilding the canvas
+  const bar = document.querySelector('#asobiBody .dbar'); if(!bar || !room.edit) return; const u=S.umimi.find(o=>o.id===room.uid); const R=roomOf(u);
+  const del = $('rDel'); if(del) del.remove();
+  if(room.sel!=null && R.items[room.sel]){ const bt=document.createElement('button'); bt.className='dbtn sub'; bt.type='button'; bt.id='rDel'; bt.textContent=`「${FURN[R.items[room.sel].k].name}」を しまう`; bt.addEventListener('click', ()=>{ const gone=R.items[room.sel]; R.items.forEach(x=>{ if(gone && x.on && x.on===gone.id){ x.x=gone.x+(x.dx||0); x.y=gone.y+4; x.on=null; } }); R.items.splice(room.sel,1); room.sel=null; save(); renderAsobi(); }); bar.prepend(bt); }
+}
+function updateRoom(dt){
+  if(asobiView!=='room' || $('asobi').hidden || !room || !room.fig) return;
+  const cv2 = $('roomCv'); if(!cv2) return; const u = S.umimi.find(o=>o.id===room.uid); if(!u) return; const R = roomOf(u), f = room.fig;
+  f.t += dt; f.moving=false;
+  const REST = {ghostcushion:{lift:18,st:'idle',dx:4,dy:-12}, mcushion:{lift:16,st:'idle',dx:0,dy:-14}, cushion:{lift:20,st:'idle',dx:0,dy:-10}, shellbed:{lift:30,st:'sleep',dx:0,dy:-22}, bed:{lift:48,st:'sleep',dx:0,dy:-30}, shellchair:{lift:26,st:'idle',dx:0,dy:-14}};
+  const spots = R.items.filter(it=>REST[it.k]); const bed = room.spot;
+  if(f.state==='trick'){ f.timer-=dt; if(f.timer<=0){ f.state='idle'; f.timer=1.5; } }
+  else if(f.state==='walk'){ const dx=room.tx-f.x, dy=room.ty-f.y, d=Math.hypot(dx,dy); if(d<3){ f.state = room.next||'idle'; f.timer = f.state==='sleep' ? rand(6,10) : f.state==='sit' ? rand(5,9) : rand(1.5,3.5); room.next=null; } else { const sp=45*dt; f.x+=dx/d*Math.min(sp,d); f.y+=dy/d*Math.min(sp,d); f.dir = dx>0?1:-1; f.moving=true; } }
+  else { f.timer-=dt; if(f.timer<=0){
+      const r=Math.random(); const L=learnedOf(u);
+      if(f.state==='sleep' || f.state==='sit'){ f.state='idle'; f.timer=1; f.lift=0; room.spot=null; }
+      else if(spots.length && r<.28){ const sp=spots[Math.floor(Math.random()*spots.length)], RS=REST[sp.k]; room.spot=sp; room.tx=sp.x+RS.dx; room.ty=sp.y+RS.dy; room.next=RS.st==='sleep'?'sleep':'sit'; f.state='walk'; }
+      else if(L.length && r<.38){ startTrick(f, L[Math.floor(Math.random()*L.length)]); }
+      else { room.tx=rand(60,RW-60); room.ty=rand(RWALL+40,RH-12); room.next='idle'; f.state='walk'; }
+  } }
+  if((f.state==='sleep'||f.state==='sit') && bed && R.items.includes(bed)){ const RS=REST[bed.k]; f.lift = RS.lift; } else { f.lift = 0; if(f.state==='sit'){ f.state='idle'; } }
+  const fdraw = f.state==='sit' ? Object.assign(Object.create(f),{state:'idle'}) : f;
+  // draw
+  const dpr=Math.min(2,window.devicePixelRatio||1), cw=cv2.clientWidth, ch=cv2.clientHeight; if(!cw||!ch) return;
+  if(cv2.width!==Math.round(cw*dpr)||cv2.height!==Math.round(ch*dpr)){ cv2.width=Math.round(cw*dpr); cv2.height=Math.round(ch*dpr); }
+  const c=cv2.getContext('2d'), sc=Math.min(cv2.height/RH, cv2.width/RW), ox=(cv2.width/sc-RW)/2, oy=(cv2.height/sc-RH)/2;
+  c.setTransform(1,0,0,1,0,0); c.fillStyle='#e9ecfd'; c.fillRect(0,0,cv2.width,cv2.height);
+  c.setTransform(sc,0,0,sc,ox*sc,oy*sc);
+  const Wd=WALLS[R.wall]||WALLS.pastel, Fl=FLOORS[R.floor]||FLOORS.sand;
+  let g=c.createLinearGradient(0,0,0,RWALL); g.addColorStop(0,Wd.a); g.addColorStop(1,Wd.b); c.fillStyle=g; c.fillRect(0,0,RW,RWALL);
+  const wp = Wd.tex!=null ? roomPattern(c, Wd.tex) : null; if(wp){ const k=RWALL*1.35/256; wp.setTransform(new DOMMatrix([k,0,0,k,0,0])); c.fillStyle=wp; c.fillRect(0,0,RW,RWALL); }
+  if(!wp && Wd.dot) { c.fillStyle=Wd.dot; } if(!wp && Wd.dot) for(let i=0;i<26;i++){ const x=(i*97)%RW+10, y=(i*53)%(RWALL-30)+12; if(R.wall==='pastel'){ c.beginPath(); c.arc(x,y,3,0,TAU); c.fill(); } else { c.globalAlpha=.5+.5*Math.sin(T*2+i); c.beginPath(); c.arc(x,y,1.6,0,TAU); c.fill(); c.globalAlpha=1; } }
+  g=c.createLinearGradient(0,RWALL,0,RH); g.addColorStop(0,Fl.a); g.addColorStop(1,Fl.b); c.fillStyle=g; c.fillRect(0,RWALL,RW,RH-RWALL);
+  const fp = Fl.tex!=null ? roomPattern(c, Fl.tex) : null; if(fp){ const k=Fl.tex===0 ? .6 : .5; fp.setTransform(new DOMMatrix([k,0,0,k*.62,0,RWALL])); c.fillStyle=fp; c.fillRect(0,RWALL,RW,RH-RWALL); c.fillStyle='rgba(255,255,255,.12)'; c.fillRect(0,RWALL,RW,22); }
+  if(R.floor==='wood'){ c.strokeStyle='rgba(120,80,40,.18)'; c.lineWidth=2; for(let y=RWALL+18;y<RH;y+=22){ c.beginPath(); c.moveTo(0,y); c.lineTo(RW,y); c.stroke(); } }
+  c.fillStyle='rgba(255,255,255,.55)'; c.fillRect(0,RWALL-4,RW,6);
+  const items = R.items.map((it,i)=>({it,i}));
+  items.filter(o=>FURN[o.it.k].spot==='wall').forEach(o=>drawFurn(c,o.it.k,o.it.x,o.it.y,T));
+  items.filter(o=>FURN[o.it.k].flat).forEach(o=>drawFurn(c,o.it.k,o.it.x,o.it.y,T));
+  const floorOnes = items.filter(o=>FURN[o.it.k].spot==='floor' && !FURN[o.it.k].flat).map(o=>{ const P=roomPos(R,o.it); return {y:P.sort, f:()=>drawFurn(c,o.it.k,P.x,P.y,T)}; });
+  const fs = .5 + (f.y-RWALL)/(RH-RWALL)*.14;
+  floorOnes.push({y: (f.state==='sleep'||f.state==='sit') && bed ? bed.y+1 : f.y, f:()=>{ try{ drawUmimiAt(c,fdraw,f.x,f.y,fs,T,f.lift||0,{}); }catch(e){} }});
+  floorOnes.sort((a,b)=>a.y-b.y).forEach(o=>o.f());
+  if(room.edit && room.sel!=null && R.items[room.sel]){ const it=R.items[room.sel], F=FURN[it.k], P=roomPos(R,it); const top = F.spot==='wall' ? P.y-F.h/2 : P.y-F.h; c.strokeStyle=it.on?'#7fb8e0':'#f06a9a'; c.lineWidth=2.5; c.setLineDash([7,5]); c.strokeRect(P.x-F.w/2-4, top-4, F.w+8, (F.spot==='wall'?F.h:F.h+12)+8); c.setLineDash([]); }
+  room.hearts = (room.hearts||[]).filter(h=>(h.life-=dt)>0);
+  room.hearts.forEach(h=>{ h.y -= 30*dt; c.globalAlpha=Math.min(1,h.life); c.fillStyle='#f28bb0'; const x=h.x, y=h.y; c.beginPath(); c.moveTo(x,y+7); c.bezierCurveTo(x-13,y-5,x-7,y-15,x,y-8); c.bezierCurveTo(x+7,y-15,x+13,y-5,x,y+7); c.fill(); c.globalAlpha=1; });
+  if(f.state==='sleep'){ c.fillStyle='rgba(120,120,200,.8)'; c.font='700 16px sans-serif'; c.fillText('z', f.x+30, f.y-60-Math.sin(T*2)*4-(f.lift||0)); }
+}
+$('asobiBtn').addEventListener('click', () => { if(!$('asobi').hidden){ $('asobi').hidden=true; return; } openAsobi('menu'); });
+$('asobiClose').addEventListener('click', () => { $('asobi').hidden=true; });
+
 // ---------- boot ----------
 let last = performance.now();
-function frame(now){ const dt=Math.min(.05,(now-last)/1000); last=now; T+=dt; update(dt); draw(); if(derby) updateDerby(dt); requestAnimationFrame(frame); }
+function frame(now){ const dt=Math.min(.05,(now-last)/1000); last=now; T+=dt; update(dt); draw(); if(derby) updateDerby(dt); updateLesson(dt); updateRoom(dt); requestAnimationFrame(frame); }
 function awayDiary(){
   const us = S.umimi, n = us[Math.floor(Math.random()*us.length)].name, others = us.filter(u=>u.name!==n), m = others.length ? others[Math.floor(Math.random()*others.length)].name : '';
   const hasLamp = S.decor.some(o=>o.type==='lamp'||o.type==='jellylamp');
