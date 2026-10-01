@@ -12,9 +12,17 @@ MANEYE={'devil2':(517,520,586,522),'gothic':(456,516,538,521)}
 SCALEFIX={'bath':.9,'maid':1.22,'hoodie':.92,'jugoya':.8,'zansho':.88,'camping':.92,'goldfish':.92,'ghostmaid':.92}
 S=0.8; CW,CH=240,208  # stored cell (scale-1 coords 300x260)
 EX,EY=130,165          # right-eye position in scale-1 cell coords
-keys=list(SRC); cols=8; rows=(len(keys)+cols-1)//cols
-sheet=Image.new('RGBA',(CW*cols,CH*rows),(0,0,0,0)); meta={}
-for i,k in enumerate(keys):
+# 分類ごとに別シート c_<分類>.png にする（ゲーム側は使うときだけ読み込む）。新しい衣装は SRC と CAT の両方に足す
+CAT={'animal':['bear','chick','dog','cat','rabbit'],
+ 'food':['strawberry','lemon','matcha','blueberry','mango','grape'],
+ 'season':['sakura','randoseru','yukata','goldfish','asagao','higanbana','jugoya','momiji','witch','santa','newyear'],
+ 'work':['explorer','chef','nurse','musician','delivery','miko','idol','maid'],
+ 'fashion':['ribbon','flower','crown','sailor','knit','hoodie','gothic'],
+ 'relax':['pajama','bath','camping','raincoat'],
+ 'dream':['constellation','space','angel','devil','ghostmaid']}
+_all=[k for v in CAT.values() for k in v]; assert sorted(_all)==sorted(SRC), set(_all)^set(SRC)
+cols=4; cells={}; meta={}
+for k in SRC:
     n=SRC[k]; a=load(n); G=bgcolor(a); rgba,dist=key(a,G); im=Image.fromarray(rgba,'RGBA')
     fg=dist>80
     try: box=halves(fg)[0]
@@ -37,12 +45,18 @@ for i,k in enumerate(keys):
     ring=arr[cy-14:cy+14, cx+9:cx+16].reshape(-1,4); ring=ring[ring[:,3]>200]
     lid=np.median(ring[:,:3],axis=0).astype(int).tolist() if len(ring) else [246,244,252]
     ldx=(L[1]-Rr[1])*sc; ldy=(L[2]-Rr[2])*sc
-    sheet.paste(cell,((i%cols)*CW,(i//cols)*CH))
-    meta[k]={'i':i,'g':round(float(ground),1),'lid':'#%02x%02x%02x'%tuple(lid),'le':[round(float(ldx),1),round(float(ldy),1)]}
-q=sheet.quantize(colors=256,method=Image.Quantize.FASTOCTREE,dither=Image.Dither.NONE)
-q.save('../../costumes.png',optimize=True)
+    cells[k]=cell
+    meta[k]={'g':round(float(ground),1),'lid':'#%02x%02x%02x'%tuple(lid),'le':[round(float(ldx),1),round(float(ldy),1)]}
+pv_all=[]
+for cat,ks in CAT.items():
+    rows=(len(ks)+cols-1)//cols; sheet=Image.new('RGBA',(CW*cols,CH*rows),(0,0,0,0))
+    for i,k in enumerate(ks):
+        sheet.paste(cells[k],((i%cols)*CW,(i//cols)*CH)); meta[k]['s']=cat; meta[k]['i']=i
+    q=sheet.quantize(colors=256,method=Image.Quantize.FASTOCTREE,dither=Image.Dither.NONE)
+    q.save('../../c_%s.png'%cat,optimize=True)
+    pv=Image.new('RGBA',sheet.size,(198,207,244,255)); pv.alpha_composite(q.convert('RGBA')); d=ImageDraw.Draw(pv)
+    for i,k in enumerate(ks):
+        X=(i%cols)*CW; Y=(i//cols)*CH; d.text((X+4,Y+4),k,fill='black'); gy=Y+meta[k]['g']*S; d.line([X+60,gy,X+200,gy],fill=(255,0,0))
+    pv.convert('RGB').save('preview-%s.png'%cat)
 json.dump({'cw':CW,'ch':CH,'cols':cols,'s':S,'ex':EX,'ey':EY,'m':meta},open('costumes.json','w'))
-pv=Image.new('RGBA',sheet.size,(198,207,244,255)); pv.alpha_composite(q.convert('RGBA')); d=ImageDraw.Draw(pv)
-for k,m in meta.items():
-    i=m['i']; X=(i%cols)*CW; Y=(i//cols)*CH; d.text((X+4,Y+4),k,fill='black'); gy=Y+m['g']*S; d.line([X+60,gy,X+200,gy],fill=(255,0,0))
-pv.convert('RGB').save('all-preview.png'); print(len(meta))
+print(len(meta))

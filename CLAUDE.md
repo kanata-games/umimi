@@ -11,7 +11,7 @@
 ## ★新しい会話で続けるとき（最初に読む）
 - 作業場所：このリポジトリを clone（例 /home/claude/umimi-repo）。本体は `source/game.html`、画像は直下の png
 - **本番・開発版のリンクは絶対に変えない**。Artifact を公開するときは必ず `url` に下の既存URLを渡す（url なしで公開すると別リンクが新しくできてしまう）。別の会話から更新する前に、いったん `action: "read"` でその URL を読む
-- 公開するとき、画像は `files` に**絶対パス**で全部渡す：`costumes.png` `umimi-sprites.png` `visitors.png` `roomtex.png` `f_base.png` `f_pearl.png` `f_autumn.png` `f_halloween.png`。capability は `downloads`（前のバージョンから引き継がれる）
+- 公開するとき、画像は `files` に**絶対パス**で全部渡す：`c_animal.png` `c_food.png` `c_season.png` `c_work.png` `c_fashion.png` `c_relax.png` `c_dream.png` `umimi-sprites.png` `visitors.png` `roomtex.png` `f_base.png` `f_pearl.png` `f_autumn.png` `f_halloween.png`。capability は `downloads`（前のバージョンから引き継がれる）
 - 開発版は `<title>ウミミの箱庭</title>` を `<title>ウミミの箱庭 開発版</title>` に置き換えたものを公開する
 - 確認用：ローカルで `python3 -m http.server` を立て、`<!doctype html><meta charset=utf-8>` を先頭に付けた試験用コピーを Playwright（/opt/pw-browsers）で開く。本体は IIFE なので、試すときは試験用コピーにだけ window.__xxx のフックを足す
 - 公開するときは「開発版か本番か」を必ずユーザーに伝える。本番は OK が出てから
@@ -23,7 +23,7 @@
 | 開発版 | https://claude.ai/artifact/LcJJkvKnfMuLo1P3um42CU | 非公開。タイトルは「ウミミの箱庭 開発版」 |
 | GitHub Pages | https://kanata-games.github.io/umimi/ | main ブランチの /(root) |
 
-- アーティファクトは `source/game.html`（doctype なしの本体）を公開する。png は `files` で同梱する：`costumes.png` `umimi-sprites.png` `visitors.png`（絶対パスで指定）
+- アーティファクトは `source/game.html`（doctype なしの本体）を公開する。png は `files` で同梱する：おきがえの `c_*.png`（7枚）`umimi-sprites.png` `visitors.png` ほか（絶対パスで指定）。アーティファクトに古い costumes.png が残っているが使っていない
 - capability は `downloads`（写真の保存に使う）
 - 開発版は、title を `ウミミの箱庭 開発版` に置き換えたものを公開する
 - 公開するときは、**開発版か本番か**を必ずユーザーに伝える（本番に出すと思われて止められたことがある）
@@ -35,16 +35,18 @@
 4. ひきつぎコード：`UMIMI1-` + base64(JSON)。PC とスマホの間の移動用
 
 ## いまの状態（2026-10-01 時点）
+- 開発中（ブランチ dev-closet-tabs）：おきがえシートを分類ごとに分割＋コレクションに分類タブ。開発版に公開済み、本番はまだ
 - 本番＝開発版とほぼ同じ。`source/game.html` には、デスクトップ版の「画面一周ダービー」用のコード（`DESK_RING` が true のときだけ動く）が入っているが、ブラウザ版では何もしない。本番アーティファクトと GitHub Pages の index.html はその1つ前（ブラウザ上の動きは同じ）
 - デスクトップ版の最新は 0.9.9（画面一周ダービーの試作。ユーザーがPCで試している途中）
 - ピッちゃん（ChatGPT）が家具・飾り・衣装の絵を作ってくれる。届いたら背景を抜いてシリーズ別シートに追加する
-- 今後の候補：おへやコード（部屋の見せ合い）、衣装シートの分割とコレクションの分類タブ、デスクトップ版でおけいこ・おへやをウインドウで開く、配信モード
+- 今後の候補：おへやコード（部屋の見せ合い）、デスクトップ版でおけいこ・おへやをウインドウで開く、配信モード
 
 ## ファイル
 - `index.html` … Pages 用。`source/game.html` の前に head（PWA タグ、manifest、icon）を付け、最後に `</body></html>` を足したもの。今の index.html の先頭14行が head
 - `source/game.html` … 本体。1ファイル（HTML と canvas、全体が IIFE）
 - `umimi-sprites.png` … ウミミ10コマ（セル 245x222、目の位置合わせ済み）。作り直すときは `source/sprites/build_sprites.py`（元画像は src.png）
-- `costumes.png` … おきがえ46枚のシート（セル 240x208、scale .8）。作り直すときは `source/costumes/build_all.py`（元画像は src/）。出力された costumes.json の中身を、game.html の `const COS = Object.assign({ready:false}, {...})` に貼る
+- `c_<分類>.png` … おきがえ46枚を分類ごとに分けたシート（animal/food/season/work/fashion/relax/dream、4列、セル 240x208、scale .8）。**使うときだけ読み込む**（`cosImgFor()`、色変えも分類×色ごと）。作り直すときは `source/costumes/build_all.py`（元画像は src/。新しい衣装は SRC と CAT の両方に足す）。出力された costumes.json の中身を、game.html の `const COS = {...}` に貼る（m[k].s が分類、i はシート内の番号）
+  - おきがえコレクションの分類タブは `OCATS`。シートのない normal/cape/choco の分類は `OCAT_EXTRA`
   - 目が自動で見つからない衣装は `MANEYE`、大きさの補正は `SCALEFIX`
   - 緑色の衣装は Grok でマゼンタ背景にしてもらう
   - ウミミの色に合わせた色変え：`recolorSheet()`。色を変えない衣装は `COS_KEEP`。チョコとマントはコードで描いている
@@ -52,7 +54,7 @@
 - `f_base.png` `f_pearl.png` `f_autumn.png` `f_halloween.png` … 家具・飾りのシリーズ別シート（ピッちゃん=ChatGPT作の絵を背景抜き・色数圧縮）。**使うときだけ読み込む**（`fsheet()`）。作り直しは `source/furniture/build_furniture2.py`（SERIES に「キー:(おへや幅, 水そう幅[, コマ数, 基準])」を足す）→ 出力 furniture_meta.json を game.html の `const FIMG = {m:...}` に貼る（jbox/chandelier は _0 のエイリアスも）
 - `roomtex.png` … おへやの壁紙・床の模様タイル4枚（`source/furniture/build_tex.py`）
 - デスクトップ版の「画面一周ダービー」：水そうの「ダービー」ボタン → main.js が作業領域いっぱいの透明ウインドウを `index.html#derby` で開く（`DESK_RING`）。予想の画面は真ん中、スタートするとクリックが下のアプリに通る。5匹は画面のいちばん外側を1列で一周（左下がスタート・ゴール、水そうの上も通る）。名前は出さず、賭けた子が金色に光る。閉じると水そうが読み込み直して結果を反映（開いているあいだは水そう側は保存しない `window.__noSave`）。Esc で閉じる
-- `desktop/` … Windows デスクトップ版（Electron）。`python3 build_desktop.py` で、game.html から画面の下に出る細長い水そう版の `desktop/app/index.html` を作る（画像は data URI で埋め込む。置き換える文字列が合わないと assert で止まるので、本体を変えたら置き換え側も直す）
+- `desktop/` … Windows デスクトップ版（Electron）。`python3 build_desktop.py` で、game.html から画面の下に出る細長い水そう版の `desktop/app/index.html` を作る（ウミミ・訪問者・おきがえ c_*.png は data URI で埋め込む＝色変えのため。家具 f_*.png と roomtex.png は app に png をコピー。どこから実行してもよい。index.html から作るので、先に index.html を作り直す。置き換える文字列が合わないと assert で止まるので、本体を変えたら置き換え側も直す）
   - 配布は小さい zip：`はじめにダブルクリック.bat` を実行すると `_files/setup.ps1` が Electron v33.2.1 を取ってくる（SHA256 で確認）。更新のときは `_files/app/index.html` を差し替えるだけ。最新は 0.9.9（家具の画像は app フォルダに png として同梱。setup zip は desktop/setup の3ファイル＋ `_files/app` に desktop/app の中身を入れて作る）
 
 ## ゲームの中身（game.html の主な定数）

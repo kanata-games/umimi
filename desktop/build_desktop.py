@@ -1,4 +1,5 @@
-import re, base64
+import re, base64, os
+os.chdir(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  # どこから実行してもリポジトリ直下で動く
 src = open('index.html').read()
 script = src[src.index('<script>')+8 : src.index('</script>')]
 s = script
@@ -132,11 +133,13 @@ R("""  new ResizeObserver(resize).observe(stage);""","""  new ResizeObserver(res
 # selection of the sprite from data URI
 b64 = base64.b64encode(open('umimi-sprites.png','rb').read()).decode()
 R("sprImg.src = 'umimi-sprites.png';", "sprImg.src = SPRITE_DATA;")
-R("cosImg.src = 'costumes.png';", "cosImg.src = COS_DATA;")
+# おきがえは色変え（getImageData）を使うので、file:// で読まず data URI で埋め込む（読み込みは使うときだけ）
+import glob as _g0
+R("im.src='c_'+cat+'.png';", "im.src=COS_DATA[cat];")
+s = "const COS_DATA = {" + ",".join("%s:'data:image/png;base64,%s'" % (f[2:-4], base64.b64encode(open(f,'rb').read()).decode()) for f in sorted(_g0.glob('c_*.png'))) + "};\n" + s
 R("const DESK_RING = false;", "const DESK_RING = location.hash==='#derby';")
 R("visImg.src = 'visitors.png';", "visImg.src = VIS_DATA;")
 s = "const VIS_DATA = 'data:image/png;base64," + base64.b64encode(open('visitors.png','rb').read()).decode() + "';\n" + s
-s = "const COS_DATA = 'data:image/png;base64," + base64.b64encode(open('costumes.png','rb').read()).decode() + "';\n" + s
 # desktop hooks: settings, click-through
 R("""// ---------- boot ----------""","""// ---------- desktop hooks ----------
 let interactive = null;
@@ -170,7 +173,7 @@ function deskHooks(){
 // ---------- boot ----------""")
 s = "const SPRITE_DATA = 'data:image/png;base64," + b64 + "';\n" + s
 
-head = open('desktop_head.html').read()
+head = open('desktop/desktop_head.html').read()
 import re as _re
 css_src = src.split('<style>')[1].split('</style>')[0]
 pat = _re.compile(r'^(\.derby|\.dgrid|\.dcard|\.dbar|\.dbtn|\.dres|\.dmsg|\.dmode|\.dm[{.:]|\.dplayers|\.dpl|\.dedit|\.who|\.dstat|\.dsbox|\.dh3|\.dmedal|\.dbet|\.dmt|\.dmth|\.dmr|\.dshop|\.dsrow|\.dsi|\.dbt|\.dbtrow|\.dsum|\.dbulk|#derbyBody)')
@@ -183,5 +186,8 @@ body.ring #derby.racing{display:none!important}
 #derby .x{position:absolute;right:8px;top:6px;border:0;background:none;font-size:22px;cursor:pointer;color:var(--ink2)}
 '''
 head = head.replace('</style>', dcss + '\n</style>', 1)
+# 家具（f_*.png）と模様は app フォルダに png のまま同梱する（使うときだけ読み込む）
+import glob as _glob, shutil as _sh
+for _f in _glob.glob('f_*.png')+['roomtex.png']: _sh.copy(_f, 'desktop/app/'+_f)
 open('desktop/app/index.html','w').write(head + "\n<script>" + s + "</script>\n</body></html>\n")
 print('built', len(s))

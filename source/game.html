@@ -131,6 +131,10 @@ button.chip:hover{border-color:var(--lav)}
 .closet{position:absolute;right:12px;top:12px;width:min(640px,calc(100% - 24px));max-height:calc(100% - 24px);overflow:auto;box-sizing:border-box;background:rgba(249,249,255,.97);border:1.5px solid #fff;border-radius:18px;padding:12px 16px 14px;box-shadow:0 6px 20px rgba(80,90,170,.2)}
 .closet h2{margin:0;font-family:"Klee One","Zen Maru Gothic",serif;font-weight:600;font-size:19px;color:#5b64b8;letter-spacing:.04em;font-variant-numeric:tabular-nums}
 .csub{margin:2px 0 10px;font-size:13px;color:var(--ink2)}
+.ctabs{flex-wrap:wrap;padding:1px 1px 3px;margin-bottom:8px}
+@media (max-width:700px){.ctabs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:thin}}
+.ctabs .atab{white-space:nowrap;flex:none;padding:4px 11px;font-size:13px}
+.ctabs .atab small{font-size:11px;font-weight:600;opacity:.75;margin-left:3px;font-variant-numeric:tabular-nums}
 .ogrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(98px,1fr));gap:8px}
 .oitem{display:flex;flex-direction:column;align-items:center;gap:2px;font:inherit;background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:6px 4px 7px;cursor:pointer;color:var(--ink)}
 .oitem canvas{width:72px;height:58px}
@@ -327,6 +331,7 @@ button:focus-visible,input:focus-visible{outline:2.5px solid var(--peri-deep);ou
       <button class="x" id="closetClose" type="button" aria-label="とじる">×</button>
       <h2 id="closetTitle">おきがえコレクション</h2>
       <p class="csub" id="closetSub"></p>
+      <div class="atabs ctabs" id="closetTabs" role="tablist"></div>
       <div class="ogrid" id="closetList"></div>
     </section>
     <section class="album" id="album" hidden aria-labelledby="albumTitle">
@@ -468,7 +473,7 @@ const DECOR = {
   goalflag:{name:'ゴールフラッグ',cost:1, r:26, h:70, gift:true},
   podium:{name:'ひょうしょうだい',cost:3, r:52, h:34, gift:true},
 };
-const COS = Object.assign({ready:false}, {"cw":240,"ch":208,"cols":8,"s":0.8,"ex":130,"ey":165,"m":{"bear":{"i":0,"g":220.0,"lid":"#fdfdff","le":[-39.0,-4.2]},"space":{"i":1,"g":230.0,"lid":"#fdfdff","le":[-39.0,-2.1]},"explorer":{"i":2,"g":221.2,"lid":"#fdfdff","le":[-39.0,-3.8]},"newyear":{"i":3,"g":227.5,"lid":"#fdfdff","le":[-39.0,-3.0]},"witch":{"i":4,"g":216.2,"lid":"#ede3fc","le":[-39.0,-3.3]},"santa":{"i":5,"g":213.8,"lid":"#fdfdff","le":[-39.0,-3.7]},"yukata":{"i":6,"g":217.5,"lid":"#fdfdff","le":[-39.0,-3.7]},"knit":{"i":7,"g":238.8,"lid":"#fdfdff","le":[-39.0,-3.2]},"hoodie":{"i":8,"g":230.0,"lid":"#fcfdff","le":[-35.9,-2.9]},"miko":{"i":9,"g":228.8,"lid":"#fcfdff","le":[-39.0,-2.4]},"idol":{"i":10,"g":233.8,"lid":"#fcfdfe","le":[-39.0,-3.1]},"maid":{"i":11,"g":188.8,"lid":"#ded9f6","le":[-47.6,-6.3]},"gothic":{"i":12,"g":225.0,"lid":"#2f2c42","le":[-39.0,-2.4]},"sakura":{"i":13,"g":220.0,"lid":"#fdecf4","le":[-39.0,-3.0]},"blueberry":{"i":14,"g":215.0,"lid":"#6658d1","le":[-39.0,-3.2]},"lemon":{"i":15,"g":215.0,"lid":"#fbf9c1","le":[-39.0,-4.1]},"strawberry":{"i":16,"g":217.5,"lid":"#fef8fc","le":[-39.0,-3.7]},"chick":{"i":17,"g":216.2,"lid":"#fdfdff","le":[-39.0,-3.8]},"dog":{"i":18,"g":215.0,"lid":"#fdfdff","le":[-39.0,-3.1]},"mango":{"i":19,"g":213.8,"lid":"#fbb910","le":[-39.0,-4.3]},"raincoat":{"i":20,"g":223.8,"lid":"#fdfdfd","le":[-39.0,-3.0]},"matcha":{"i":21,"g":216.2,"lid":"#9ed543","le":[-39.0,-2.9]},"chef":{"i":22,"g":218.8,"lid":"#fdfdff","le":[-39.0,-4.6]},"musician":{"i":23,"g":226.2,"lid":"#fdfdff","le":[-39.0,-5.0]},"nurse":{"i":24,"g":216.2,"lid":"#fbfcff","le":[-39.0,-3.0]},"camping":{"i":25,"g":232.5,"lid":"#fdfdff","le":[-35.9,-4.1]},"pajama":{"i":26,"g":225.0,"lid":"#fdfdff","le":[-39.0,-3.6]},"ghostmaid":{"i":27,"g":226.2,"lid":"#fdfbff","le":[-35.9,-3.8]},"constellation":{"i":28,"g":216.2,"lid":"#fdfdff","le":[-39.0,-3.8]},"asagao":{"i":29,"g":227.5,"lid":"#fdfdff","le":[-34.3,-2.8]},"grape":{"i":30,"g":217.5,"lid":"#fdfdff","le":[-39.0,-3.2]},"higanbana":{"i":31,"g":216.2,"lid":"#fdfdff","le":[-39.0,-3.7]},"momiji":{"i":32,"g":216.2,"lid":"#fdfdff","le":[-39.0,-3.5]},"randoseru":{"i":33,"g":221.2,"lid":"#fdfdff","le":[-39.0,-4.0]},"goldfish":{"i":34,"g":223.8,"lid":"#fdfdff","le":[-35.9,-3.5]},"angel":{"i":35,"g":218.8,"lid":"#fdfdff","le":[-39.0,-3.4]},"jugoya":{"i":36,"g":226.2,"lid":"#fcfdff","le":[-31.2,-2.3]},"devil":{"i":37,"g":216.2,"lid":"#fdfdff","le":[-39.0,-1.1]},"crown":{"i":38,"g":220.0,"lid":"#fdfdff","le":[-39.0,-3.5]},"flower":{"i":39,"g":215.0,"lid":"#fdfdff","le":[-39.0,-3.5]},"cat":{"i":40,"g":217.5,"lid":"#fcfdff","le":[-39.0,-3.2]},"sailor":{"i":41,"g":221.2,"lid":"#fdfdff","le":[-39.0,-3.4]},"rabbit":{"i":42,"g":217.5,"lid":"#fdfdff","le":[-39.0,-2.7]},"ribbon":{"i":43,"g":217.5,"lid":"#fcfdff","le":[-39.0,-3.7]},"delivery":{"i":44,"g":215.0,"lid":"#fdfdff","le":[-39.0,-3.2]},"bath":{"i":45,"g":238.8,"lid":"#fdfdff","le":[-35.1,-3.5]}}});
+const COS = {"cw":240,"ch":208,"cols":4,"s":0.8,"ex":130,"ey":165,"m":{"bear":{"g":220.0,"lid":"#fdfdff","le":[-39.0,-4.2],"s":"animal","i":0},"space":{"g":230.0,"lid":"#fdfdff","le":[-39.0,-2.1],"s":"dream","i":1},"explorer":{"g":221.2,"lid":"#fdfdff","le":[-39.0,-3.8],"s":"work","i":0},"newyear":{"g":227.5,"lid":"#fdfdff","le":[-39.0,-3.0],"s":"season","i":10},"witch":{"g":216.2,"lid":"#ede3fc","le":[-39.0,-3.3],"s":"season","i":8},"santa":{"g":213.8,"lid":"#fdfdff","le":[-39.0,-3.7],"s":"season","i":9},"yukata":{"g":217.5,"lid":"#fdfdff","le":[-39.0,-3.7],"s":"season","i":2},"knit":{"g":238.8,"lid":"#fdfdff","le":[-39.0,-3.2],"s":"fashion","i":4},"hoodie":{"g":230.0,"lid":"#fcfdff","le":[-35.9,-2.9],"s":"fashion","i":5},"miko":{"g":228.8,"lid":"#fcfdff","le":[-39.0,-2.4],"s":"work","i":5},"idol":{"g":233.8,"lid":"#fcfdfe","le":[-39.0,-3.1],"s":"work","i":6},"maid":{"g":188.8,"lid":"#ded9f6","le":[-47.6,-6.3],"s":"work","i":7},"gothic":{"g":225.0,"lid":"#2f2c42","le":[-39.0,-2.4],"s":"fashion","i":6},"sakura":{"g":220.0,"lid":"#fdecf4","le":[-39.0,-3.0],"s":"season","i":0},"blueberry":{"g":215.0,"lid":"#6658d1","le":[-39.0,-3.2],"s":"food","i":3},"lemon":{"g":215.0,"lid":"#fbf9c1","le":[-39.0,-4.1],"s":"food","i":1},"strawberry":{"g":217.5,"lid":"#fef8fc","le":[-39.0,-3.7],"s":"food","i":0},"chick":{"g":216.2,"lid":"#fdfdff","le":[-39.0,-3.8],"s":"animal","i":1},"dog":{"g":215.0,"lid":"#fdfdff","le":[-39.0,-3.1],"s":"animal","i":2},"mango":{"g":213.8,"lid":"#fbb910","le":[-39.0,-4.3],"s":"food","i":4},"raincoat":{"g":223.8,"lid":"#fdfdfd","le":[-39.0,-3.0],"s":"relax","i":3},"matcha":{"g":216.2,"lid":"#9ed543","le":[-39.0,-2.9],"s":"food","i":2},"chef":{"g":218.8,"lid":"#fdfdff","le":[-39.0,-4.6],"s":"work","i":1},"musician":{"g":226.2,"lid":"#fdfdff","le":[-39.0,-5.0],"s":"work","i":3},"nurse":{"g":216.2,"lid":"#fbfcff","le":[-39.0,-3.0],"s":"work","i":2},"camping":{"g":232.5,"lid":"#fdfdff","le":[-35.9,-4.1],"s":"relax","i":2},"pajama":{"g":225.0,"lid":"#fdfdff","le":[-39.0,-3.6],"s":"relax","i":0},"ghostmaid":{"g":226.2,"lid":"#fdfbff","le":[-35.9,-3.8],"s":"dream","i":4},"constellation":{"g":216.2,"lid":"#fdfdff","le":[-39.0,-3.8],"s":"dream","i":0},"asagao":{"g":227.5,"lid":"#fdfdff","le":[-34.3,-2.8],"s":"season","i":4},"grape":{"g":217.5,"lid":"#fdfdff","le":[-39.0,-3.2],"s":"food","i":5},"higanbana":{"g":216.2,"lid":"#fdfdff","le":[-39.0,-3.7],"s":"season","i":5},"momiji":{"g":216.2,"lid":"#fdfdff","le":[-39.0,-3.5],"s":"season","i":7},"randoseru":{"g":221.2,"lid":"#fdfdff","le":[-39.0,-4.0],"s":"season","i":1},"goldfish":{"g":223.8,"lid":"#fdfdff","le":[-35.9,-3.5],"s":"season","i":3},"angel":{"g":218.8,"lid":"#fdfdff","le":[-39.0,-3.4],"s":"dream","i":2},"jugoya":{"g":226.2,"lid":"#fcfdff","le":[-31.2,-2.3],"s":"season","i":6},"devil":{"g":216.2,"lid":"#fdfdff","le":[-39.0,-1.1],"s":"dream","i":3},"crown":{"g":220.0,"lid":"#fdfdff","le":[-39.0,-3.5],"s":"fashion","i":2},"flower":{"g":215.0,"lid":"#fdfdff","le":[-39.0,-3.5],"s":"fashion","i":1},"cat":{"g":217.5,"lid":"#fcfdff","le":[-39.0,-3.2],"s":"animal","i":3},"sailor":{"g":221.2,"lid":"#fdfdff","le":[-39.0,-3.4],"s":"fashion","i":3},"rabbit":{"g":217.5,"lid":"#fdfdff","le":[-39.0,-2.7],"s":"animal","i":4},"ribbon":{"g":217.5,"lid":"#fcfdff","le":[-39.0,-3.7],"s":"fashion","i":0},"delivery":{"g":215.0,"lid":"#fdfdff","le":[-39.0,-3.2],"s":"work","i":4},"bath":{"g":238.8,"lid":"#fdfdff","le":[-35.1,-3.5],"s":"relax","i":1}}};
 const OUTFITS = {
   normal:{name:'ノーマル'},
   ribbon:{name:'リボン',how:{lv:2}}, flower:{name:'お花',how:{lv:3}}, bear:{name:'くま',how:{lv:4}}, crown:{name:'王冠',how:{lv:5}},
@@ -726,9 +731,9 @@ const sprImg = new Image();
 sprImg.onload = () => { SPR.sheets.lavender = recolorSheet(sprImg, null); SPR.ready = true; if(S){ renderTray(); if(!$('closet').hidden) renderCloset(); } };
 function sheetFor(key){ if(!SPR.sheets[key]) SPR.sheets[key] = recolorSheet(sprImg, RECOLOR[key]); return SPR.sheets[key]; }
 sprImg.src = 'umimi-sprites.png';
-const cosImg = new Image();
-cosImg.onload = () => { COS.ready = true; if(S){ renderTray(); if(!$('closet').hidden) renderCloset(); } };
-cosImg.src = 'costumes.png';
+// おきがえの絵は分類ごとのシート c_<分類>.png。使うときだけ読み込む
+const COS_IMG = {};
+function cosImgFor(cat){ let im=COS_IMG[cat]; if(!im){ im=COS_IMG[cat]=new Image(); im.onload=()=>{ if(S){ renderTray(); if(!$('closet').hidden) renderCloset(); } }; im.src='c_'+cat+'.png'; } return (im.complete && im.naturalWidth) ? im : null; }
 const VIS_SPR = {"res":1.6,"m":{"jelly":{"w":172,"h":172,"a":"c","y":0},"star":{"w":145,"h":132,"a":"b","y":172},"seahorse":{"w":121,"h":180,"a":"c","y":304},"crab":{"w":180,"h":127,"a":"b","y":484},"dolphin":{"w":236,"h":144,"a":"c","y":611},"penguin":{"w":164,"h":147,"a":"b","y":755},"turtle":{"w":212,"h":145,"a":"b","y":902},"octopus":{"w":164,"h":156,"a":"b","y":1047},"puffer":{"w":161,"h":127,"a":"c","y":1203},"otter":{"w":204,"h":156,"a":"c","y":1330}}};
 const FIMG = {m:{"rug":{"s":"base","x":0,"y":0,"w":340,"h":190,"rw":170,"rh":95,"tw":0,"th":0},"bed":{"s":"base","x":0,"y":192,"w":300,"h":283,"rw":150,"rh":142,"tw":0,"th":0},"lamp":{"s":"base","x":0,"y":477,"w":132,"h":234,"rw":66,"rh":117,"tw":0,"th":0},"cushion":{"s":"base","x":0,"y":713,"w":160,"h":113,"rw":80,"rh":56,"tw":0,"th":0},"plant":{"s":"base","x":0,"y":828,"w":124,"h":153,"rw":62,"rh":76,"tw":0,"th":0},"shelf":{"s":"base","x":0,"y":983,"w":210,"h":332,"rw":105,"rh":166,"tw":0,"th":0},"window":{"s":"base","x":0,"y":1317,"w":270,"h":232,"rw":135,"rh":116,"tw":0,"th":0},"windowday":{"s":"base","x":0,"y":1551,"w":270,"h":232,"rw":135,"rh":116,"tw":0,"th":0},"frame":{"s":"base","x":0,"y":1785,"w":144,"h":148,"rw":72,"rh":74,"tw":0,"th":0},"table":{"s":"base","x":342,"y":0,"w":230,"h":187,"rw":115,"rh":94,"tw":0,"th":0},"shellbed":{"s":"pearl","x":0,"y":0,"w":350,"h":326,"rw":175,"rh":163,"tw":110,"th":102},"shelltable":{"s":"pearl","x":0,"y":328,"w":250,"h":160,"rw":125,"rh":80,"tw":82,"th":52},"shellchair":{"s":"pearl","x":0,"y":490,"w":210,"h":198,"rw":105,"rh":99,"tw":72,"th":68},"bottle":{"s":"pearl","x":0,"y":690,"w":116,"h":136,"rw":58,"rh":68,"tw":42,"th":49},"crystal2":{"s":"pearl","x":0,"y":828,"w":180,"h":164,"rw":90,"rh":82,"tw":62,"th":56},"shellcake":{"s":"pearl","x":0,"y":994,"w":156,"h":161,"rw":78,"rh":80,"tw":54,"th":55},"lanternstand":{"s":"autumn","x":0,"y":0,"w":200,"h":266,"rw":100,"rh":133,"tw":95,"th":126},"stall":{"s":"autumn","x":0,"y":268,"w":400,"h":313,"rw":200,"rh":156,"tw":180,"th":140},"kingyo":{"s":"autumn","x":0,"y":583,"w":380,"h":295,"rw":190,"rh":148,"tw":160,"th":125},"mcushion":{"s":"autumn","x":0,"y":880,"w":230,"h":142,"rw":115,"rh":71,"tw":90,"th":56},"garland":{"s":"autumn","x":0,"y":1024,"w":600,"h":198,"rw":300,"rh":99,"tw":200,"th":66},"chochin":{"s":"autumn","x":0,"y":1224,"w":160,"h":329,"rw":80,"rh":164,"tw":80,"th":164},"omen":{"s":"autumn","x":0,"y":1555,"w":400,"h":349,"rw":200,"rh":174,"tw":180,"th":157},"acorn":{"s":"autumn","x":602,"y":0,"w":120,"h":103,"rw":60,"rh":52,"tw":42,"th":36},"yakiimo":{"s":"autumn","x":602,"y":105,"w":140,"h":90,"rw":70,"rh":45,"tw":48,"th":31},"bridge":{"s":"autumn","x":602,"y":197,"w":460,"h":206,"rw":230,"rh":103,"tw":200,"th":90},"pumpkinstand":{"s":"halloween","x":0,"y":0,"w":170,"h":344,"rw":85,"rh":172,"tw":80,"th":162},"hrug":{"s":"halloween","x":0,"y":346,"w":340,"h":200,"rw":170,"rh":100,"tw":120,"th":71},"ghostcushion":{"s":"halloween","x":0,"y":548,"w":170,"h":149,"rw":85,"rh":74,"tw":72,"th":63},"hframe":{"s":"halloween","x":0,"y":699,"w":160,"h":187,"rw":80,"rh":94,"tw":0,"th":0},"candytable":{"s":"halloween","x":0,"y":888,"w":210,"h":244,"rw":105,"rh":122,"tw":82,"th":95},"hshelf":{"s":"halloween","x":0,"y":1134,"w":230,"h":309,"rw":115,"rh":154,"tw":100,"th":134},"jbox_0":{"s":"halloween","x":0,"y":1445,"w":170,"h":170,"rw":85,"rh":85,"tw":74,"th":74},"jbox_1":{"s":"halloween","x":0,"y":1617,"w":170,"h":170,"rw":85,"rh":85,"tw":74,"th":74},"jbox_2":{"s":"halloween","x":0,"y":1789,"w":170,"h":170,"rw":85,"rh":85,"tw":74,"th":74},"jbox_3":{"s":"halloween","x":342,"y":0,"w":170,"h":170,"rw":85,"rh":85,"tw":74,"th":74},"chandelier_0":{"s":"halloween","x":342,"y":172,"w":260,"h":375,"rw":130,"rh":188,"tw":0,"th":0},"chandelier_1":{"s":"halloween","x":342,"y":549,"w":260,"h":375,"rw":130,"rh":188,"tw":0,"th":0},"chandelier_2":{"s":"halloween","x":342,"y":926,"w":260,"h":375,"rw":130,"rh":188,"tw":0,"th":0},"jbox":{"s":"halloween","x":0,"y":1445,"w":170,"h":170,"rw":85,"rh":85,"tw":74,"th":74},"chandelier":{"s":"halloween","x":342,"y":172,"w":260,"h":375,"rw":130,"rh":188,"tw":0,"th":0}}};
 const FSHEETS = {};
@@ -749,13 +754,15 @@ function tankSnap(o, px, footY){ if(!SMALLS.has(o.type)) return false; for(const
 const visImg = new Image(); visImg.onload = () => { VIS_SPR.ready = true; }; visImg.src = 'visitors.png';
 const COS_KEEP = ['blueberry','grape','gothic','constellation','devil','witch','mango','matcha','lemon'];
 const cosSheets = {};
-function cosSheetFor(color){
-  if(!RECOLOR[color]) return cosImg;
-  if(!cosSheets[color]){
-    const keepCells = new Set(COS_KEEP.map(k=>COS.m[k] && COS.m[k].i).filter(v=>v!=null));
-    cosSheets[color] = recolorSheet(cosImg, RECOLOR[color], {lo:222, hi:275, lmin:.42, skip:(x,y)=>keepCells.has(Math.floor(y/COS.ch)*COS.cols+Math.floor(x/COS.cw))});
+function cosSheetFor(cat,color){
+  const img = cosImgFor(cat); if(!img) return null;
+  if(!RECOLOR[color]) return img;
+  const key = cat+'|'+color;
+  if(!cosSheets[key]){
+    const keepCells = new Set(COS_KEEP.map(k=>COS.m[k]).filter(m=>m && m.s===cat).map(m=>m.i));
+    cosSheets[key] = recolorSheet(img, RECOLOR[color], {lo:222, hi:275, lmin:.42, skip:keepCells.size ? (x,y)=>keepCells.has(Math.floor(y/COS.ch)*COS.cols+Math.floor(x/COS.cw)) : null});
   }
-  return cosSheets[color];
+  return cosSheets[key];
 }
 function spriteFrame(u,t){
   const st=u.state, q=(p)=>Math.floor(t/p+u.ph*3);
@@ -770,8 +777,8 @@ function drawSpriteUmimi(c,u,x,gy,s,t,lift,opt){
   c.fillStyle = `rgba(80,80,150,${.17*sh})`; c.beginPath(); c.ellipse(x,gy,54*s*sh,8*s*sh,0,0,TAU); c.fill();
   if(opt.selected){ c.strokeStyle='rgba(127,143,224,.85)'; c.lineWidth=2; c.setLineDash([6,6]); c.beginPath(); c.ellipse(x,gy,68*s,13*s,0,0,TAU); c.stroke(); c.setLineDash([]); }
   const of = OUTFITS[u.outfit] || OUTFITS.normal; const f = spriteFrame(u,t), sheet = sheetFor(of.color || u.color);
-  const cm = COS.ready && COS.m[u.outfit];
-  if(cm) return drawCostumeUmimi(c,u,x,gy,s,t,lift,opt,cm);
+  const cm = COS.m[u.outfit];
+  if(cm && cosImgFor(cm.s)) return drawCostumeUmimi(c,u,x,gy,s,t,lift,opt,cm);
   const sleeping = u.state==='sleep';
   const bob = sleeping ? 0 : Math.sin(u.ph+t*2.2)*1.3;
   const breath = sleeping ? 1+Math.sin(t*1.6+u.ph)*.025 : 1;
@@ -811,7 +818,7 @@ function drawCostumeUmimi(c,u,x,gy,s,t,lift,opt,cm){
   const sc = SPR.sc*s, W1 = COS.cw/COS.s, H1 = COS.ch/COS.s, cx = COS.ex+40, g = cm.g;
   if(u.fade!=null){ c.globalAlpha = clamp(u.fade,0,1); }
   c.save(); c.translate(x, gy-lift+(bob-hop)*s); c.scale(-u.dir*sc*(1+sq), sc*(1-sq)*breath);
-  c.drawImage(cosSheetFor(u.color), (cm.i%COS.cols)*COS.cw, Math.floor(cm.i/COS.cols)*COS.ch, COS.cw, COS.ch, -cx, -g, W1, H1);
+  c.drawImage(cosSheetFor(cm.s,u.color), (cm.i%COS.cols)*COS.cw, Math.floor(cm.i/COS.cols)*COS.ch, COS.cw, COS.ch, -cx, -g, W1, H1);
   const ox=-cx, oy=-g, ex=COS.ex, ey=COS.ey;
   if(sleeping || u.blink>0){
     [[ex,ey],[ex+cm.le[0],ey+cm.le[1]]].forEach(([a,b]) => { c.fillStyle=cm.lid; c.beginPath(); c.ellipse(ox+a,oy+b,7.5,9.5,0,0,TAU); c.fill();
@@ -2527,6 +2534,10 @@ function renderOutfitRow(u){
   box.append(lab,b,a);
 }
 let closetFor = null;
+const OCATS = [['all','すべて'],['animal','どうぶつ'],['food','たべもの'],['fashion','おしゃれ'],['work','おしごと'],['relax','のんびり'],['dream','ゆめ'],['season','きせつ']];
+const OCAT_EXTRA = {normal:'fashion', cape:'dream', choco:'food'};
+function outfitCat(k){ return (COS.m[k] && COS.m[k].s) || OCAT_EXTRA[k] || 'fashion'; }
+let closetCat = 'all';
 function openCloset(u){ closetFor = u ? u.id : null; $('album').hidden=true; $('closet').hidden=false; $('diary').hidden=true; if(u){ $('card').hidden=true; } S.closetNew=false; $('closetBtn').classList.remove('new'); renderCloset(); }
 function closeCloset(){ $('closet').hidden=true; const u=S.umimi.find(x=>x.id===closetFor); closetFor=null; if(u && selId===u.id) openCard(u); }
 function renderCloset(){
@@ -2534,8 +2545,17 @@ function renderCloset(){
   const keys = Object.keys(OUTFITS), have = keys.filter(k=>S.closet.includes(k)).length;
   $('closetTitle').textContent = `おきがえコレクション ${have}/${keys.length}`;
   $('closetSub').textContent = u ? `${u.name}に きせる おきがえを えらんでね` : 'ウミミをタップして「きがえる」から きせられるよ';
+  const tabs=$('closetTabs'), tsl=tabs.scrollLeft; tabs.innerHTML='';
+  OCATS.forEach(([c,nm]) => {
+    const ks = c==='all' ? keys : keys.filter(k=>outfitCat(k)===c);
+    const t=document.createElement('button'); t.type='button'; t.className='atab'; t.setAttribute('role','tab'); t.setAttribute('aria-selected', c===closetCat);
+    t.innerHTML = `${nm}<small>${ks.filter(k=>S.closet.includes(k)).length}/${ks.length}</small>`;
+    t.addEventListener('click', () => { closetCat=c; renderCloset(); });
+    tabs.append(t);
+  });
+  tabs.scrollLeft=tsl;
   const box=$('closetList'); box.innerHTML='';
-  keys.forEach(k => {
+  keys.filter(k => closetCat==='all' || outfitCat(k)===closetCat).forEach(k => {
     const O=OUTFITS[k], own=S.closet.includes(k), wearing = u && u.outfit===k;
     const b=document.createElement('button'); b.type='button'; b.className='oitem'+(own?'':' locked'); b.setAttribute('aria-pressed', !!wearing);
     const [cv2,x]=thumbCanvas(72,58);
