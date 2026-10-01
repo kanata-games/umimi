@@ -13,22 +13,27 @@ SRC.update({k:k for k in ['kinoko', 'dragonarmor', 'mummy', 'diver', 'pumpkin', 
 MANEYE={'devil2':(517,520,586,522),'gothic':(456,516,538,521)}
 MANEYE.update({'kinoko': (45, 202, 101, 206), 'dragonarmor': (55, 219, 111, 223), 'mummy': (55, 204, 111, 208), 'diver': (55, 195, 111, 199), 'pumpkin': (55, 172, 111, 176), 'knight': (55, 190, 111, 194), 'obake': (50, 168, 106, 172), 'mahouhood': (55, 179, 111, 183), 'hibiscus': (49, 162, 105, 168), 'pumpkinhood': (49, 186, 106, 193), 'mintdress': (59, 165, 116, 169), 'forest': (48, 163, 105, 170), 'clover': (61, 165, 117, 170), 'ranger': (53, 173, 109, 178), 'darkwitch': (59, 192, 115, 198), 'dragonknight': (56, 176, 112, 181), 'pinkprincess': (48, 169, 104, 175), 'wizard': (48, 171, 103, 177), 'saint': (51, 181, 107, 186), 'hero': (52, 160, 107, 166), 'sakuradress': (52, 175, 111, 182), 'marine': (51, 175, 110, 182), 'starwizard': (51, 174, 111, 181), 'snow': (51, 172, 110, 179), 'ume': (46, 155, 101, 163), 'painter': (46, 158, 100, 165), 'circus': (62, 236, 123, 234), 'angel3': (46, 173, 101, 180), 'harugi': (56, 178, 118, 186), 'headphone': (52, 177, 114, 186), 'alice': (56, 178, 117, 188), 'prince': (52, 180, 115, 190), 'sumire': (52, 179, 114, 186), 'marine2': (52, 178, 114, 186), 'ichigocake': (51, 181, 114, 187), 'patchwork': (52, 179, 113, 186), 'queen': (46, 163, 101, 170), 'sweets': (52, 163, 107, 169), 'toy': (54, 165, 109, 171)})
 # 顔がかくれている衣装（まばたきを描かない）。目の位置は体の大きさからの見当
+# 2026-10 2回目（ピッちゃん作）35種
+MANEYE.update({'teahat': (49, 162, 103, 167), 'detective': (65, 161, 119, 166), 'cyber': (51, 165, 105, 171), 'starangel': (53, 176, 109, 182), 'tiara': (50, 155, 103, 160), 'strawdress': (48, 156, 101, 161), 'blackmaid': (47, 157, 100, 162), 'planet': (47, 158, 100, 164), 'akiha': (53, 159, 109, 164), 'candy': (52, 160, 108, 166), 'yozora': (51, 163, 107, 168), 'fox': (51, 162, 108, 166), 'candycorn': (59, 200, 116, 207), 'spider': (61, 188, 119, 194), 'scarecrow': (84, 190, 141, 197), 'hbunny': (59, 202, 118, 211), 'mummyhood': (78, 201, 136, 208), 'blackcat': (60, 194, 117, 201), 'bat': (63, 191, 120, 197), 'usagihood': (65, 164, 112, 171), 'bard': (48, 172, 102, 175), 'thief': (67, 161, 121, 167), 'flameknight': (52, 164, 106, 170), 'sakuraangel': (48, 181, 103, 186), 'starsailor': (50, 169, 104, 175), 'leafdress': (59, 168, 114, 174), 'nightwitch': (56, 175, 111, 181), 'lion': (72, 191, 128, 197), 'panda': (64, 190, 120, 192), 'giraffe': (63, 186, 119, 192), 'penguin': (63, 188, 119, 194), 'elephant': (70, 195, 127, 202), 'zebra': (62, 193, 117, 200), 'monkey': (78, 188, 134, 195), 'flamingo': (67, 223, 123, 231)})
+SRC.update({k:k for k in ['teahat', 'detective', 'cyber', 'starangel', 'tiara', 'strawdress', 'blackmaid', 'planet', 'akiha', 'candy', 'yozora', 'fox', 'candycorn', 'spider', 'scarecrow', 'hbunny', 'mummyhood', 'blackcat', 'bat', 'usagihood', 'bard', 'thief', 'flameknight', 'sakuraangel', 'starsailor', 'leafdress', 'nightwitch', 'lion', 'panda', 'giraffe', 'penguin', 'elephant', 'zebra', 'monkey', 'flamingo']})
 NEWSET=set(MANEYE)-{'devil2','gothic'}
 NOEYE=set(['kinoko', 'dragonarmor', 'mummy', 'diver', 'pumpkin', 'knight', 'obake', 'mahouhood'])
-SCALEFIX={'bath':.9,'maid':1.22,'hoodie':.92,'jugoya':.8,'zansho':.88,'camping':.92,'goldfish':.92,'ghostmaid':.92}
+SCALEFIX={'giraffe':.94,'bath':.9,'maid':1.22,'hoodie':.92,'jugoya':.8,'zansho':.88,'camping':.92,'goldfish':.92,'ghostmaid':.92}
 S=0.8; CW,CH=240,208  # stored cell (scale-1 coords 300x260)
 EX,EY=130,165          # right-eye position in scale-1 cell coords
 # 分類ごとに別シート c_<分類>.png にする（ゲーム側は使うときだけ読み込む）。新しい衣装は SRC と CAT の両方に足す
-CAT={'animal':['bear','chick','dog','cat','rabbit'],
- 'food':['strawberry','lemon','matcha','blueberry','mango','grape','ichigocake','sweets'],
+CAT={'animal':['bear','chick','dog','cat','rabbit',
+   'usagihood','fox','lion','panda','giraffe','penguin','elephant','zebra','monkey','flamingo'],
+ 'food':['strawberry','lemon','matcha','blueberry','mango','grape','ichigocake','sweets','teahat','strawdress','candy'],
  'season':['sakura','randoseru','yukata','goldfish','asagao','higanbana','jugoya','momiji','witch','santa','newyear',
-           'sakuradress','hibiscus','pumpkin','pumpkinhood','obake','mummy','snow','ume','harugi'],
- 'work':['explorer','chef','nurse','musician','delivery','miko','idol','maid','painter','circus','diver'],
- 'fashion':['ribbon','flower','crown','sailor','knit','hoodie','gothic','marine','marine2','headphone','alice','patchwork','toy'],
- 'relax':['pajama','bath','camping','raincoat','kinoko','forest'],
- 'dream':['constellation','space','angel','devil','ghostmaid','angel3'],
- 'adv':['knight','hero','ranger','wizard','starwizard','mahouhood','darkwitch','dragonarmor','dragonknight'],
- 'princess':['pinkprincess','sumire','queen','prince','mintdress','clover','saint']}
+           'sakuradress','hibiscus','pumpkin','pumpkinhood','obake','mummy','snow','ume','harugi',
+           'akiha','scarecrow','candycorn','spider','hbunny','mummyhood','blackcat','bat','sakuraangel'],
+ 'work':['explorer','chef','nurse','musician','delivery','miko','idol','maid','painter','circus','diver','detective','bard'],
+ 'fashion':['ribbon','flower','crown','sailor','knit','hoodie','gothic','marine','marine2','headphone','alice','patchwork','toy','cyber','blackmaid'],
+ 'relax':['pajama','bath','camping','raincoat','kinoko','forest','leafdress'],
+ 'dream':['constellation','space','angel','devil','ghostmaid','angel3','starangel','planet','yozora','starsailor'],
+ 'adv':['knight','hero','ranger','wizard','starwizard','mahouhood','darkwitch','dragonarmor','dragonknight','thief','flameknight','nightwitch'],
+ 'princess':['pinkprincess','sumire','queen','prince','mintdress','clover','saint','tiara']}
 _all=[k for v in CAT.values() for k in v]; assert sorted(_all)==sorted(SRC), set(_all)^set(SRC)
 cols=4; cells={}; meta={}
 for k in SRC:
