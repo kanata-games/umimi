@@ -566,7 +566,7 @@ function isBirthday(){ const d=new Date(); const lily=(d.getMonth()===8 && d.get
 let T = 0, phase = 2, night = 1, dusk = 0, shardTimer = 12, saveTimer = 0, meetCD = 8, timeCheck = 0, tPhase = 2;
 
 function defaultState(){
-  return {v:1, shards:3, timeMode:'auto', sound:false, nextId:3, decorId:7, welcomed:false, last:Date.now(),
+  return {v:1, shards:3, timeMode:'auto', sound:false, bgm:true, nextId:3, decorId:7, welcomed:false, last:Date.now(),
     umimi:[{id:1,name:'ウミミ',color:'lavender',x:380,d:0.6,aff:0},{id:2,name:'ミナモ',color:'sky',x:650,d:0.32,aff:0}],
     decor:[{id:1,type:'grass',x:110,d:0.12},{id:2,type:'coral',x:880,d:0.06},{id:3,type:'grass',x:940,d:0.5},
            {id:4,type:'shell',x:250,d:0.88},{id:5,type:'pebble',x:720,d:0.8},{id:6,type:'lamp',x:520,d:0.04}],
@@ -584,7 +584,7 @@ function hydrateU(u){
     blinkT:rand(1,4), blink:0, tx:u.x, td:u.d, t:0, petTimes:[], petCD:0, expr:'normal', target:null, swimH:0, swimT:0, zT:0});
 }
 function serialize(){
-  return {v:1, shards:S.shards, timeMode:S.timeMode, sound:S.sound, nextId:S.nextId, decorId:S.decorId, welcomed:S.welcomed, last:Date.now(),
+  return {v:1, shards:S.shards, timeMode:S.timeMode, sound:S.sound, bgm:S.bgm, nextId:S.nextId, decorId:S.decorId, welcomed:S.welcomed, last:Date.now(),
     umimi:S.umimi.map(u=>({id:u.id,name:u.name,color:u.color,x:Math.round(u.x),d:+u.d.toFixed(3),aff:u.aff,outfit:u.outfit,lvSeen:u.lvSeen,pers:u.pers,born:u.born,pets:u.pets,feeds:u.feeds,worn:u.worn,mem:u.mem,ann:u.ann,wins:u.wins||0,druns:u.druns||0,dbest:u.dbest||0,tricks:u.tricks,learned:u.learned,lessonDay:u.lessonDay,room:u.room})),
     past:S.past,
     closet:S.closet, closetNew:S.closetNew, pets:S.pets, days:S.days, feeds:S.feeds, starsCaught:S.starsCaught, metVisitors:S.metVisitors,
@@ -2325,7 +2325,7 @@ function applySave(d){
   S.umimi.forEach(u=>{ if(u.outfit && !S.closet.includes(u.outfit)) S.closet.push(u.outfit); });
   foods=[]; selId=null; closeCard(); visitor=null;
   tPhase=targetPhase(); refreshShards(); updateTimeBtn(); renderTray();
-  $('soundBtn').textContent = S.sound?'おと ON':'おと OFF'; $('soundBtn').setAttribute('aria-pressed',S.sound);
+  soundLabel();
   save();
 }
 
@@ -2456,7 +2456,9 @@ function refreshShards(bump){ $('shardN').textContent = S.shards; if(bump){ cons
 const PHASE_NAMES = ['ひる','ゆうがた','よる'];
 function updateTimeBtn(){ const m=S.timeMode; $('timeBtn').textContent = m==='auto' ? `じどう・${PHASE_NAMES[tPhase]}` : PHASE_NAMES[{day:0,dusk:1,night:2}[m]]; }
 $('timeBtn').addEventListener('click', () => { const order=['auto','day','dusk','night']; S.timeMode=order[(order.indexOf(S.timeMode)+1)%4]; tPhase=targetPhase(); updateTimeBtn(); save(); });
-$('soundBtn').addEventListener('click', () => { S.sound=!S.sound; ensureAudio(); $('soundBtn').textContent = S.sound?'おと ON':'おと OFF'; $('soundBtn').setAttribute('aria-pressed',S.sound); if(S.sound) sfx('shard'); save(); });
+$('soundBtn').addEventListener('click', () => { // OFF → ON（BGMあり）→ ON（こうかおんだけ）→ OFF
+  if(!S.sound){ S.sound=true; S.bgm=true; } else if(S.bgm!==false){ S.bgm=false; } else { S.sound=false; S.bgm=true; }
+  ensureAudio(); soundLabel(); toast(!S.sound ? 'おとを けしたよ' : S.bgm!==false ? 'BGMと こうかおんを ならすよ' : 'こうかおんだけ ならすよ'); if(S.sound) sfx('shard'); save(); });
 
 document.querySelectorAll('.tool').forEach(b => b.addEventListener('click', () => {
   mode = b.dataset.mode; document.querySelectorAll('.tool').forEach(x=>x.setAttribute('aria-pressed', x===b));
@@ -2623,6 +2625,200 @@ function sfx(kind){
     g.gain.setValueAtTime(0,t0); g.gain.linearRampToValueAtTime(.09,t0+.02); g.gain.exponentialRampToValueAtTime(.0005,t0+.45);
     o.connect(g); g.connect(AC.destination); o.start(t0); o.stop(t0+.5); }); }catch(e){}
 }
+
+// ---------- BGM（音のファイルは使わず、その場で鳴らす。場面ごとに曲が変わる） ----------
+function soundLabel(){ const b=$('soundBtn'); if(!b) return; b.textContent = !S.sound ? 'おと OFF' : S.bgm!==false ? 'おと ON ♪' : 'おと ON'; b.setAttribute('aria-pressed', !!S.sound); b.title = !S.sound ? 'おとは なりません' : S.bgm!==false ? 'BGMと こうかおん' : 'こうかおんだけ（BGMなし）'; }
+const BGM = (() => {
+  const LEVEL = 1.6;
+  let out=null, inp=null, wet=null, bus=null, fxIn=null, noiseBuf=null, next=0, step=0, loop=0, on=false, mood=2, cur=null, race=false, switching=false, switchAt=0;
+  const hz = m => 440*Math.pow(2,(m-69)/12);
+  function build(){
+    out = AC.createGain(); out.gain.value = 0; out.connect(AC.destination);
+    inp = AC.createBiquadFilter(); inp.type='lowpass'; inp.frequency.value=2600; inp.connect(out);
+    // かるい残響（ディレイ2本。古いPCでも軽い）
+    wet = AC.createGain(); wet.gain.value=.55; const fb=AC.createGain(); fb.gain.value=.38; const tone=AC.createBiquadFilter(); tone.type='lowpass'; tone.frequency.value=1800;
+    const d1=AC.createDelay(1), d2=AC.createDelay(1); d1.delayTime.value=.31; d2.delayTime.value=.47;
+    wet.connect(d1); wet.connect(d2); d1.connect(tone); d2.connect(tone); tone.connect(fb); fb.connect(d1); tone.connect(inp);
+    bus = inp; fxIn = AC.createBiquadFilter(); fxIn.type='lowpass'; fxIn.frequency.value=3200; const fxOut=AC.createGain(); fxOut.gain.value=LEVEL; fxIn.connect(fxOut); fxOut.connect(AC.destination);
+    noiseBuf = AC.createBuffer(1, AC.sampleRate, AC.sampleRate); const nd = noiseBuf.getChannelData(0); for(let i=0;i<nd.length;i++) nd[i]=Math.random()*2-1;
+  }
+  function voice(type,f,t,v,a,len,rev){ const o=AC.createOscillator(), g=AC.createGain(); o.type=type; o.frequency.value=f;
+    g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(v,t+a); g.gain.exponentialRampToValueAtTime(.0001,t+len);
+    o.connect(g); g.connect(bus); if(rev!==false) g.connect(wet); o.start(t); o.stop(t+len+.05); return o; }
+  // ---- 楽器 ----
+  const INST = {
+    box(m,t,v,len){ const f=hz(m); voice('sine',f,t,v,.006,len); voice('sine',f*2.003,t,v*.28,.004,.45); },            // オルゴール
+    mari(m,t,v,len){ const f=hz(m); voice('sine',f,t,v,.003,len); voice('sine',f*3.99,t,v*.32,.002,.07); },            // 木琴
+    pluck(m,t,v,len){ const f=hz(m); voice('triangle',f,t,v,.003,len); voice('sine',f*2,t,v*.2,.002,len*.4); },        // ピチカート
+    bell(m,t,v,len){ const f=hz(m); voice('sine',f,t,v,.003,len); voice('sine',f*2.76,t,v*.35,.002,len*.5); voice('sine',f*5.4,t,v*.12,.001,.35); },
+    sub(m,t,v,len){ voice('sine',hz(m),t,v,.01,len,false); },
+    // ---- オーケストラ風 ----
+    str(m,t,v,len){ ORC.saws(m,t,v,len,.11,.35,1700,[-8,8]); },               // ストリングス（のばす）
+    brass(m,t,v,len){ ORC.brass(m,t,v,len); },                               // ホルン・トランペット
+    spic(m,t,v){ ORC.saws(m,t,v,.14,.004,.06,2200,[0]); },                   // きざむストリングス                                                            // やわらかいベース
+    koto(m,t,v,len){ const f=hz(m), o=AC.createOscillator(), lp=AC.createBiquadFilter(), g=AC.createGain();            // 琴
+      o.type='sawtooth'; o.frequency.setValueAtTime(f*1.012,t); o.frequency.exponentialRampToValueAtTime(f,t+.05);
+      lp.type='lowpass'; lp.frequency.setValueAtTime(3200,t); lp.frequency.exponentialRampToValueAtTime(700,t+.25);
+      g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(v*.55,t+.002); g.gain.exponentialRampToValueAtTime(.0001,t+len);
+      o.connect(lp); lp.connect(g); g.connect(bus); g.connect(wet); o.start(t); o.stop(t+len+.05);
+      voice('sine',f,t,v*.5,.002,len*.8); },
+  };
+  function noise(t,v,len,type,freq,q,rev){ const s=AC.createBufferSource(), f=AC.createBiquadFilter(), g=AC.createGain(); s.buffer=noiseBuf;
+    f.type=type; f.frequency.value=freq; if(q) f.Q.value=q; g.gain.setValueAtTime(v,t); g.gain.exponentialRampToValueAtTime(.0001,t+len);
+    s.connect(f); f.connect(g); g.connect(bus); if(rev) g.connect(wet); s.start(t, Math.random()*.5); s.stop(t+len+.02); }
+  function drum(t,v,f0,f1,dur,len){ const o=AC.createOscillator(), g=AC.createGain(); o.type='sine'; o.frequency.setValueAtTime(f0,t); o.frequency.exponentialRampToValueAtTime(f1,t+dur);
+    g.gain.setValueAtTime(v,t); g.gain.exponentialRampToValueAtTime(.0001,t+len); o.connect(g); g.connect(bus); o.start(t); o.stop(t+len+.05); }
+  const ORC = {
+    saws(m,t,v,len,a,rel,cut,det){ const f=hz(m), lp=AC.createBiquadFilter(), g=AC.createGain(); lp.type='lowpass'; lp.frequency.value=cut;
+      g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(v,t+a); g.gain.setValueAtTime(v,t+Math.max(a,len-rel)); g.gain.linearRampToValueAtTime(0,t+len);
+      det.forEach(d=>{ const o=AC.createOscillator(); o.type='sawtooth'; o.frequency.value=f; o.detune.value=d; o.connect(lp); o.start(t); o.stop(t+len+.05); });
+      lp.connect(g); g.connect(bus); g.connect(wet); },
+    brass(m,t,v,len){ const f=hz(m), lp=AC.createBiquadFilter(), g=AC.createGain(); lp.type='lowpass';
+      lp.frequency.setValueAtTime(500,t); lp.frequency.linearRampToValueAtTime(2600,t+.07); lp.frequency.linearRampToValueAtTime(1500,t+.3);
+      g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(v,t+.04); g.gain.setValueAtTime(v*.85,t+Math.max(.05,len-.12)); g.gain.linearRampToValueAtTime(0,t+len+.08);
+      [-5,5].forEach(d=>{ const o=AC.createOscillator(); o.type='sawtooth'; o.frequency.value=f; o.detune.value=d; o.connect(lp); o.start(t); o.stop(t+len+.15); });
+      lp.connect(g); g.connect(bus); g.connect(wet); },
+    timp(m,t,v){ const f=hz(m); drum(t,v,f*1.04,f,.08,1.3); noise(t,v*.25,.08,'lowpass',400); },
+    crash(t,v){ noise(t,v,1.9,'highpass',4500,0,true); },
+  };
+  const PERC = {
+    hat(t,v){ noise(t,v,.04,'highpass',7000); },
+    shaker(t,v){ noise(t,v,.07,'bandpass',5500,1.2); },
+    snare(t,v){ noise(t,v,.12,'bandpass',1800,.8,true); drum(t,v*.6,200,160,.05,.08); },
+    kick(t,v){ drum(t,v,130,45,.12,.28); },
+    taiko(t,v){ drum(t,v,95,52,.2,.6); noise(t,v*.35,.12,'lowpass',500); },
+  };
+  function pad(ms,t,len,v){ ms.forEach(m=>{ const o=AC.createOscillator(), g=AC.createGain(); o.type='sine'; o.frequency.value=hz(m-12);
+    g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(v,t+len*.35); g.gain.linearRampToValueAtTime(0,t+len*1.05);
+    o.connect(g); g.connect(bus); o.start(t); o.stop(t+len*1.1); }); }
+  const ARP = [0,2,3,1,4,2,3,1];
+  // ---- 曲 ---- ch=[ベース, 和音の音…]（MIDIの番号）、mel=小節ごとの[8分の位置, 音]
+  const YO = { // 和風（陽音階）のメロディ。お正月・春・お月見で使う
+    ch:[[50,62,64,67,69],[50,62,64,67,69],[43,62,67,69,71],[50,62,64,67,69],[50,62,64,67,69],[43,62,67,69,71],[45,57,62,64,69],[50,62,64,67,69]],
+    mel:[[[0,74],[2,76],[4,79],[6,76]],[[0,74],[4,71],[6,69]],[[0,67],[2,69],[4,71],[6,74]],[[0,76],[4,74]],[[0,79],[2,81],[4,83],[6,81]],[[0,79],[2,76],[4,74],[6,76]],[[0,79],[4,76],[6,74]],[[0,74]]] };
+  const SONGS = {
+    base:{ // 水そう（いつもの オルゴール）
+      bpm:c=>c.mood===2?56:c.mood===1?64:72, lead:'box', mvol:.03, mlen:2.6, drop:c=>c.mood===2?.22:.1, swing:.04, high:true,
+      ch:[[58,65,69,70,74],[57,64,67,72,76],[55,62,65,70,74],[53,60,64,69,72],[58,65,69,70,74],[57,64,67,72,76],[55,62,65,70,74],[60,65,67,72,77]],
+      mel:[[[0,74],[3,72],[4,69],[6,72]],[[0,76],[4,74],[6,72]],[[0,70],[2,72],[3,74],[6,77]],[[0,76],[4,72]],[[0,74],[2,77],[4,81],[6,79]],[[0,76],[3,74],[4,72],[6,74]],[[0,70],[2,74],[4,72],[6,69]],[[0,72],[4,65]]],
+      acc(ch,e,t,c,L){ const sparse=c.mood===2;
+        if(e===0){ INST.box(ch[0]-12,t,.022*c.q,3.2); pad([ch[0],ch[2]],t,L*8,.007*c.q); }
+        else if(!sparse || e%2===0) INST.box(ch[ARP[e]]-(e%2?0:12),t,(e%2?.011:.014)*c.q,1.9);
+        if(e===4 && Math.random()<(sparse?.18:.1)) INST.box(ch[3]+24,t+L*.5,.01*c.q,2.2); } },
+    derby:{ // ウミミダービー（まっているあいだ：おごそかに はじまりを まつ）
+      bpm:()=>92, gain:.6, lead:'brass', lt:-12, mvol:.03, mlen:1, drop:()=>0, swing:0,
+      ch:[[50,62,66,69],[47,62,66,71],[43,62,67,71],[45,61,64,69],[50,62,66,69],[42,61,66,69],[43,62,67,71],[45,61,64,69]],
+      mel:[[[0,69,4],[4,74,4]],[[0,73,2],[2,74,2],[4,76,4]],[[0,78,6],[6,76,2]],[[0,76,8]],[[0,78,4],[4,81,4]],[[0,81,2],[2,78,2],[4,73,4]],[[0,74,3],[3,76,1],[4,78,2],[6,79,2]],[[0,76,8]]],
+      acc(ch,e,t,c,L){ if(e===0){ ch.slice(1).forEach(m=>INST.str(m,t,.007,L*8)); INST.str(ch[0]-12,t,.01,L*8); if(c.bar%4===0) ORC.timp(38,t,.07); }
+        INST.bell(ch[1+e%3]+12+(e>3?12:0),t,.005,1.2); } },
+    derbyRace:{ // ウミミダービー（レース中：オーケストラで 走りぬける）
+      bpm:()=>150, gain:.55, lead:'brass', lt:-12, dbl:true, mvol:.032, mlen:.5, drop:()=>0, swing:0,
+      ch:[[50,62,66,69],[45,61,64,69],[47,62,66,71],[43,62,67,71],[50,62,66,69],[45,61,64,69],[43,62,67,71],[45,61,64,69]],
+      mel:[[[0,74,3],[3,76,1],[4,78,2],[6,81,2]],[[0,85,4],[4,83,2],[6,81,2]],[[0,83,3],[3,81,1],[4,78,2],[6,74,2]],[[0,79,6],[6,81,2]],
+           [[0,86,3],[3,85,1],[4,83,2],[6,81,2]],[[0,81,3],[3,83,1],[4,85,4]],[[0,86,2],[2,83,2],[4,79,2],[6,83,2]],[[0,81,4],[4,85,2],[6,73,2]]],
+      acc(ch,e,t,c,L){ const tp = 36+((ch[0]-36)%12+12)%12;
+        if(e===0){ ch.slice(1).forEach(m=>INST.str(m,t,.006,L*8)); INST.str(ch[0]-12,t,.009,L*8); ORC.timp(tp,t,.075); if(c.bar%4===0) ORC.crash(t,.03); }
+        if(e===4) ORC.timp(tp+7>47?tp-5:tp+7,t,.05);
+        INST.spic(ch[0]+(e%2?19:12),t,.011);                                   // きざみ
+        if(e===2||e===6) PERC.snare(t,.022); else if(e===7) PERC.snare(t,.01);
+        if(c.bar===7 && e>=4) ORC.timp(tp,t+L*.5,.02+.012*(e-4)); } },  // さいごの小節は ティンパニの ロール
+    room:{ // おへや（木琴で のんびり、すこし はねる）
+      bpm:c=>c.mood===2?72:80, lead:'mari', mvol:.044, mlen:1.3, drop:()=>.06, swing:.12,
+      ch:[[43,59,62,66],[48,59,64,67],[47,57,62,66],[40,55,59,62],[45,55,60,64],[38,54,57,64],[43,59,62,66],[38,54,57,64]],
+      mel:[[[2,71],[3,74],[4,78],[6,76]],[[0,76],[4,71]],[[2,74],[3,76],[4,78],[6,81]],[[0,79],[4,74]],[[2,72],[3,74],[4,76],[6,79]],[[0,78],[2,76],[4,72],[6,69]],[[0,71],[4,74],[6,78]],[[0,76],[4,74]]],
+      acc(ch,e,t,c,L){ if(e===0){ INST.sub(ch[0],t,.032*c.q,1.6); pad([ch[1],ch[3]],t,L*8,.005*c.q); }
+        const k=[1,2,3,2,1,2,3,2][e]; INST.mari(ch[k]-12,t,(e%2?.012:.016)*c.q,.9); } },
+    lesson:{ // おけいこ（ぽんぽん はずむ）
+      bpm:c=>c.mood===2?92:104, lead:'pluck', mvol:.06, mlen:.4, drop:()=>0, swing:.05,
+      ch:[[50,62,66,69],[47,62,66,71],[43,62,67,71],[45,61,64,69],[50,62,66,69],[47,62,66,71],[43,62,67,71],[45,61,64,69]],
+      mel:[[[0,74],[1,74],[2,78],[4,81],[6,78]],[[0,79],[2,78],[4,74],[6,71]],[[0,74],[1,76],[2,79],[4,83],[6,79]],[[0,81],[2,79],[4,76],[6,73]],
+           [[0,74],[2,78],[3,81],[4,86],[6,81]],[[0,83],[2,81],[4,78],[6,74]],[[0,79],[2,83],[4,81],[6,79]],[[0,76],[2,73],[4,69],[6,73]]],
+      acc(ch,e,t,c,L){ if(e%4===0) INST.pluck(ch[0]-12,t,.05*c.q,.3); if(e%4===2) ch.slice(1).forEach(m=>INST.pluck(m,t,.014*c.q,.2)); if(e%2) PERC.shaker(t,.01*c.q); } },
+    halloween:{ // ハロウィン（ちょっと ふしぎで かわいい）
+      bpm:c=>c.mood===2?88:100, lead:'box', mvol:.03, mlen:1.4, drop:()=>.05, swing:.06,
+      ch:[[50,62,65,69],[46,62,65,70],[43,62,67,70],[45,61,64,67],[50,62,65,69],[46,62,65,70],[43,62,67,70],[45,61,64,67]],
+      mel:[[[0,74],[1,77],[2,81],[4,80],[5,81],[6,77]],[[0,74],[2,77],[4,74],[6,70]],[[0,79],[1,82],[2,86],[4,85],[5,86],[6,82]],[[0,81],[2,79],[4,76],[6,73]],
+           [[0,74],[2,77],[3,76],[4,77],[6,81]],[[0,82],[2,81],[4,77],[6,74]],[[0,79],[2,77],[4,76],[6,79]],[[0,76],[2,73],[4,69],[6,73]]],
+      acc(ch,e,t,c,L){ if(e%2===0) INST.pluck((e%4===0?ch[0]:ch[0]+7)-12,t,.024*c.q,.25); if(e===0) pad([ch[0],ch[2]],t,L*8,.005*c.q);
+        if(e===6 && Math.random()<.35) INST.bell(ch[3]+12,t,.007*c.q,1.5); } },
+    tsukimi:{ // お月見（ゆっくり、オルゴールと琴）
+      bpm:()=>54, lead:'box', mvol:.03, mlen:3, drop:()=>.12, swing:.03, ch:YO.ch, mel:YO.mel,
+      acc(ch,e,t,c,L){ if(e===0){ INST.koto(ch[0],t,.022*c.q,2.6); pad([ch[0],ch[0]+7],t,L*8,.006*c.q); } if(e===4) INST.koto(ch[1],t,.014*c.q,1.8);
+        if(e===6 && Math.random()<.2) INST.box(ch[4]+12,t,.008*c.q,2); } },
+    xmas:{ // クリスマス（ベルと すず）
+      bpm:c=>c.mood===2?78:88, lead:'box', mvol:.03, mlen:2.4, drop:()=>.05, swing:.04,
+      ch:[[48,60,64,67],[45,60,64,69],[41,60,65,69],[43,59,62,67],[48,60,64,67],[40,59,64,67],[41,60,65,69],[43,59,62,67]],
+      mel:[[[0,76],[2,79],[4,84],[6,83]],[[0,81],[4,76]],[[0,77],[2,81],[4,84],[6,81]],[[0,79],[4,74]],[[0,76],[2,79],[4,84],[5,86],[6,88]],[[0,83],[4,79]],[[0,81],[2,84],[4,83],[6,79]],[[0,77],[2,76],[4,74],[6,79]]],
+      acc(ch,e,t,c,L){ if(e===0){ INST.box(ch[0]-12,t,.02*c.q,2.8); pad([ch[0],ch[2]],t,L*8,.006*c.q); }
+        else if(e%2===0) INST.box(ch[1+ARP[e]%3],t,.012*c.q,1.6);
+        PERC.shaker(t,(e%2?.009:.005)*c.q); if(e===0 && c.bar%2) INST.bell(ch[3]+12,t,.012*c.q,2.4); } },
+    wa:{ // お正月・ひなまつり・お花見・こどもの日（琴の 和風）
+      bpm:c=>c.mood===2?64:72, lead:'koto', mvol:.04, mlen:1.6, drop:()=>.05, swing:.03, ch:YO.ch, mel:YO.mel,
+      acc(ch,e,t,c,L){ if(e===0){ INST.koto(ch[0],t,.02*c.q,2); INST.koto(ch[0]+7,t+.07,.014*c.q,1.8); } if(e===4) INST.koto(ch[2],t,.012*c.q,1.4);
+        if(e===6 && Math.random()<.2) INST.bell(ch[4]+12,t,.006*c.q,1.8); } },
+    natsu:{ // 七夕・夏祭り（たいこの入った おまつり）
+      bpm:c=>c.mood===2?84:96, lead:'koto', mvol:.03, mlen:1, drop:()=>0, swing:.05,
+      ch:[[50,62,65,67,69],[50,62,65,67,69],[48,60,65,67,72],[50,62,65,67,69],[50,62,65,67,69],[53,60,65,69,72],[43,62,65,67,70],[50,62,65,67,69]],
+      mel:[[[0,74],[1,74],[2,77],[4,79],[6,77]],[[0,74],[2,72],[4,74]],[[0,72],[2,74],[4,77],[6,79]],[[0,81],[4,79],[6,77]],[[0,84],[2,81],[4,79],[6,81]],[[0,79],[2,77],[4,74],[6,72]],[[0,74],[2,77],[3,79],[4,77],[6,74]],[[0,74]]],
+      acc(ch,e,t,c,L){ if(e===0) PERC.taiko(t,.07*c.q); if(e===3) PERC.taiko(t,.03*c.q); if(e===6) PERC.taiko(t,.045*c.q); if(e%2) PERC.shaker(t,.006*c.q);
+        if(e===0){ INST.koto(ch[0],t,.018*c.q,1.6); INST.koto(ch[0]+7,t+.06,.012*c.q,1.4); } if(e===4) INST.koto(ch[2],t,.012*c.q,1.2); } },
+  };
+  function eventSong(){ if(typeof evOn!=='function') return null;
+    if(evOn('xmas')) return 'xmas';
+    if(evOn('newyear')||evOn('hina')||evOn('hanami')||evOn('kodomo')) return 'wa';
+    if(evOn('tanabata')||evOn('matsuri')) return 'natsu';
+    if(evOn('halloween')) return evOn('tsukimi') && night>.6 ? 'tsukimi' : 'halloween';   // 10月はじめは 夜だけ お月見
+    if(evOn('tsukimi')) return 'tsukimi';
+    return null; }
+  function scene(){
+    race = false;
+    if(typeof derby!=='undefined' && derby && !$('derby').hidden){ race = derby.phase==='race'; return race ? 'derbyRace' : 'derby'; }
+    if(!$('asobi').hidden && typeof asobiView!=='undefined'){ if(asobiView==='room') return 'room'; if(['pick','trick','play','result'].includes(asobiView)) return 'lesson'; }
+    return eventSong() || 'base';
+  }
+  function ctx(bar){ return {mood, race, bar, q: mood===2 ? .78 : mood===1 ? .9 : 1}; }
+  function schedule(){
+    const song = SONGS[cur], ahead = AC.currentTime + .7;
+    while(next < ahead){
+      const bar = Math.floor(step/8)%8, e = step%8, ch = song.ch[bar], t = next;
+      if(step%8===0) mood = Math.round(clamp(phase,0,2));
+      if(step%64===0) loop++;
+      const c = ctx(bar), L = 60/song.bpm(c)/2;
+      try{ song.acc(ch,e,t,c,L);
+        const mm = song.mel[bar].find(x=>x[0]===e);
+        if(mm && Math.random() > song.drop(c)){ const up = song.high && loop%2===0 && mood===0 && Math.random()<.5 ? 12 : 0; const len = mm[2] ? mm[2]*L*.96 : song.mlen, mt = t+(Math.random()-.5)*.02; INST[song.lead](mm[1]+up+(song.lt||0), mt, song.mvol*c.q, len); if(song.dbl) INST.str(mm[1]+up, mt, song.mvol*.3*c.q, len); }
+      }catch(err){} // 1音の まちがいで 曲が止まらないように
+      next += L * (e%2 ? 1-song.swing : 1+song.swing); step++; // すこし ゆらして 手でひいているように
+    }
+  }
+  function fade(to,sec){ out.gain.cancelScheduledValues(AC.currentTime); out.gain.setValueAtTime(out.gain.value,AC.currentTime); out.gain.linearRampToValueAtTime(to,AC.currentTime+sec); }
+  function begin(key){ cur=key; step=0; loop=0; next=AC.currentTime+.08; mood=Math.round(clamp(phase,0,2)); }
+  function want(){ return !!(S && S.sound && S.bgm!==false && !document.hidden && !(typeof DESK_RING!=='undefined' && DESK_RING)); }
+  function tick(){
+    if(!AC || AC.state!=='running') return;
+    if(want()){
+      if(!out) build();
+      const key = scene();
+      if(!on){ on=true; switching=false; begin(key); fade(LEVEL*(SONGS[cur].gain||1),3); }
+      else if(key!==cur && !switching){ switching=true; switchAt=AC.currentTime+.6; fade(0,.5); }
+      if(switching){ if(AC.currentTime<switchAt) return; switching=false; begin(scene()); fade(LEVEL*(SONGS[cur].gain||1),1.4); }
+      schedule();
+    } else if(on){ on=false; switching=false; fade(0,.8); }
+  }
+  function fanfare(hit){ if(!on || !out) return; const t=AC.currentTime+.05, prev=bus; bus=fxIn;
+    try{
+      if(hit){ // パパパ パーン！
+        [[62,0,.12],[62,.14,.12],[62,.28,.12],[69,.42,1.9]].forEach(([m,d,l])=>{ ORC.brass(m,t+d,.024,l); ORC.brass(m-12,t+d,.014,l); });
+        [66,69,74].forEach(m=>{ ORC.saws(m,t+.42,.006,2.2,.06,.6,2000,[-8,8]); ORC.brass(m-12,t+.42,.01,1.9); });
+        for(let i=0;i<5;i++) ORC.timp(38,t+i*.08,.025+i*.008); ORC.timp(38,t+.42,.09); ORC.crash(t+.42,.04);
+      } else { // ざんねん…でも やさしく
+        [[69,0,.35],[66,.38,.35],[62,.76,1.2]].forEach(([m,d,l])=>ORC.saws(m,t+d,.012,l,.04,.25,1600,[-6,6]));
+        ORC.timp(38,t+.76,.04);
+      }
+    } finally { bus=prev; } }
+  setInterval(tick, 200);
+  return {tick, fanfare, playing:()=>on, song:()=>cur, mood:()=>mood};
+})();
 
 // ---------- ウミミダービー ----------
 const DESK_RING = false; // デスクトップ版の「画面一周ダービー」窓でだけ true
@@ -2886,6 +3082,7 @@ function dFinish(){
       if(!S.unlocked.includes('trophy')){ S.unlocked.push('trophy'); setTimeout(()=>toast('はじめての ゆうしょう！「ダービーの トロフィー」を かざれるようになったよ'),1200); if(mode==='decor') renderTray(); }
     }
   }
+  try{ BGM.fanfare(hit); }catch(e){}
   D.msg = msg; save(); renderDerby();
   if(DESK_RING && window.desk) window.desk.setInteractive(true);
 }
@@ -3427,7 +3624,7 @@ function boot(data){
   resize();
   tPhase = targetPhase(); phase = tPhase; night = clamp(phase-1,0,1); dusk = clamp(1-Math.abs(phase-1),0,1);
   refreshShards(); updateTimeBtn(); renderTray();
-  $('soundBtn').textContent = S.sound?'おと ON':'おと OFF'; $('soundBtn').setAttribute('aria-pressed',S.sound);
+  soundLabel();
   const mins = saved && saved.last ? (Date.now()-saved.last)/60000 : 0;
   if(!S.welcomed && !isBirthday()){ S.welcomed=true; setTimeout(()=>toast(night>.5 ? 'ようこそ。夜なので、みんな少しねむそう' : 'ようこそ、ウミミの箱庭へ。タップでなでてあげてね'),600); }
   else if(mins>=15){ const n=Math.min(5,Math.floor(mins/15)); S.shards+=n; refreshShards(true); setTimeout(()=>toast(`おかえり。つきのかけらが ${n} こ 落ちてたよ`),600); awayDiary(); }

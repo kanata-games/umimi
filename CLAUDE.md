@@ -35,8 +35,8 @@
 4. ひきつぎコード：`UMIMI1-` + base64(JSON)。PC とスマホの間の移動用
 
 ## いまの状態（2026-10-01 時点）
-- 本番＝開発版＝GitHub Pages＝`source/game.html`（おきがえシートの分類別分割＋コレクションの分類タブまで反映済み）。`DESK_RING` のコードはブラウザ版では何もしない
-- デスクトップ版の最新は 0.10.0（おきがえ分類タブ入り。画面一周ダービーもそのまま）。デスクトップの画面は `desktop/desktop_head.html` が別にあるので、本体に要素を足したらこちらにも足す（足りないと getElementById が null で止まる）
+- 本番＝開発版＝GitHub Pages＝`source/game.html`（BGMまで反映済み）。`DESK_RING` のコードはブラウザ版では何もしない
+- デスクトップ版の最新は 0.11.0（BGM・おきがえ分類タブ入り。画面一周ダービーもそのまま。画面一周の窓ではBGMは鳴らさない）。デスクトップの画面は `desktop/desktop_head.html` が別にあるので、本体に要素を足したらこちらにも足す（足りないと getElementById が null で止まる）
 - おきがえを増やすとき：1枚のシートは50種くらいまでを目安に。超えそうなら分類を分ける（例：きせつ → はるなつ／あきふゆ）。シートの中身は `CAT`（build_all.py）、タブは `OCATS`（game.html）
 - ピッちゃん（ChatGPT）が家具・飾り・衣装の絵を作ってくれる。届いたら背景を抜いてシリーズ別シートに追加する
 - 今後の候補：おへやコード（部屋の見せ合い）、デスクトップ版でおけいこ・おへやをウインドウで開く、配信モード
@@ -55,7 +55,7 @@
 - `roomtex.png` … おへやの壁紙・床の模様タイル4枚（`source/furniture/build_tex.py`）
 - デスクトップ版の「画面一周ダービー」：水そうの「ダービー」ボタン → main.js が作業領域いっぱいの透明ウインドウを `index.html#derby` で開く（`DESK_RING`）。予想の画面は真ん中、スタートするとクリックが下のアプリに通る。5匹は画面のいちばん外側を1列で一周（左下がスタート・ゴール、水そうの上も通る）。名前は出さず、賭けた子が金色に光る。閉じると水そうが読み込み直して結果を反映（開いているあいだは水そう側は保存しない `window.__noSave`）。Esc で閉じる
 - `desktop/` … Windows デスクトップ版（Electron）。`python3 build_desktop.py` で、game.html から画面の下に出る細長い水そう版の `desktop/app/index.html` を作る（ウミミ・訪問者・おきがえ c_*.png は data URI で埋め込む＝色変えのため。家具 f_*.png と roomtex.png は app に png をコピー。どこから実行してもよい。index.html から作るので、先に index.html を作り直す。置き換える文字列が合わないと assert で止まるので、本体を変えたら置き換え側も直す）
-  - 配布は小さい zip：`はじめにダブルクリック.bat` を実行すると `_files/setup.ps1` が Electron v33.2.1 を取ってくる（SHA256 で確認）。更新のときは `_files/app/index.html` を差し替えるだけ。最新は 0.9.9（家具の画像は app フォルダに png として同梱。setup zip は desktop/setup の3ファイル＋ `_files/app` に desktop/app の中身を入れて作る）
+  - 配布は小さい zip（最新 0.11.0）：`はじめにダブルクリック.bat` を実行すると `_files/setup.ps1` が Electron v33.2.1 を取ってくる（SHA256 で確認）。更新のときは `_files/app/index.html` を差し替えるだけ。（家具の画像は app フォルダに png として同梱。setup zip は desktop/setup の3ファイル＋ `_files/app` に desktop/app の中身を入れて作る）
 
 ## ゲームの中身（game.html の主な定数）
 - `OUTFITS` おきがえ49種、`HEADWEAR`、`PERS` 性格、`DECOR` 飾り、`RECOLOR`/`PALS` ウミミの色
@@ -71,6 +71,11 @@
 - 水そうの飾り DECOR：img:1 の物は画像。かざるはシリーズタブ（DSERIES：きほん/おみやげ/ダービー/パール/あきまつり/ハロウィン）
 - テーブルの上に小物を置ける：テーブル=SURF（shelltable, table）、小物=SMALLS。水そうは o.on=テーブルid, o.dx、おへやは it.on, it.dx
 - 動く家具はコマ切り替えだけ（animKey：かぼちゃびっくりばこ）。シャンデリアは静止に変更済み
+- BGM（`const BGM`）：音のファイルは使わず Web Audio でその場で鳴らす（数KB）。曲は `SONGS`：base（水そうのオルゴール。ひる72/ゆうがた64/よる56 BPM）、derby（待ち時間。オーケストラ風）、derbyRace（レース中）、room（木琴）、lesson（ピチカート）、halloween、tsukimi、xmas、wa（正月・ひなまつり・お花見・こどもの日）、natsu（七夕・夏祭り）。バレンタインは base。10月はじめのハロウィン＋お月見は、夜だけ tsukimi
+  - 1曲＝8小節×8分音符8つ。`ch`=小節ごとの[ベース, 和音の音…]（MIDI番号）、`mel`=小節ごとの[8分の位置, 音, (長さ8分)]、`acc()`=伴奏とリズム。楽器は `INST`（box/mari/pluck/bell/sub/koto/str/brass/spic）と `ORC`・`PERC`
+  - 場面は `scene()` で決まり、変わると0.5秒でフェードして次の曲へ。曲ごとの音量は `gain`。ダービーのゴールで `BGM.fanfare(当たり)`（別の出口 fxIn で鳴らすので切り替えで消えない）
+  - おとボタンは OFF → ON ♪（BGMあり）→ ON（こうかおんだけ）→ OFF。`S.bgm`（古いセーブは true 扱い）
+  - 新しい曲の音量は、Playwright で `--autoplay-policy=no-user-gesture-required` にして MediaRecorder で録音し、ffmpeg の volumedetect で平均 -31〜-35dB にそろえた
 - テスト用のハッシュ：`#birthday` `#mybday` `#ev-<イベント名>` `#visit-<訪問者>` `#okeiko`（おけいこの1日1回制限を外す）（例 `#visit-crab`）
 
 ## Grok 用のプロンプト（新しい素材を頼むとき）
