@@ -108,6 +108,9 @@ button.chip:hover{background:var(--panel2)}
 .closet{position:absolute;right:10px;bottom:50px;max-width:calc(100% - 20px);max-height:calc(100% - 58px);box-sizing:border-box;background:rgba(249,249,255,.96);border:1.5px solid #fff;border-radius:16px;padding:6px 10px 8px;box-shadow:0 4px 14px rgba(60,60,140,.22);display:flex;flex-direction:column}
 .closet h2{margin:0;font-family:"Klee One","Zen Maru Gothic",serif;font-weight:600;font-size:14px;color:#5b64b8}
 .csub{margin:0 0 4px;font-size:11px;color:var(--ink2)}
+.ctabs{overflow-x:auto;flex-wrap:nowrap;margin:0 0 4px;padding-bottom:2px}
+.ctabs .atab{white-space:nowrap;flex:none}
+.ctabs .atab small{font-size:10px;font-weight:600;opacity:.75;margin-left:2px}
 .ogrid{display:flex;gap:5px;overflow-x:auto;padding-bottom:2px}
 .oitem{flex:0 0 auto;width:74px;display:flex;flex-direction:column;align-items:center;gap:0;background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:3px 2px 4px;cursor:pointer;color:var(--ink)}
 .oitem canvas{width:56px;height:45px}
@@ -194,6 +197,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--peri-deep);outl
     <button class="x" id="closetClose" type="button" aria-label="とじる">×</button>
     <h2 id="closetTitle">おきがえコレクション</h2>
     <p class="csub" id="closetSub"></p>
+    <div class="atabs ctabs" id="closetTabs" role="tablist"></div>
     <div class="ogrid" id="closetList"></div>
   </section>
   <section class="album ui" id="album" hidden aria-labelledby="albumTitle">

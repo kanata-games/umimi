@@ -145,7 +145,8 @@ button.chip:hover{border-color:var(--lav)}
 .closet{position:absolute;right:12px;top:12px;width:min(640px,calc(100% - 24px));max-height:calc(100% - 24px);overflow:auto;box-sizing:border-box;background:rgba(249,249,255,.97);border:1.5px solid #fff;border-radius:18px;padding:12px 16px 14px;box-shadow:0 6px 20px rgba(80,90,170,.2)}
 .closet h2{margin:0;font-family:"Klee One","Zen Maru Gothic",serif;font-weight:600;font-size:19px;color:#5b64b8;letter-spacing:.04em;font-variant-numeric:tabular-nums}
 .csub{margin:2px 0 10px;font-size:13px;color:var(--ink2)}
-.ctabs{overflow-x:auto;padding:1px 1px 3px;margin-bottom:8px;scrollbar-width:thin}
+.ctabs{flex-wrap:wrap;padding:1px 1px 3px;margin-bottom:8px}
+@media (max-width:700px){.ctabs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:thin}}
 .ctabs .atab{white-space:nowrap;flex:none;padding:4px 11px;font-size:13px}
 .ctabs .atab small{font-size:11px;font-weight:600;opacity:.75;margin-left:3px;font-variant-numeric:tabular-nums}
 .ogrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(98px,1fr));gap:8px}
@@ -2558,7 +2559,7 @@ function renderCloset(){
   const keys = Object.keys(OUTFITS), have = keys.filter(k=>S.closet.includes(k)).length;
   $('closetTitle').textContent = `おきがえコレクション ${have}/${keys.length}`;
   $('closetSub').textContent = u ? `${u.name}に きせる おきがえを えらんでね` : 'ウミミをタップして「きがえる」から きせられるよ';
-  const tabs=$('closetTabs'); tabs.innerHTML='';
+  const tabs=$('closetTabs'), tsl=tabs.scrollLeft; tabs.innerHTML='';
   OCATS.forEach(([c,nm]) => {
     const ks = c==='all' ? keys : keys.filter(k=>outfitCat(k)===c);
     const t=document.createElement('button'); t.type='button'; t.className='atab'; t.setAttribute('role','tab'); t.setAttribute('aria-selected', c===closetCat);
@@ -2566,6 +2567,7 @@ function renderCloset(){
     t.addEventListener('click', () => { closetCat=c; renderCloset(); });
     tabs.append(t);
   });
+  tabs.scrollLeft=tsl;
   const box=$('closetList'); box.innerHTML='';
   keys.filter(k => closetCat==='all' || outfitCat(k)===closetCat).forEach(k => {
     const O=OUTFITS[k], own=S.closet.includes(k), wearing = u && u.outfit===k;
