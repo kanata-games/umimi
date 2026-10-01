@@ -121,18 +121,19 @@ R("""    umimi:[{id:1,name:'ウミミ',color:'lavender',x:380,d:0.6,aff:0},{id:2
 R("function frame(now){ const dt=Math.min(.05,(now-last)/1000); last=now; T+=dt; update(dt); draw(); if(derby) updateDerby(dt); updateLesson(dt); updateRoom(dt); requestAnimationFrame(frame); }",
   """function frame(now){ requestAnimationFrame(frame);
   const minGap = SET.eco ? 1000/24 : 1000/60; if(now-last < minGap-2) return;
-  const dt=Math.min(.08,(now-last)/1000); last=now; if(document.hidden) return; T+=dt; update(dt); draw(); if(derby) updateDerby(dt); updateLesson(dt); updateRoom(dt); }""")
+  const dt=Math.min(.08,(now-last)/1000); last=now; if(document.hidden) return; T+=dt; if(DESK_RING){ if(derby) updateDerby(dt); return; } update(dt); draw(); if(derby) updateDerby(dt); updateLesson(dt); updateRoom(dt); }""")
 # boot: resize before state, desktop hooks
 R("""  S = Object.assign(defaultState(), saved || {});""","""  resize();
   S = Object.assign(defaultState(), saved || {});""")
 R("""  if(!S.welcomed && !isBirthday()){ S.welcomed=true; setTimeout(()=>toast(night>.5 ? 'ようこそ。夜なので、みんな少しねむそう' : 'ようこそ、ウミミの箱庭へ。タップでなでてあげてね'),600); }""",
   """  if(!S.welcomed && !isBirthday()){ S.welcomed=true; setTimeout(()=>toast('ウミミが デスクトップに やってきたよ。右下のメニューで あそべるよ'),600); }""")
 R("""  new ResizeObserver(resize).observe(stage);""","""  new ResizeObserver(resize).observe(stage);
-  deskHooks();""")
+  if(DESK_RING){ document.body.classList.add('ring'); document.body.appendChild($('derby')); setTimeout(openDerby, 50); } else deskHooks();""")
 # selection of the sprite from data URI
 b64 = base64.b64encode(open('umimi-sprites.png','rb').read()).decode()
 R("sprImg.src = 'umimi-sprites.png';", "sprImg.src = SPRITE_DATA;")
 R("cosImg.src = 'costumes.png';", "cosImg.src = COS_DATA;")
+R("const DESK_RING = false;", "const DESK_RING = location.hash==='#derby';")
 R("visImg.src = 'visitors.png';", "visImg.src = VIS_DATA;")
 s = "const VIS_DATA = 'data:image/png;base64," + base64.b64encode(open('visitors.png','rb').read()).decode() + "';\n" + s
 s = "const COS_DATA = 'data:image/png;base64," + base64.b64encode(open('costumes.png','rb').read()).decode() + "';\n" + s
@@ -156,6 +157,7 @@ function deskHooks(){
   });
   document.addEventListener('mouseleave', () => { if(!drag) setInter(false); });
   if(window.desk){
+    if(window.desk.onDerbyClosed) window.desk.onDerbyClosed(() => location.reload());
     window.desk.onCfg(c => {
       const ecoChanged = SET.eco !== c.eco; SET = Object.assign(SET, c);
       S.sound = !!c.sound; S.timeMode = c.timeMode || 'auto'; S.profileOnTap = c.profileOnTap !== false; if(!S.profileOnTap) closeCard(); tPhase = targetPhase(); updateTimeBtn();
@@ -169,5 +171,17 @@ function deskHooks(){
 s = "const SPRITE_DATA = 'data:image/png;base64," + b64 + "';\n" + s
 
 head = open('desktop_head.html').read()
+import re as _re
+css_src = src.split('<style>')[1].split('</style>')[0]
+pat = _re.compile(r'^(\.derby|\.dgrid|\.dcard|\.dbar|\.dbtn|\.dres|\.dmsg|\.dmode|\.dm[{.:]|\.dplayers|\.dpl|\.dedit|\.who|\.dstat|\.dsbox|\.dh3|\.dmedal|\.dbet|\.dmt|\.dmth|\.dmr|\.dshop|\.dsrow|\.dsi|\.dbt|\.dbtrow|\.dsum|\.dbulk|#derbyBody)')
+dcss = '\n'.join(l for l in css_src.split('\n') if pat.match(l))
+dcss += '''
+body.ring{background:transparent!important}
+body.ring main{display:none!important}
+body.ring #derby{position:fixed;inset:auto;left:50%;top:50%;transform:translate(-50%,-50%);width:min(860px,92vw);max-height:84vh;overflow:auto;z-index:10;font-size:14px}
+body.ring #derby.racing{display:none!important}
+#derby .x{position:absolute;right:8px;top:6px;border:0;background:none;font-size:22px;cursor:pointer;color:var(--ink2)}
+'''
+head = head.replace('</style>', dcss + '\n</style>', 1)
 open('desktop/app/index.html','w').write(head + "\n<script>" + s + "</script>\n</body></html>\n")
 print('built', len(s))

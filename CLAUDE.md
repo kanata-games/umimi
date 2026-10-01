@@ -8,6 +8,14 @@
 - 遊び方：友達10人くらいとリリィさんが、claude.ai の**本番アーティファクトのリンク**で遊んでいる。GitHub Pages は予備（移行の告知はしない方針）
 - 画像（ウミミ・衣装・訪問者）は、ユーザーが Grok で作った緑背景のドット絵を、こちらで背景抜き・位置合わせしている
 
+## ★新しい会話で続けるとき（最初に読む）
+- 作業場所：このリポジトリを clone（例 /home/claude/umimi-repo）。本体は `source/game.html`、画像は直下の png
+- **本番・開発版のリンクは絶対に変えない**。Artifact を公開するときは必ず `url` に下の既存URLを渡す（url なしで公開すると別リンクが新しくできてしまう）。別の会話から更新する前に、いったん `action: "read"` でその URL を読む
+- 公開するとき、画像は `files` に**絶対パス**で全部渡す：`costumes.png` `umimi-sprites.png` `visitors.png` `roomtex.png` `f_base.png` `f_pearl.png` `f_autumn.png` `f_halloween.png`。capability は `downloads`（前のバージョンから引き継がれる）
+- 開発版は `<title>ウミミの箱庭</title>` を `<title>ウミミの箱庭 開発版</title>` に置き換えたものを公開する
+- 確認用：ローカルで `python3 -m http.server` を立て、`<!doctype html><meta charset=utf-8>` を先頭に付けた試験用コピーを Playwright（/opt/pw-browsers）で開く。本体は IIFE なので、試すときは試験用コピーにだけ window.__xxx のフックを足す
+- 公開するときは「開発版か本番か」を必ずユーザーに伝える。本番は OK が出てから
+
 ## 公開先
 | 名前 | URL | 備考 |
 |---|---|---|
@@ -26,6 +34,12 @@
 3. **セーブ互換は絶対に守る**：localStorage `umimi-hakoniwa-v1`（写真は `umimi-photos-v1`、デスクトップ版は `umimi-desktop-v1`）。項目を追加するときは、`defaultState()` と boot 時の補完で古いデータに初期値を入れる。好感度などが消えないようにする
 4. ひきつぎコード：`UMIMI1-` + base64(JSON)。PC とスマホの間の移動用
 
+## いまの状態（2026-10-01 時点）
+- 本番＝開発版とほぼ同じ。`source/game.html` には、デスクトップ版の「画面一周ダービー」用のコード（`DESK_RING` が true のときだけ動く）が入っているが、ブラウザ版では何もしない。本番アーティファクトと GitHub Pages の index.html はその1つ前（ブラウザ上の動きは同じ）
+- デスクトップ版の最新は 0.9.9（画面一周ダービーの試作。ユーザーがPCで試している途中）
+- ピッちゃん（ChatGPT）が家具・飾り・衣装の絵を作ってくれる。届いたら背景を抜いてシリーズ別シートに追加する
+- 今後の候補：おへやコード（部屋の見せ合い）、衣装シートの分割とコレクションの分類タブ、デスクトップ版でおけいこ・おへやをウインドウで開く、配信モード
+
 ## ファイル
 - `index.html` … Pages 用。`source/game.html` の前に head（PWA タグ、manifest、icon）を付け、最後に `</body></html>` を足したもの。今の index.html の先頭14行が head
 - `source/game.html` … 本体。1ファイル（HTML と canvas、全体が IIFE）
@@ -37,8 +51,9 @@
 - `visitors.png` … 訪問者10種×2コマ。作り直すときは `source/visitors/build_visitors.py`。出力された visitors_meta.json を game.html の `const VIS_SPR = {...}` に貼る。絵がまだ読み込まれていないときは、コードで描いた旧訪問者を表示する
 - `f_base.png` `f_pearl.png` `f_autumn.png` `f_halloween.png` … 家具・飾りのシリーズ別シート（ピッちゃん=ChatGPT作の絵を背景抜き・色数圧縮）。**使うときだけ読み込む**（`fsheet()`）。作り直しは `source/furniture/build_furniture2.py`（SERIES に「キー:(おへや幅, 水そう幅[, コマ数, 基準])」を足す）→ 出力 furniture_meta.json を game.html の `const FIMG = {m:...}` に貼る（jbox/chandelier は _0 のエイリアスも）
 - `roomtex.png` … おへやの壁紙・床の模様タイル4枚（`source/furniture/build_tex.py`）
+- デスクトップ版の「画面一周ダービー」：水そうの「ダービー」ボタン → main.js が作業領域いっぱいの透明ウインドウを `index.html#derby` で開く（`DESK_RING`）。予想の画面は真ん中、スタートするとクリックが下のアプリに通る。5匹は画面のいちばん外側を1列で一周（左下がスタート・ゴール、水そうの上も通る）。名前は出さず、賭けた子が金色に光る。閉じると水そうが読み込み直して結果を反映（開いているあいだは水そう側は保存しない `window.__noSave`）。Esc で閉じる
 - `desktop/` … Windows デスクトップ版（Electron）。`python3 build_desktop.py` で、game.html から画面の下に出る細長い水そう版の `desktop/app/index.html` を作る（画像は data URI で埋め込む。置き換える文字列が合わないと assert で止まるので、本体を変えたら置き換え側も直す）
-  - 配布は小さい zip：`はじめにダブルクリック.bat` を実行すると `_files/setup.ps1` が Electron v33.2.1 を取ってくる（SHA256 で確認）。更新のときは `_files/app/index.html` を差し替えるだけ。最新は 0.9.7（家具の画像は app フォルダに png として同梱。更新時は _files/app の中身を全部上書き）
+  - 配布は小さい zip：`はじめにダブルクリック.bat` を実行すると `_files/setup.ps1` が Electron v33.2.1 を取ってくる（SHA256 で確認）。更新のときは `_files/app/index.html` を差し替えるだけ。最新は 0.9.9（家具の画像は app フォルダに png として同梱。setup zip は desktop/setup の3ファイル＋ `_files/app` に desktop/app の中身を入れて作る）
 
 ## ゲームの中身（game.html の主な定数）
 - `OUTFITS` おきがえ49種、`HEADWEAR`、`PERS` 性格、`DECOR` 飾り、`RECOLOR`/`PALS` ウミミの色

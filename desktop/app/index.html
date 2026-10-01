@@ -171,6 +171,81 @@ button.chip:hover{background:var(--panel2)}
 .bday .jp br,.bday .msg,.bday .tip{display:none}
 .bday .go{font-weight:700;font-size:13px;color:#fff;background:linear-gradient(90deg,#ee93b3,#8f97e6);border:0;border-radius:999px;padding:7px 16px;cursor:pointer}
 button:focus-visible,input:focus-visible{outline:2px solid var(--peri-deep);outline-offset:2px}
+.derby{position:absolute;inset:10px;box-sizing:border-box;background:rgba(249,249,255,.98);border:1.5px solid #fff;border-radius:18px;padding:12px 16px 14px;box-shadow:0 6px 20px rgba(80,90,170,.2);overflow:auto;display:flex;flex-direction:column;gap:8px;z-index:6}
+.derby h2{margin:0;font-family:"Klee One","Zen Maru Gothic",serif;font-weight:600;font-size:19px;color:#5b64b8}
+.derby .dsub{margin:0;font-size:12.5px;color:var(--ink2);line-height:1.6}
+.dgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.dcard{position:relative;border:1.5px solid var(--line);background:#fff;border-radius:14px;padding:6px 8px 8px;cursor:pointer;text-align:left;font:inherit;color:var(--ink);display:flex;flex-direction:column;align-items:center;gap:2px}
+.dcard canvas{width:110px;height:78px}
+.dcard .nm{font-weight:700;font-size:14px}
+.dcard .tg{font-size:11.5px;color:var(--ink2)}
+.dcard .od{font-size:13px;color:#b0507a;font-weight:700}
+.dcard .own{position:absolute;left:6px;top:5px;font-size:10.5px;background:#e7e8ff;color:#5b64b8;border-radius:8px;padding:1px 6px}
+.dcard.sel{border-color:#f0a3bd;background:#fff4f8;box-shadow:0 0 0 2px #f7c6d2}
+.dbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.dbtn{border:0;border-radius:12px;padding:9px 18px;font:inherit;font-weight:700;background:var(--peri);color:#fff;cursor:pointer}
+.dbtn:disabled{opacity:.45;cursor:default}
+.dbtn.sub{background:#fff;color:var(--peri-deep);border:1.5px solid var(--line)}
+.derby .dcv{width:100%;flex:1;height:auto;min-height:240px;max-height:460px;border-radius:12px;background:#cfe0f7;display:block}
+.dres{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+.dres li{display:flex;gap:10px;align-items:center;font-size:14px;padding:4px 8px;border-radius:10px;background:#fff}
+.dres li.me{background:#fff4f8}
+.dres .rk{font-weight:700;width:2.4em;color:#5b64b8}
+.dmsg{font-size:14.5px;font-weight:700;color:#b0507a;margin:2px 0}
+.dmode{display:flex;gap:6px;align-items:center;padding-right:28px}
+.dm{border:1.5px solid var(--line);background:#fff;color:var(--ink2);border-radius:999px;padding:4px 12px;font:inherit;font-size:13px;font-weight:700;cursor:pointer}
+.dm.on{background:var(--peri);border-color:var(--peri);color:#fff}
+.dplayers{display:flex;gap:6px;flex-wrap:wrap}
+.dpl{border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:4px 10px;font:inherit;font-size:12.5px;color:var(--ink);cursor:pointer;display:flex;flex-direction:column;align-items:flex-start;line-height:1.35;min-width:64px}
+.dpl span{font-size:11.5px;color:var(--ink2)}
+.dpl.done span{color:#b0507a;font-weight:700}
+.dpl.on{border-color:#f0a3bd;box-shadow:0 0 0 2px #f7c6d2}
+.dpl.add{justify-content:center;align-items:center;color:var(--peri-deep);font-weight:700;border-style:dashed}
+.dedit{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--ink2)}
+.dedit input{font:inherit;font-size:14px;padding:4px 8px;border:1.5px solid var(--line);border-radius:8px;width:9em;color:var(--ink)}
+.dcard .num{position:absolute;right:8px;top:5px;width:22px;height:22px;border-radius:50%;background:#6574cf;color:#fff;font-size:12.5px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.dbulk{background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:6px 10px}
+.dbulk summary{cursor:pointer;font-size:13px;font-weight:700;color:var(--peri-deep)}
+.dbulk textarea{width:100%;box-sizing:border-box;font:inherit;font-size:14px;border:1.5px solid var(--line);border-radius:8px;padding:6px 8px;color:var(--ink);resize:vertical}
+.dplayers{max-height:132px;overflow:auto}
+#derbyBody>*{flex-shrink:0}
+#derbyBody>.dcv{flex-shrink:1}
+.who{font-size:11.5px;color:#b0507a;font-weight:700;background:#fff0f5;border-radius:8px;padding:1px 6px}
+.dmedal{font-size:13px;font-weight:700;color:#a0701a}
+.dmedal.big{font-size:22px;text-align:center;padding:4px}
+.dbet{display:flex;gap:6px;align-items:center;flex-wrap:wrap;background:#fffaf0;border:1.5px solid #f3e1b5;border-radius:12px;padding:6px 10px}
+.dbet .lbl{font-size:12.5px;color:var(--ink2);margin-left:auto}
+.dbet .dm{padding:3px 10px}
+.dpl i{font-style:normal;font-size:11px;color:#a0701a}
+.dmt{background:#fffaf0;border:1.5px solid #f3e1b5;border-radius:12px;padding:6px 10px;display:grid;gap:2px;max-height:220px;overflow:auto}
+.dmth{font-weight:700;font-size:13px;color:#a0701a}.dmth small{font-weight:400;color:var(--ink2);margin-left:4px}
+.dmr{display:flex;gap:8px;align-items:baseline;font-size:13px}
+.dmr b{min-width:5em}.dmr span{color:var(--ink2);font-size:12px;flex:1}.dmr em{font-style:normal;font-weight:800;min-width:3.5em;text-align:right}
+.dmr.up em{color:#d0507a}.dmr.down em{color:#7f86b8}.dmr .tot{flex:none;min-width:4em;text-align:right}
+.dshop{display:grid;gap:6px}
+.dcard.dim{opacity:.6}
+.derby .lcv{flex:none;height:min(52vh,360px);min-height:260px;touch-action:manipulation;cursor:pointer}
+.derby .rcv{flex:none;height:auto;aspect-ratio:640/370;max-height:min(56vh,440px);min-height:0;touch-action:none;background:#e9ecfd}
+.dm.fb.lock{background:#fffaf0;border-color:#f3e1b5;color:#a0701a}
+.dbt{display:flex;flex-direction:column;gap:4px}
+.dbtrow{display:flex;gap:6px;flex-wrap:wrap}
+.dcard .ord{position:absolute;left:6px;bottom:6px;font-size:11.5px;font-weight:800;color:#fff;background:#e0789c;border-radius:8px;padding:1px 7px}
+.dsum{background:#fff4f8;border:1.5px solid #f7c6d2;border-radius:12px;padding:6px 10px;font-size:13.5px}
+.dsum span{color:#b0507a;font-weight:800}
+.dsrow{display:flex;gap:10px;align-items:center;background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:6px 10px}
+.dsrow canvas{width:72px;height:60px;flex:none}
+.dsi{flex:1;display:flex;flex-direction:column}.dsi span{font-size:12px;color:var(--ink2)}
+.dstat{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:6px}
+.dsbox{background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:8px 4px;display:flex;flex-direction:column;align-items:center}
+.dsbox b{font-size:20px;color:#5b64b8}
+.dsbox span{font-size:11.5px;color:var(--ink2)}
+.dh3{margin:6px 0 0;font-size:14px;color:#5b64b8}
+body.ring{background:transparent!important}
+body.ring main{display:none!important}
+body.ring #derby{position:fixed;inset:auto;left:50%;top:50%;transform:translate(-50%,-50%);width:min(860px,92vw);max-height:84vh;overflow:auto;z-index:10;font-size:14px}
+body.ring #derby.racing{display:none!important}
+#derby .x{position:absolute;right:8px;top:6px;border:0;background:none;font-size:22px;cursor:pointer;color:var(--ink2)}
+
 </style>
 </head>
 <body>
@@ -261,7 +336,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--peri-deep);outl
     <button class="chip" id="closetBtn" type="button">おきがえ</button>
     <button class="chip" id="diaryBtn" type="button">にっき</button>
     <button class="chip" id="albumBtn" type="button">アルバム</button>
-    <button class="chip" id="derbyBtn" type="button" hidden>ダービー</button>
+    <button class="chip" id="derbyBtn" type="button">ダービー</button>
     <button class="chip" id="asobiBtn" type="button" hidden>あそびば</button>
     <button class="chip" id="saveBtn" type="button">ひきつぎ</button>
     <button class="chip party" id="partyBtn" type="button" hidden>おいわい</button>
@@ -459,7 +534,7 @@ function serialize(){
     decor:S.decor.map(o=>Object.assign({id:o.id,type:o.type,x:Math.round(o.x),d:+o.d.toFixed(3)}, o.on!=null?{on:o.on,dx:+(o.dx||0).toFixed(1)}:{})),
     ground:S.ground.map(g=>({x:Math.round(g.x),d:+g.d.toFixed(3)}))};
 }
-function save(){ try{ localStorage.setItem('umimi-desktop-v1', JSON.stringify(serialize())); }catch(e){} }
+function save(){ if(window.__noSave) return; try{ localStorage.setItem('umimi-desktop-v1', JSON.stringify(serialize())); }catch(e){} }
 
 // ---------- geometry ----------
 function resize(){
@@ -2480,6 +2555,7 @@ function sfx(kind){
 }
 
 // ---------- ウミミダービー ----------
+const DESK_RING = location.hash==='#derby'; // デスクトップ版の「画面一周ダービー」窓でだけ true
 const DERBY_LEN = 100, DERBY_PAID = 3, DERBY_N = 5, DERBY_MAXP = 20;
 const GUEST_NAMES = ['ルナ','シズク','ホタル','ナギ','コハク','ミオ','ソラ','ユラ','サンゴ','マリン','アワ','シオン','ツムギ','ヒカリ','モモ','クラリス'];
 const DPERS = {
@@ -2601,6 +2677,7 @@ function renderDerby(){
   if(!D.picks) D.picks = {};
   if(D.active==null) D.active = 0;
   if(!D.bets) D.bets = {};
+  if(DESK_RING){ $('derby').classList.remove('racing'); if(D.phase==='entry'){ const rc=$('ringCv'); if(rc) rc.getContext('2d').clearRect(0,0,rc.width,rc.height); } }
   if(D.phase==='stats') return renderDerbyStats(b);
   if(D.phase==='shop') return renderDerbyShop(b);
   if(D.phase==='entry'){
@@ -2661,6 +2738,7 @@ function renderDerby(){
     $('dGo').addEventListener('click', ()=>{ if(ready){ if(solo){ D.picks = {0:D.sel[0]}; D.bt = {type:D.btype, sel:D.sel.slice(), odds:dOdds(D.btype, D.sel)}; } else D.bt = null; D.pick = D.picks[0]; D.players = pl.slice(); dStart(); } });
     return;
   }
+  if(DESK_RING){ $('derby').classList.toggle('racing', D.phase==='race'); if(D.phase==='race') return; const info0=document.createElement('div'); info0.id='dInfo'; b.appendChild(info0); if(D.phase==='result') dRenderResult(); return; }
   const cvs = document.createElement('canvas'); cvs.className='dcv'; cvs.id='derbyCv'; b.appendChild(cvs);
   const info = document.createElement('div'); info.id='dInfo'; b.appendChild(info);
   if(D.phase==='result') dRenderResult();
@@ -2711,6 +2789,7 @@ function dStart(){
   save();
   D.phase='race'; D.t=-3.2; D.sim = D.runners.map(r=>dState(r)); D.order=[]; D.done=false; D.cam=0;
   renderDerby(); sfx('invite');
+  if(DESK_RING && window.desk) window.desk.setInteractive(false);
 }
 function dFinish(){
   const D = derby; D.phase='result';
@@ -2738,6 +2817,7 @@ function dFinish(){
     }
   }
   D.msg = msg; save(); renderDerby();
+  if(DESK_RING && window.desk) window.desk.setInteractive(true);
 }
 function dMedalTable(){
   const D = derby, pl = D.players || ['わたし'];
@@ -2750,9 +2830,10 @@ function dRenderResult(){
   info.innerHTML = `<p class="dmsg">${D.msg}</p><ol class="dres">${D.order.map((r,i)=>{ const who=pickers(r); return `<li class="${who.length?'me':''}"><span class="rk">${i+1}着</span><span>${D.runners.indexOf(r)+1}番 ${esc(r.name)}</span><span class="tg" style="color:var(--ink2);font-size:12px;flex:1">${r.guest?'ゲスト':'うちの子'}・${r.odds.toFixed(1)}倍</span>${who.length?`<span class="who">${i===0?'◎ ':''}${who.length>6 ? who.slice(0,5).map(esc).join('・')+` ほか${who.length-5}人` : who.map(esc).join('・')}</span>`:''}</li>`; }).join('')}</ol>
   ${dMedalTable()}
   <div class="dbar"><button class="dbtn sub" type="button" id="dStats2">せいせき</button><button class="dbtn sub" type="button" id="dPhoto">ゴールの しゃしんを のこす</button><button class="dbtn" type="button" id="dAgain">もういちど</button></div>`;
+  if(DESK_RING && $('dPhoto')) $('dPhoto').remove();
   $('dAgain').addEventListener('click', ()=>{ dSetup(); renderDerby(); });
   $('dStats2').addEventListener('click', ()=>{ D.back='result'; D.phase='stats'; renderDerby(); });
-  $('dPhoto').addEventListener('click', (e)=>{
+  if($('dPhoto')) $('dPhoto').addEventListener('click', (e)=>{
     const src = D.shot; if(!src) return;
     const names = D.order.filter(r=>!r.guest).map(r=>r.name);
     photos.unshift({t:Date.now(), data:src, names}); while(photos.length>12) photos.pop();
@@ -2760,7 +2841,7 @@ function dRenderResult(){
     e.target.disabled=true; e.target.textContent='アルバムに いれたよ'; sfx('shard');
   });
 }
-function dSnap(){
+function dSnap(){ if(DESK_RING) return;
   const cv2 = $('derbyCv'); if(!cv2) return; const sc = Math.min(1, 960/cv2.width);
   const oc=document.createElement('canvas'); oc.width=Math.round(cv2.width*sc); oc.height=Math.round(cv2.height*sc); const x=oc.getContext('2d');
   x.drawImage(cv2,0,0,oc.width,oc.height);
@@ -2769,6 +2850,36 @@ function dSnap(){
   derby.shot = oc.toDataURL('image/jpeg',.82);
 }
 const DPX = 30; // px per meter
+function drawDerbyRing(dt){
+  let cv2 = $('ringCv'); if(!cv2){ cv2=document.createElement('canvas'); cv2.id='ringCv'; cv2.style.cssText='position:fixed;left:0;top:0;width:100vw;height:100vh;pointer-events:none;z-index:5'; document.body.appendChild(cv2); }
+  const D = derby, dpr = Math.min(2, window.devicePixelRatio||1), W2 = window.innerWidth, H2 = window.innerHeight;
+  if(cv2.width!==Math.round(W2*dpr) || cv2.height!==Math.round(H2*dpr)){ cv2.width=Math.round(W2*dpr); cv2.height=Math.round(H2*dpr); }
+  const c = cv2.getContext('2d'); c.setTransform(dpr,0,0,dpr,0,0); c.clearRect(0,0,W2,H2);
+  if(D.phase!=='race' && D.phase!=='result') return;
+  const K = 6, s = .4, START = 90;   // one lane hugging the very edge of the screen
+  const x0=K, y0=K, x1=W2-K, y1=H2-K, Wd=x1-x0, Hd=y1-y0, P=2*(Wd+Hd);
+  const place = f => { let d = ((f*P + START) % P + P) % P;
+    if(d < Wd) return {x:x0+d, y:y1, a:0}; d-=Wd;
+    if(d < Hd) return {x:x1, y:y1-d, a:-Math.PI/2}; d-=Hd;
+    if(d < Wd) return {x:x1-d, y:y0, a:Math.PI}; d-=Wd;
+    return {x:x0, y:y0+d, a:Math.PI/2}; };
+  // start / goal line on the bottom edge
+  for(let q=0;q<6;q++){ c.fillStyle=q%2?'#5b64b8':'#fff'; c.fillRect(x0+START-4, y1-36+q*6, 8, 6); }
+  const picked = i => D.bt && D.bt.type!=='win' ? D.bt.sel.includes(i) : D.pick===i;
+  const order = D.runners.map((r,i)=>i).sort((a,b)=>((D.sim?D.sim[a].pos:0)-(D.sim?D.sim[b].pos:0)));
+  order.forEach(i=>{
+    const r = D.runners[i], x = D.sim ? D.sim[i] : {pos:0}, f = x.pos/DERBY_LEN, P0 = place(f);
+    c.save(); c.translate(P0.x, P0.y); c.rotate(P0.a);
+    if(picked(i)){ const g=c.createRadialGradient(0,-28,4,0,-28,58); const a=.55+.25*Math.sin(T*5); g.addColorStop(0,`rgba(255,236,150,${a})`); g.addColorStop(1,'rgba(255,236,150,0)'); c.fillStyle=g; c.beginPath(); c.arc(0,-28,58,0,TAU); c.fill();
+      for(let k=0;k<3;k++){ const an=T*2+k*2.1, rx=Math.cos(an)*34, ry=-30+Math.sin(an)*24; c.fillStyle='rgba(255,250,210,.95)'; c.beginPath(); c.moveTo(rx,ry-5); c.lineTo(rx+1.5,ry-1.5); c.lineTo(rx+5,ry); c.lineTo(rx+1.5,ry+1.5); c.lineTo(rx,ry+5); c.lineTo(rx-1.5,ry+1.5); c.lineTo(rx-5,ry); c.lineTo(rx-1.5,ry-1.5); c.fill(); } }
+    try{ drawUmimiAt(c, r, 0, 0, s, T, 0, {}); }catch(e){}
+    if(x.say && x.sayT>0){ c.font='700 13px "Zen Maru Gothic",sans-serif'; c.textAlign='center'; const bw=c.measureText(x.say).width+12; c.fillStyle='rgba(255,255,255,.95)'; c.beginPath(); c.roundRect(-bw/2, -92, bw, 20, 9); c.fill(); c.fillStyle='#5b64b8'; c.fillText(x.say, 0, -77); }
+    if(x.fin!=null){ const rk=D.order.indexOf(r)+1; if(rk>0){ c.fillStyle = rk===1 ? '#e9b949' : '#8f95c8'; c.beginPath(); c.arc(0,-80,11,0,TAU); c.fill(); c.fillStyle='#fff'; c.font='800 12px sans-serif'; c.textAlign='center'; c.fillText(rk,0,-76); } }
+    c.restore();
+  });
+  if(D.phase==='race' && D.t<.8){ const n2 = D.t<0 ? Math.ceil(-D.t) : 0, txt = D.t<0 ? (n2>3?'':String(n2)) : 'スタート！';
+    if(txt){ c.font='800 96px "Zen Maru Gothic",sans-serif'; c.textAlign='center'; c.lineWidth=10; c.strokeStyle='rgba(255,255,255,.95)'; c.strokeText(txt, W2/2, H2/2); c.fillStyle='#6574cf'; c.fillText(txt, W2/2, H2/2); } }
+}
 function updateDerby(dt){
   const D = derby; if(!D || D.phase==='entry' || D.phase==='stats' || $('derby').hidden && D.phase!=='race') return;
   if(D.phase==='race'){
@@ -2787,6 +2898,7 @@ function updateDerby(dt){
   drawDerby(dt);
 }
 function drawDerby(dt){
+  if(DESK_RING) return drawDerbyRing(dt);
   const cv2 = $('derbyCv'); if(!cv2) return; const D = derby;
   const dpr = Math.min(2, window.devicePixelRatio||1), cw = cv2.clientWidth, ch = cv2.clientHeight;
   if(!cw || !ch) return;
@@ -2848,8 +2960,8 @@ function drawDerby(dt){
   }
   if(D.snapNext){ D.snapNext=false; dSnap(); }
 }
-$('derbyBtn').addEventListener('click', () => { if(!$('derby').hidden){ if(derby && derby.phase==='race') return; $('derby').hidden=true; return; } openDerby(); });
-$('derbyClose').addEventListener('click', () => { if(derby && derby.phase==='race'){ derby.t = Math.max(derby.t, 0); /* let it finish quietly */ } $('derby').hidden=true; });
+$('derbyBtn').addEventListener('click', () => { if(!DESK_RING && window.desk && window.desk.derbyOpen){ save(); window.__noSave=true; window.desk.derbyOpen(); return; } if(!$('derby').hidden){ if(derby && derby.phase==='race') return; $('derby').hidden=true; return; } openDerby(); });
+$('derbyClose').addEventListener('click', () => { if(DESK_RING && window.desk && window.desk.derbyClose){ if(derby && derby.phase==='race') return; save(); window.desk.derbyClose(); return; } if(derby && derby.phase==='race'){ derby.t = Math.max(derby.t, 0); /* let it finish quietly */ } $('derby').hidden=true; });
 
 // ---------- あそびば / おけいこ ----------
 const TRICKS = {
@@ -3243,6 +3355,7 @@ function deskHooks(){
   });
   document.addEventListener('mouseleave', () => { if(!drag) setInter(false); });
   if(window.desk){
+    if(window.desk.onDerbyClosed) window.desk.onDerbyClosed(() => location.reload());
     window.desk.onCfg(c => {
       const ecoChanged = SET.eco !== c.eco; SET = Object.assign(SET, c);
       S.sound = !!c.sound; S.timeMode = c.timeMode || 'auto'; S.profileOnTap = c.profileOnTap !== false; if(!S.profileOnTap) closeCard(); tPhase = targetPhase(); updateTimeBtn();
@@ -3256,7 +3369,7 @@ function deskHooks(){
 let last = performance.now();
 function frame(now){ requestAnimationFrame(frame);
   const minGap = SET.eco ? 1000/24 : 1000/60; if(now-last < minGap-2) return;
-  const dt=Math.min(.08,(now-last)/1000); last=now; if(document.hidden) return; T+=dt; update(dt); draw(); if(derby) updateDerby(dt); updateLesson(dt); updateRoom(dt); }
+  const dt=Math.min(.08,(now-last)/1000); last=now; if(document.hidden) return; T+=dt; if(DESK_RING){ if(derby) updateDerby(dt); return; } update(dt); draw(); if(derby) updateDerby(dt); updateLesson(dt); updateRoom(dt); }
 function awayDiary(){
   const us = S.umimi, n = us[Math.floor(Math.random()*us.length)].name, others = us.filter(u=>u.name!==n), m = others.length ? others[Math.floor(Math.random()*others.length)].name : '';
   const hasLamp = S.decor.some(o=>o.type==='lamp'||o.type==='jellylamp');
@@ -3296,7 +3409,7 @@ function boot(data){
   window.addEventListener('hashchange', testVisit); setTimeout(testVisit, 1200);
   save();
   new ResizeObserver(resize).observe(stage);
-  deskHooks();
+  if(DESK_RING){ document.body.classList.add('ring'); document.body.appendChild($('derby')); setTimeout(openDerby, 50); } else deskHooks();
   document.addEventListener('visibilitychange', () => { if(document.hidden) save(); });
   requestAnimationFrame(frame);
 }

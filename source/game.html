@@ -573,7 +573,7 @@ function serialize(){
     decor:S.decor.map(o=>Object.assign({id:o.id,type:o.type,x:Math.round(o.x),d:+o.d.toFixed(3)}, o.on!=null?{on:o.on,dx:+(o.dx||0).toFixed(1)}:{})),
     ground:S.ground.map(g=>({x:Math.round(g.x),d:+g.d.toFixed(3)}))};
 }
-function save(){ try{ localStorage.setItem('umimi-hakoniwa-v1', JSON.stringify(serialize())); }catch(e){} }
+function save(){ if(window.__noSave) return; try{ localStorage.setItem('umimi-hakoniwa-v1', JSON.stringify(serialize())); }catch(e){} }
 
 // ---------- geometry ----------
 function resize(){
@@ -2591,6 +2591,7 @@ function sfx(kind){
 }
 
 // ---------- ウミミダービー ----------
+const DESK_RING = false; // デスクトップ版の「画面一周ダービー」窓でだけ true
 const DERBY_LEN = 100, DERBY_PAID = 3, DERBY_N = 5, DERBY_MAXP = 20;
 const GUEST_NAMES = ['ルナ','シズク','ホタル','ナギ','コハク','ミオ','ソラ','ユラ','サンゴ','マリン','アワ','シオン','ツムギ','ヒカリ','モモ','クラリス'];
 const DPERS = {
@@ -2712,6 +2713,7 @@ function renderDerby(){
   if(!D.picks) D.picks = {};
   if(D.active==null) D.active = 0;
   if(!D.bets) D.bets = {};
+  if(DESK_RING){ $('derby').classList.remove('racing'); if(D.phase==='entry'){ const rc=$('ringCv'); if(rc) rc.getContext('2d').clearRect(0,0,rc.width,rc.height); } }
   if(D.phase==='stats') return renderDerbyStats(b);
   if(D.phase==='shop') return renderDerbyShop(b);
   if(D.phase==='entry'){
@@ -2772,6 +2774,7 @@ function renderDerby(){
     $('dGo').addEventListener('click', ()=>{ if(ready){ if(solo){ D.picks = {0:D.sel[0]}; D.bt = {type:D.btype, sel:D.sel.slice(), odds:dOdds(D.btype, D.sel)}; } else D.bt = null; D.pick = D.picks[0]; D.players = pl.slice(); dStart(); } });
     return;
   }
+  if(DESK_RING){ $('derby').classList.toggle('racing', D.phase==='race'); if(D.phase==='race') return; const info0=document.createElement('div'); info0.id='dInfo'; b.appendChild(info0); if(D.phase==='result') dRenderResult(); return; }
   const cvs = document.createElement('canvas'); cvs.className='dcv'; cvs.id='derbyCv'; b.appendChild(cvs);
   const info = document.createElement('div'); info.id='dInfo'; b.appendChild(info);
   if(D.phase==='result') dRenderResult();
@@ -2822,6 +2825,7 @@ function dStart(){
   save();
   D.phase='race'; D.t=-3.2; D.sim = D.runners.map(r=>dState(r)); D.order=[]; D.done=false; D.cam=0;
   renderDerby(); sfx('invite');
+  if(DESK_RING && window.desk) window.desk.setInteractive(false);
 }
 function dFinish(){
   const D = derby; D.phase='result';
@@ -2849,6 +2853,7 @@ function dFinish(){
     }
   }
   D.msg = msg; save(); renderDerby();
+  if(DESK_RING && window.desk) window.desk.setInteractive(true);
 }
 function dMedalTable(){
   const D = derby, pl = D.players || ['わたし'];
@@ -2861,9 +2866,10 @@ function dRenderResult(){
   info.innerHTML = `<p class="dmsg">${D.msg}</p><ol class="dres">${D.order.map((r,i)=>{ const who=pickers(r); return `<li class="${who.length?'me':''}"><span class="rk">${i+1}着</span><span>${D.runners.indexOf(r)+1}番 ${esc(r.name)}</span><span class="tg" style="color:var(--ink2);font-size:12px;flex:1">${r.guest?'ゲスト':'うちの子'}・${r.odds.toFixed(1)}倍</span>${who.length?`<span class="who">${i===0?'◎ ':''}${who.length>6 ? who.slice(0,5).map(esc).join('・')+` ほか${who.length-5}人` : who.map(esc).join('・')}</span>`:''}</li>`; }).join('')}</ol>
   ${dMedalTable()}
   <div class="dbar"><button class="dbtn sub" type="button" id="dStats2">せいせき</button><button class="dbtn sub" type="button" id="dPhoto">ゴールの しゃしんを のこす</button><button class="dbtn" type="button" id="dAgain">もういちど</button></div>`;
+  if(DESK_RING && $('dPhoto')) $('dPhoto').remove();
   $('dAgain').addEventListener('click', ()=>{ dSetup(); renderDerby(); });
   $('dStats2').addEventListener('click', ()=>{ D.back='result'; D.phase='stats'; renderDerby(); });
-  $('dPhoto').addEventListener('click', (e)=>{
+  if($('dPhoto')) $('dPhoto').addEventListener('click', (e)=>{
     const src = D.shot; if(!src) return;
     const names = D.order.filter(r=>!r.guest).map(r=>r.name);
     photos.unshift({t:Date.now(), data:src, names}); while(photos.length>12) photos.pop();
@@ -2871,7 +2877,7 @@ function dRenderResult(){
     e.target.disabled=true; e.target.textContent='アルバムに いれたよ'; sfx('shard');
   });
 }
-function dSnap(){
+function dSnap(){ if(DESK_RING) return;
   const cv2 = $('derbyCv'); if(!cv2) return; const sc = Math.min(1, 960/cv2.width);
   const oc=document.createElement('canvas'); oc.width=Math.round(cv2.width*sc); oc.height=Math.round(cv2.height*sc); const x=oc.getContext('2d');
   x.drawImage(cv2,0,0,oc.width,oc.height);
@@ -2880,6 +2886,36 @@ function dSnap(){
   derby.shot = oc.toDataURL('image/jpeg',.82);
 }
 const DPX = 30; // px per meter
+function drawDerbyRing(dt){
+  let cv2 = $('ringCv'); if(!cv2){ cv2=document.createElement('canvas'); cv2.id='ringCv'; cv2.style.cssText='position:fixed;left:0;top:0;width:100vw;height:100vh;pointer-events:none;z-index:5'; document.body.appendChild(cv2); }
+  const D = derby, dpr = Math.min(2, window.devicePixelRatio||1), W2 = window.innerWidth, H2 = window.innerHeight;
+  if(cv2.width!==Math.round(W2*dpr) || cv2.height!==Math.round(H2*dpr)){ cv2.width=Math.round(W2*dpr); cv2.height=Math.round(H2*dpr); }
+  const c = cv2.getContext('2d'); c.setTransform(dpr,0,0,dpr,0,0); c.clearRect(0,0,W2,H2);
+  if(D.phase!=='race' && D.phase!=='result') return;
+  const K = 6, s = .4, START = 90;   // one lane hugging the very edge of the screen
+  const x0=K, y0=K, x1=W2-K, y1=H2-K, Wd=x1-x0, Hd=y1-y0, P=2*(Wd+Hd);
+  const place = f => { let d = ((f*P + START) % P + P) % P;
+    if(d < Wd) return {x:x0+d, y:y1, a:0}; d-=Wd;
+    if(d < Hd) return {x:x1, y:y1-d, a:-Math.PI/2}; d-=Hd;
+    if(d < Wd) return {x:x1-d, y:y0, a:Math.PI}; d-=Wd;
+    return {x:x0, y:y0+d, a:Math.PI/2}; };
+  // start / goal line on the bottom edge
+  for(let q=0;q<6;q++){ c.fillStyle=q%2?'#5b64b8':'#fff'; c.fillRect(x0+START-4, y1-36+q*6, 8, 6); }
+  const picked = i => D.bt && D.bt.type!=='win' ? D.bt.sel.includes(i) : D.pick===i;
+  const order = D.runners.map((r,i)=>i).sort((a,b)=>((D.sim?D.sim[a].pos:0)-(D.sim?D.sim[b].pos:0)));
+  order.forEach(i=>{
+    const r = D.runners[i], x = D.sim ? D.sim[i] : {pos:0}, f = x.pos/DERBY_LEN, P0 = place(f);
+    c.save(); c.translate(P0.x, P0.y); c.rotate(P0.a);
+    if(picked(i)){ const g=c.createRadialGradient(0,-28,4,0,-28,58); const a=.55+.25*Math.sin(T*5); g.addColorStop(0,`rgba(255,236,150,${a})`); g.addColorStop(1,'rgba(255,236,150,0)'); c.fillStyle=g; c.beginPath(); c.arc(0,-28,58,0,TAU); c.fill();
+      for(let k=0;k<3;k++){ const an=T*2+k*2.1, rx=Math.cos(an)*34, ry=-30+Math.sin(an)*24; c.fillStyle='rgba(255,250,210,.95)'; c.beginPath(); c.moveTo(rx,ry-5); c.lineTo(rx+1.5,ry-1.5); c.lineTo(rx+5,ry); c.lineTo(rx+1.5,ry+1.5); c.lineTo(rx,ry+5); c.lineTo(rx-1.5,ry+1.5); c.lineTo(rx-5,ry); c.lineTo(rx-1.5,ry-1.5); c.fill(); } }
+    try{ drawUmimiAt(c, r, 0, 0, s, T, 0, {}); }catch(e){}
+    if(x.say && x.sayT>0){ c.font='700 13px "Zen Maru Gothic",sans-serif'; c.textAlign='center'; const bw=c.measureText(x.say).width+12; c.fillStyle='rgba(255,255,255,.95)'; c.beginPath(); c.roundRect(-bw/2, -92, bw, 20, 9); c.fill(); c.fillStyle='#5b64b8'; c.fillText(x.say, 0, -77); }
+    if(x.fin!=null){ const rk=D.order.indexOf(r)+1; if(rk>0){ c.fillStyle = rk===1 ? '#e9b949' : '#8f95c8'; c.beginPath(); c.arc(0,-80,11,0,TAU); c.fill(); c.fillStyle='#fff'; c.font='800 12px sans-serif'; c.textAlign='center'; c.fillText(rk,0,-76); } }
+    c.restore();
+  });
+  if(D.phase==='race' && D.t<.8){ const n2 = D.t<0 ? Math.ceil(-D.t) : 0, txt = D.t<0 ? (n2>3?'':String(n2)) : 'スタート！';
+    if(txt){ c.font='800 96px "Zen Maru Gothic",sans-serif'; c.textAlign='center'; c.lineWidth=10; c.strokeStyle='rgba(255,255,255,.95)'; c.strokeText(txt, W2/2, H2/2); c.fillStyle='#6574cf'; c.fillText(txt, W2/2, H2/2); } }
+}
 function updateDerby(dt){
   const D = derby; if(!D || D.phase==='entry' || D.phase==='stats' || $('derby').hidden && D.phase!=='race') return;
   if(D.phase==='race'){
@@ -2898,6 +2934,7 @@ function updateDerby(dt){
   drawDerby(dt);
 }
 function drawDerby(dt){
+  if(DESK_RING) return drawDerbyRing(dt);
   const cv2 = $('derbyCv'); if(!cv2) return; const D = derby;
   const dpr = Math.min(2, window.devicePixelRatio||1), cw = cv2.clientWidth, ch = cv2.clientHeight;
   if(!cw || !ch) return;
@@ -2959,8 +2996,8 @@ function drawDerby(dt){
   }
   if(D.snapNext){ D.snapNext=false; dSnap(); }
 }
-$('derbyBtn').addEventListener('click', () => { if(!$('derby').hidden){ if(derby && derby.phase==='race') return; $('derby').hidden=true; return; } openDerby(); });
-$('derbyClose').addEventListener('click', () => { if(derby && derby.phase==='race'){ derby.t = Math.max(derby.t, 0); /* let it finish quietly */ } $('derby').hidden=true; });
+$('derbyBtn').addEventListener('click', () => { if(!DESK_RING && window.desk && window.desk.derbyOpen){ save(); window.__noSave=true; window.desk.derbyOpen(); return; } if(!$('derby').hidden){ if(derby && derby.phase==='race') return; $('derby').hidden=true; return; } openDerby(); });
+$('derbyClose').addEventListener('click', () => { if(DESK_RING && window.desk && window.desk.derbyClose){ if(derby && derby.phase==='race') return; save(); window.desk.derbyClose(); return; } if(derby && derby.phase==='race'){ derby.t = Math.max(derby.t, 0); /* let it finish quietly */ } $('derby').hidden=true; });
 
 // ---------- あそびば / おけいこ ----------
 const TRICKS = {

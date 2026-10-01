@@ -5,7 +5,7 @@ const fs = require('fs');
 
 const HEIGHTS = { small: 160, medium: 200, large: 260 };
 const DEFAULTS = { size: 'medium', eco: true, onTop: true, sound: false, timeMode: 'auto', profileOnTap: true };
-let win = null, tray = null, cfg = { ...DEFAULTS };
+let win = null, tray = null, ring = null, cfg = { ...DEFAULTS };
 
 const cfgPath = () => path.join(app.getPath('userData'), 'settings.json');
 function loadCfg() {
@@ -128,7 +128,28 @@ ipcMain.handle('save-photo', async (e, name, dataUrl) => {
 });
 
 ipcMain.on('interactive', (e, on) => {
-  if (!win) return;
-  if (on) win.setIgnoreMouseEvents(false);
-  else win.setIgnoreMouseEvents(true, { forward: true });
+  const w = BrowserWindow.fromWebContents(e.sender);
+  if (!w) return;
+  if (on) w.setIgnoreMouseEvents(false);
+  else w.setIgnoreMouseEvents(true, { forward: true });
 });
+
+// 画面のふちを一周するダービー：作業領域いっぱいの透明ウインドウを一時的にひらく
+ipcMain.on('derby-open', () => {
+  if (ring) { ring.focus(); return; }
+  const wa = screen.getPrimaryDisplay().workArea;
+  ring = new BrowserWindow({
+    x: wa.x, y: wa.y, width: wa.width, height: wa.height,   // 水そうの枠もコースにするので作業領域まるごと
+    frame: false, transparent: true, backgroundColor: '#00000000', resizable: false, movable: false,
+    minimizable: false, maximizable: false, fullscreenable: false, skipTaskbar: true, hasShadow: false, show: false,
+    alwaysOnTop: true, icon: path.join(__dirname, 'icon.png'),
+    webPreferences: { preload: path.join(__dirname, 'preload.js'), contextIsolation: true, nodeIntegration: false, backgroundThrottling: false, spellcheck: false },
+  });
+  ring.setAlwaysOnTop(true, 'screen-saver');
+  ring.loadFile(path.join(__dirname, 'index.html'), { hash: 'derby' });
+  ring.webContents.on('did-finish-load', () => { if (ring) ring.webContents.send('cfg', cfg); });
+  ring.once('ready-to-show', () => { if (ring) { ring.show(); ring.focus(); } });
+  ring.webContents.on('before-input-event', (e, input) => { if (input.type === 'keyDown' && input.key === 'Escape' && ring) ring.close(); });
+  ring.on('closed', () => { ring = null; if (win) win.webContents.send('derby-closed'); });
+});
+ipcMain.on('derby-close', () => { if (ring) ring.close(); });
