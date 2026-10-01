@@ -552,7 +552,7 @@ function isBirthday(){ const d=new Date(); const lily=(d.getMonth()===8 && d.get
 let T = 0, phase = 2, night = 1, dusk = 0, shardTimer = 12, saveTimer = 0, meetCD = 8, timeCheck = 0, tPhase = 2;
 
 function defaultState(){
-  return {v:1, shards:3, timeMode:'auto', sound:false, nextId:3, decorId:7, welcomed:false, last:Date.now(),
+  return {v:1, shards:3, timeMode:'auto', sound:false, bgm:true, nextId:3, decorId:7, welcomed:false, last:Date.now(),
     umimi:[{id:1,name:'ウミミ',color:'lavender',x:380,d:0.6,aff:0},{id:2,name:'ミナモ',color:'sky',x:650,d:0.32,aff:0}],
     decor:[{id:1,type:'grass',x:110,d:0.12},{id:2,type:'coral',x:880,d:0.06},{id:3,type:'grass',x:940,d:0.5},
            {id:4,type:'shell',x:250,d:0.88},{id:5,type:'pebble',x:720,d:0.8},{id:6,type:'lamp',x:520,d:0.04}],
@@ -570,7 +570,7 @@ function hydrateU(u){
     blinkT:rand(1,4), blink:0, tx:u.x, td:u.d, t:0, petTimes:[], petCD:0, expr:'normal', target:null, swimH:0, swimT:0, zT:0});
 }
 function serialize(){
-  return {v:1, shards:S.shards, timeMode:S.timeMode, sound:S.sound, nextId:S.nextId, decorId:S.decorId, welcomed:S.welcomed, last:Date.now(),
+  return {v:1, shards:S.shards, timeMode:S.timeMode, sound:S.sound, bgm:S.bgm, nextId:S.nextId, decorId:S.decorId, welcomed:S.welcomed, last:Date.now(),
     umimi:S.umimi.map(u=>({id:u.id,name:u.name,color:u.color,x:Math.round(u.x),d:+u.d.toFixed(3),aff:u.aff,outfit:u.outfit,lvSeen:u.lvSeen,pers:u.pers,born:u.born,pets:u.pets,feeds:u.feeds,worn:u.worn,mem:u.mem,ann:u.ann,wins:u.wins||0,druns:u.druns||0,dbest:u.dbest||0,tricks:u.tricks,learned:u.learned,lessonDay:u.lessonDay,room:u.room})),
     past:S.past,
     closet:S.closet, closetNew:S.closetNew, pets:S.pets, days:S.days, feeds:S.feeds, starsCaught:S.starsCaught, metVisitors:S.metVisitors,
@@ -2311,7 +2311,7 @@ function applySave(d){
   S.umimi.forEach(u=>{ if(u.outfit && !S.closet.includes(u.outfit)) S.closet.push(u.outfit); });
   foods=[]; selId=null; closeCard(); visitor=null;
   tPhase=targetPhase(); refreshShards(); updateTimeBtn(); renderTray();
-  $('soundBtn').textContent = S.sound?'おと ON':'おと OFF'; $('soundBtn').setAttribute('aria-pressed',S.sound);
+  soundLabel();
   save();
 }
 
@@ -2442,7 +2442,9 @@ function refreshShards(bump){ $('shardN').textContent = S.shards; if(bump){ cons
 const PHASE_NAMES = ['ひる','ゆうがた','よる'];
 function updateTimeBtn(){ const m=S.timeMode; $('timeBtn').textContent = m==='auto' ? `じどう・${PHASE_NAMES[tPhase]}` : PHASE_NAMES[{day:0,dusk:1,night:2}[m]]; }
 $('timeBtn').addEventListener('click', () => { const order=['auto','day','dusk','night']; S.timeMode=order[(order.indexOf(S.timeMode)+1)%4]; tPhase=targetPhase(); updateTimeBtn(); save(); });
-$('soundBtn').addEventListener('click', () => { S.sound=!S.sound; ensureAudio(); $('soundBtn').textContent = S.sound?'おと ON':'おと OFF'; $('soundBtn').setAttribute('aria-pressed',S.sound); if(S.sound) sfx('shard'); save(); });
+$('soundBtn').addEventListener('click', () => { // OFF → ON（BGMあり）→ ON（こうかおんだけ）→ OFF
+  if(!S.sound){ S.sound=true; S.bgm=true; } else if(S.bgm!==false){ S.bgm=false; } else { S.sound=false; S.bgm=true; }
+  ensureAudio(); soundLabel(); toast(!S.sound ? 'おとを けしたよ' : S.bgm!==false ? 'BGMと こうかおんを ならすよ' : 'こうかおんだけ ならすよ'); if(S.sound) sfx('shard'); save(); });
 
 document.querySelectorAll('.tool').forEach(b => b.addEventListener('click', () => {
   mode = b.dataset.mode; document.querySelectorAll('.tool').forEach(x=>x.setAttribute('aria-pressed', x===b));
@@ -2609,6 +2611,64 @@ function sfx(kind){
     g.gain.setValueAtTime(0,t0); g.gain.linearRampToValueAtTime(.09,t0+.02); g.gain.exponentialRampToValueAtTime(.0005,t0+.45);
     o.connect(g); g.connect(AC.destination); o.start(t0); o.stop(t0+.5); }); }catch(e){}
 }
+
+// ---------- BGM（オルゴール。音のファイルは使わず、その場で鳴らす） ----------
+function soundLabel(){ const b=$('soundBtn'); if(!b) return; b.textContent = !S.sound ? 'おと OFF' : S.bgm!==false ? 'おと ON ♪' : 'おと ON'; b.setAttribute('aria-pressed', !!S.sound); b.title = !S.sound ? 'おとは なりません' : S.bgm!==false ? 'BGMと こうかおん' : 'こうかおんだけ（BGMなし）'; }
+const BGM = (() => {
+  // F のキー。8小節のループ：B♭maj7 / Am7 / Gm7 / Fmaj7 / B♭maj7 / Am7 / Gm7 / Csus4
+  const CH = [[58,65,69,70,74],[57,64,67,72,76],[55,62,65,70,74],[53,60,64,69,72],[58,65,69,70,74],[57,64,67,72,76],[55,62,65,70,74],[60,65,67,72,77]];
+  const MEL = [ [[0,74],[3,72],[4,69],[6,72]], [[0,76],[4,74],[6,72]], [[0,70],[2,72],[3,74],[6,77]], [[0,76],[4,72]],
+                [[0,74],[2,77],[4,81],[6,79]], [[0,76],[3,74],[4,72],[6,74]], [[0,70],[2,74],[4,72],[6,69]], [[0,72],[4,65]] ];
+  const ARP = [0,2,3,1,4,2,3,1];
+  let out=null, inp=null, wet=null, next=0, step=0, loop=0, on=false, mood=2;
+  const hz = m => 440*Math.pow(2,(m-69)/12);
+  function build(){
+    out = AC.createGain(); out.gain.value = 0; out.connect(AC.destination);
+    inp = AC.createBiquadFilter(); inp.type='lowpass'; inp.frequency.value=2600; inp.connect(out);
+    // かるい残響（ディレイ2本。古いPCでも軽い）
+    wet = AC.createGain(); wet.gain.value=.55; const fb=AC.createGain(); fb.gain.value=.38; const tone=AC.createBiquadFilter(); tone.type='lowpass'; tone.frequency.value=1800;
+    const d1=AC.createDelay(1), d2=AC.createDelay(1); d1.delayTime.value=.31; d2.delayTime.value=.47;
+    wet.connect(d1); wet.connect(d2); d1.connect(tone); d2.connect(tone); tone.connect(fb); fb.connect(d1); tone.connect(inp);
+  }
+  function note(m,t,v,len){ // オルゴールの くし歯の音：基音＋すぐ消える倍音
+    const f=hz(m), g=AC.createGain(), o=AC.createOscillator(), o2=AC.createOscillator(), g2=AC.createGain();
+    o.type='sine'; o.frequency.value=f; o2.type='sine'; o2.frequency.value=f*2.003;
+    g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(v,t+.006); g.gain.exponentialRampToValueAtTime(.0001,t+len);
+    g2.gain.setValueAtTime(0,t); g2.gain.linearRampToValueAtTime(v*.28,t+.004); g2.gain.exponentialRampToValueAtTime(.0001,t+.45);
+    o.connect(g); o2.connect(g2); g.connect(inp); g2.connect(inp); g.connect(wet); g2.connect(wet);
+    o.start(t); o2.start(t); o.stop(t+len+.05); o2.stop(t+.5);
+  }
+  function pad(ms,t,len,v){ ms.forEach(m=>{ const o=AC.createOscillator(), g=AC.createGain(); o.type='sine'; o.frequency.value=hz(m-12);
+    g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(v,t+len*.35); g.gain.linearRampToValueAtTime(0,t+len*1.05);
+    o.connect(g); g.connect(inp); o.start(t); o.stop(t+len*1.1); }); }
+  const eighth = () => 60/(mood===2?56:mood===1?64:72)/2; // よる56・ゆうがた64・ひる72 BPM
+  function schedule(){
+    const ahead = AC.currentTime + .7;
+    while(next < ahead){
+      const bar = Math.floor(step/8)%8, e = step%8, ch = CH[bar], t = next;
+      if(step%64===0){ mood = Math.round(clamp(phase,0,2)); loop++; }
+      const quiet = mood===2 ? .72 : mood===1 ? .86 : 1, sparse = mood===2;
+      if(e===0){ note(ch[0]-12, t, .022*quiet, 3.2); pad([ch[0],ch[2]], t, eighth()*8, .007*quiet); }
+      else if(!sparse || e%2===0){ note(ch[ARP[e]]-(e%2?0:12), t, (e%2?.011:.014)*quiet, 1.9); }
+      const mm = MEL[bar].find(x=>x[0]===e);
+      if(mm && Math.random() > (sparse?.22:.1)){ const up = loop%2===0 && mood===0 && Math.random()<.5 ? 12 : 0; note(mm[1]+up, t+(Math.random()-.5)*.02, .03*quiet, 2.6); }
+      if(e===4 && Math.random()<(sparse?.18:.1)) note(ch[3]+24, t+eighth()*.5, .01*quiet, 2.2); // ときどき きらっ
+      next += eighth() * (e%2 ? .96 : 1.04); step++; // すこし ゆらして 手まわしっぽく
+    }
+  }
+  function want(){ return !!(S && S.sound && S.bgm!==false && !document.hidden && !(typeof DESK_RING!=='undefined' && DESK_RING)); }
+  function tick(){
+    if(!AC || AC.state!=='running') return;
+    if(want()){
+      if(!out) build();
+      if(!on){ on=true; next=AC.currentTime+.15; step=0; loop=0; mood=Math.round(clamp(phase,0,2));
+        out.gain.cancelScheduledValues(AC.currentTime); out.gain.setValueAtTime(out.gain.value,AC.currentTime); out.gain.linearRampToValueAtTime(1.6,AC.currentTime+3); }
+      schedule();
+    } else if(on){ on=false; out.gain.cancelScheduledValues(AC.currentTime); out.gain.setValueAtTime(out.gain.value,AC.currentTime); out.gain.linearRampToValueAtTime(0,AC.currentTime+.8); }
+  }
+  setInterval(tick, 200);
+  return {tick, playing:()=>on, mood:()=>mood};
+})();
 
 // ---------- ウミミダービー ----------
 const DESK_RING = false; // デスクトップ版の「画面一周ダービー」窓でだけ true
@@ -3413,7 +3473,7 @@ function boot(data){
   resize();
   tPhase = targetPhase(); phase = tPhase; night = clamp(phase-1,0,1); dusk = clamp(1-Math.abs(phase-1),0,1);
   refreshShards(); updateTimeBtn(); renderTray();
-  $('soundBtn').textContent = S.sound?'おと ON':'おと OFF'; $('soundBtn').setAttribute('aria-pressed',S.sound);
+  soundLabel();
   const mins = saved && saved.last ? (Date.now()-saved.last)/60000 : 0;
   if(!S.welcomed && !isBirthday()){ S.welcomed=true; setTimeout(()=>toast(night>.5 ? 'ようこそ。夜なので、みんな少しねむそう' : 'ようこそ、ウミミの箱庭へ。タップでなでてあげてね'),600); }
   else if(mins>=15){ const n=Math.min(5,Math.floor(mins/15)); S.shards+=n; refreshShards(true); setTimeout(()=>toast(`おかえり。つきのかけらが ${n} こ 落ちてたよ`),600); awayDiary(); }
