@@ -35,7 +35,7 @@ CAT={'animal':['bear','chick','dog','cat','rabbit',
  'adv':['knight','hero','ranger','wizard','starwizard','mahouhood','darkwitch','dragonarmor','dragonknight','thief','flameknight','nightwitch'],
  'princess':['pinkprincess','sumire','queen','prince','mintdress','clover','saint','tiara']}
 _all=[k for v in CAT.values() for k in v]; assert sorted(_all)==sorted(SRC), set(_all)^set(SRC)
-cols=4; cells={}; meta={}
+cols=4; cells={}; meta={}; alt2={}; cells2={}
 for k in SRC:
     n=SRC[k]; a=load(n); G=bgcolor(a); rgba,dist=key(a,G); im=Image.fromarray(rgba,'RGBA')
     fg=dist>80
@@ -43,8 +43,23 @@ for k in SRC:
         # 新しい39種：左のコマの体だけを使う（となりのコマのキラキラの切れはしは消す）
         lab,kk=ndimage.label(ndimage.binary_dilation(fg,iterations=2)); sz=ndimage.sum(fg,lab,range(1,kk+1)); objs=ndimage.find_objects(lab)
         j=min([j for j in np.argsort(sz)[::-1][:3] if sz[j]>sz.max()*.3],key=lambda j:objs[j][1].start)
+        rgba0=rgba
         body=(lab==j+1); rgba=rgba.copy(); rgba[...,3]=np.where(body,rgba[...,3],0); im=Image.fromarray(rgba,'RGBA')
         sl=objs[j]; box=(sl[1].start,sl[1].stop,sl[0].start,sl[0].stop)
+        # 2コマ目（キラキラ）：体どうしを重ね合わせて、1コマ目の位置にずらす
+        big=[q for q in np.argsort(sz)[::-1][:4] if sz[q]>sz.max()*.3 and q!=j]
+        j2=max(big,key=lambda q:objs[q][1].start) if big else None
+        if j2 is not None:
+            A=body.astype(float); B=(lab==j2+1).astype(float)
+            for M,o in ((A,objs[j]),(B,objs[j2])):   # 耳や帽子のちがいで ずれないよう、下の6割だけで合わせる
+                top=o[0].start+int((o[0].stop-o[0].start)*.4); M[:top]=0
+            from scipy.signal import fftconvolve
+            cc=fftconvolve(A,B[::-1,::-1],mode='full'); py,px=np.unravel_index(np.argmax(cc),cc.shape)
+            dy=py-(B.shape[0]-1); dx=px-(B.shape[1]-1)
+            split=(objs[j][1].stop+objs[j2][1].start)//2
+            r2=rgba0.copy(); r2[:, :split, 3]=0
+            sh=Image.new('RGBA',(r2.shape[1],r2.shape[0]),(0,0,0,0)); sh.paste(Image.fromarray(r2,'RGBA'),(int(dx),int(dy)))
+            alt2[k]=sh
     else:
       try: box=halves(fg)[0]
       except Exception:
@@ -69,6 +84,10 @@ for k in SRC:
     lid=np.median(ring[:,:3],axis=0).astype(int).tolist() if len(ring) else [246,244,252]
     ldx=(L[1]-Rr[1])*sc; ldy=(L[2]-Rr[2])*sc
     cells[k]=cell
+    if k in alt2:   # 2コマ目も同じ大きさ・位置でセルにする（はみ出すキラキラはセルの中だけ）
+        sx0=Rr[1]-EX*S/s2; sy0=Rr[2]-EY*S/s2
+        c2=alt2[k].crop((round(sx0),round(sy0),round(sx0+CW/s2),round(sy0+CH/s2))).resize((CW,CH),Image.LANCZOS)
+        cells2[k]=c2
     meta[k]={'ne':1} if n in NOEYE else {}
     meta[k].update({'g':round(float(ground),1),'lid':'#%02x%02x%02x'%tuple(lid),'le':[round(float(ldx),1),round(float(ldy),1)]})
 pv_all=[]
@@ -78,6 +97,11 @@ for cat,ks in CAT.items():
         sheet.paste(cells[k],((i%cols)*CW,(i//cols)*CH)); meta[k]['s']=cat; meta[k]['i']=i
     q=sheet.quantize(colors=256,method=Image.Quantize.FASTOCTREE,dither=Image.Dither.NONE)
     q.save('../../c_%s.png'%cat,optimize=True)
+    if any(k in cells2 for k in ks):   # 2コマ目のシート c_<分類>2.png（同じ並び。2コマ目のない子は空き）
+        sh2=Image.new('RGBA',sheet.size,(0,0,0,0))
+        for i,k in enumerate(ks):
+            if k in cells2: sh2.paste(cells2[k],((i%cols)*CW,(i//cols)*CH)); meta[k]['f2']=1
+        sh2.quantize(colors=256,method=Image.Quantize.FASTOCTREE,dither=Image.Dither.NONE).save('../../c_%s2.png'%cat,optimize=True)
     pv=Image.new('RGBA',sheet.size,(198,207,244,255)); pv.alpha_composite(q.convert('RGBA')); d=ImageDraw.Draw(pv)
     for i,k in enumerate(ks):
         X=(i%cols)*CW; Y=(i//cols)*CH; d.text((X+4,Y+4),k,fill='black'); gy=Y+meta[k]['g']*S; d.line([X+60,gy,X+200,gy],fill=(255,0,0))
