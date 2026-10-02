@@ -16,6 +16,8 @@ MANEYE.update({'kinoko': (45, 202, 101, 206), 'dragonarmor': (55, 219, 111, 223)
 # 2026-10 2回目（ピッちゃん作）35種
 MANEYE.update({'teahat': (49, 162, 103, 167), 'detective': (65, 161, 119, 166), 'cyber': (51, 165, 105, 171), 'starangel': (53, 176, 109, 182), 'tiara': (50, 155, 103, 160), 'strawdress': (48, 156, 101, 161), 'blackmaid': (47, 157, 100, 162), 'planet': (47, 158, 100, 164), 'akiha': (53, 159, 109, 164), 'candy': (52, 160, 108, 166), 'yozora': (51, 163, 107, 168), 'fox': (51, 162, 108, 166), 'candycorn': (59, 200, 116, 207), 'spider': (61, 188, 119, 194), 'scarecrow': (84, 190, 141, 197), 'hbunny': (59, 202, 118, 211), 'mummyhood': (78, 201, 136, 208), 'blackcat': (60, 194, 117, 201), 'bat': (63, 191, 120, 197), 'usagihood': (65, 164, 112, 171), 'bard': (48, 172, 102, 175), 'thief': (67, 161, 121, 167), 'flameknight': (52, 164, 106, 170), 'sakuraangel': (48, 181, 103, 186), 'starsailor': (50, 169, 104, 175), 'leafdress': (59, 168, 114, 174), 'nightwitch': (56, 175, 111, 181), 'lion': (72, 191, 128, 197), 'panda': (64, 190, 120, 192), 'giraffe': (63, 186, 119, 192), 'penguin': (63, 188, 119, 194), 'elephant': (70, 195, 127, 202), 'zebra': (62, 193, 117, 200), 'monkey': (78, 188, 134, 195), 'flamingo': (67, 223, 123, 231)})
 SRC.update({k:k for k in ['teahat', 'detective', 'cyber', 'starangel', 'tiara', 'strawdress', 'blackmaid', 'planet', 'akiha', 'candy', 'yozora', 'fox', 'candycorn', 'spider', 'scarecrow', 'hbunny', 'mummyhood', 'blackcat', 'bat', 'usagihood', 'bard', 'thief', 'flameknight', 'sakuraangel', 'starsailor', 'leafdress', 'nightwitch', 'lion', 'panda', 'giraffe', 'penguin', 'elephant', 'zebra', 'monkey', 'flamingo']})
+# 2コマ目で触角が折れる衣装は2コマ目を使わない
+NOF2={'pumpkinhood','candycorn','scarecrow','hbunny','mummyhood'}
 NEWSET=set(MANEYE)-{'devil2','gothic'}
 NOEYE=set(['kinoko', 'dragonarmor', 'mummy', 'diver', 'pumpkin', 'knight', 'obake', 'mahouhood'])
 SCALEFIX={'giraffe':.94,'bath':.9,'maid':1.22,'hoodie':.92,'jugoya':.8,'zansho':.88,'camping':.92,'goldfish':.92,'ghostmaid':.92}
@@ -49,7 +51,7 @@ for k in SRC:
         # 2コマ目（キラキラ）：体どうしを重ね合わせて、1コマ目の位置にずらす
         big=[q for q in np.argsort(sz)[::-1][:4] if sz[q]>sz.max()*.3 and q!=j]
         j2=max(big,key=lambda q:objs[q][1].start) if big else None
-        if j2 is not None:
+        if j2 is not None and n not in NOF2:
             A=body.astype(float); B=(lab==j2+1).astype(float)
             for M,o in ((A,objs[j]),(B,objs[j2])):   # 耳や帽子のちがいで ずれないよう、下の6割だけで合わせる
                 top=o[0].start+int((o[0].stop-o[0].start)*.4); M[:top]=0
