@@ -58,7 +58,8 @@
 - `roomtex.png` … おへやの壁紙・床の模様タイル4枚（`source/furniture/build_tex.py`）
 - デスクトップ版の「画面一周ダービー」：水そうの「ダービー」ボタン → main.js が作業領域いっぱいの透明ウインドウを `index.html#derby` で開く（`DESK_RING`）。予想の画面は真ん中、スタートするとクリックが下のアプリに通る。5匹は画面のいちばん外側を1列で一周（左下がスタート・ゴール、水そうの上も通る）。名前は出さず、賭けた子が金色に光る。閉じると水そうが読み込み直して結果を反映（開いているあいだは水そう側は保存しない `window.__noSave`）。Esc で閉じる
 - `desktop/` … Windows デスクトップ版（Electron）。`python3 build_desktop.py` で、game.html から画面の下に出る細長い水そう版の `desktop/app/index.html` を作る（ウミミ・訪問者・おきがえ c_*.png は data URI で埋め込む＝色変えのため。家具 f_*.png と roomtex.png は app に png をコピー。どこから実行してもよい。index.html から作るので、先に index.html を作り直す。置き換える文字列が合わないと assert で止まるので、本体を変えたら置き換え側も直す）
-  - 配布は小さい zip（最新 0.11.0）：`はじめにダブルクリック.bat` を実行すると `_files/setup.ps1` が Electron v33.2.1 を取ってくる（SHA256 で確認）。更新のときは `_files/app/index.html` を差し替えるだけ。（家具の画像は app フォルダに png として同梱。setup zip は desktop/setup の3ファイル＋ `_files/app` に desktop/app の中身を入れて作る）
+  - zip は **Python の zipfile で作る**（Linux の zip コマンドだと日本語のファイル名に UTF-8 の印が付かず、Windows で解凍すると文字化けする）
+  - 配布は小さい zip（最新 0.12.0）：`はじめにダブルクリック.bat` を実行すると `_files/setup.ps1` が Electron v33.2.1 を取ってくる（SHA256 で確認）。更新のときは `_files/app/index.html` を差し替えるだけ。（家具の画像は app フォルダに png として同梱。setup zip は desktop/setup の3ファイル＋ `_files/app` に desktop/app の中身を入れて作る）
 
 ## ゲームの中身（game.html の主な定数）
 - `OUTFITS` おきがえ123種、`HEADWEAR`、`PERS` 性格、`DECOR` 飾り、`RECOLOR`/`PALS` ウミミの色
