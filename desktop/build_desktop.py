@@ -126,8 +126,8 @@ R("function frame(now){ const dt=Math.min(.05,(now-last)/1000); last=now; T+=dt;
 # boot: resize before state, desktop hooks
 R("""  S = Object.assign(defaultState(), saved || {});""","""  resize();
   S = Object.assign(defaultState(), saved || {});""")
-R("""  if(!S.welcomed && !isBirthday()){ S.welcomed=true; setTimeout(()=>toast(night>.5 ? 'ようこそ。夜なので、みんな少しねむそう' : 'ようこそ、ウミミの箱庭へ。タップでなでてあげてね'),600); }""",
-  """  if(!S.welcomed && !isBirthday()){ S.welcomed=true; setTimeout(()=>toast('ウミミが デスクトップに やってきたよ。右下のメニューで あそべるよ'),600); }""")
+R("""  else if(!S.welcomed && !isBirthday()){ S.welcomed=true; setTimeout(()=>toast(night>.5 ? 'ようこそ。夜なので、みんな少しねむそう' : 'ようこそ、ウミミの箱庭へ。タップでなでてあげてね'),600); }""",
+  """  else if(!S.welcomed && !isBirthday()){ S.welcomed=true; setTimeout(()=>toast('ウミミが デスクトップに やってきたよ。右下のメニューで あそべるよ'),600); }""")
 R("""  new ResizeObserver(resize).observe(stage);""","""  new ResizeObserver(resize).observe(stage);
   if(DESK_RING){ document.body.classList.add('ring'); document.body.appendChild($('derby')); setTimeout(openDerby, 50); } else deskHooks();""")
 # selection of the sprite from data URI

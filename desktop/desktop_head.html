@@ -95,6 +95,7 @@ button.chip:hover{background:var(--panel2)}
 .flash{position:fixed;inset:0;background:#fff;pointer-events:none;animation:flash .5s ease forwards}
 @keyframes flash{from{opacity:.9}to{opacity:0}}
 .savep{position:absolute;right:10px;bottom:50px;width:min(640px,calc(100% - 20px));max-height:calc(100% - 58px);overflow:auto;box-sizing:border-box;background:rgba(249,249,255,.97);border:1.5px solid #fff;border-radius:16px;padding:6px 10px 8px;box-shadow:0 4px 14px rgba(60,60,140,.22);user-select:text}
+.bkbar{margin-top:6px;align-items:center}.bklist{display:flex;gap:5px;flex-wrap:wrap}.bkrow{display:flex;align-items:center;gap:6px;font-size:11px;background:#fff;border:1.5px solid var(--line);border-radius:8px;padding:2px 6px}.bkrow .sbtn{font-size:11px;padding:2px 8px}.bkbar .sbtn{font-size:12px;padding:4px 10px}.bkbar .lbl{font-size:11px}
 .savep h2{margin:0 0 4px;font-family:"Klee One","Zen Maru Gothic",serif;font-weight:600;font-size:14px;color:#5b64b8}
 .scols{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .scol{display:flex;flex-direction:column;gap:4px}
@@ -242,6 +243,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--peri-deep);outl
       <div class="scol"><div class="srow"><button class="sbtn" id="importBtn" type="button">読み込む</button></div>
         <textarea id="codeIn" rows="2" placeholder="ひきつぎコードを貼りつけ"></textarea></div>
     </div>
+    <div class="srow bkbar"><button class="sbtn" id="fileSaveBtn" type="button">バックアップをファイルに保存</button><button class="sbtn ghost" id="fileLoadBtn" type="button">ファイルから読み込む</button><input type="file" id="fileIn" accept=".txt,text/plain" hidden><span class="lbl">じどうバックアップ：</span><div id="bkList" class="bklist"></div></div>
     <div class="sconfirm" id="importConfirm" hidden><span id="importMsg"></span><button class="sbtn danger" id="importYes" type="button">上書きする</button><button class="sbtn ghost" id="importNo" type="button">やめる</button></div>
   </section>
   <section class="diary ui" id="diary" hidden aria-label="ウミミにっき">

@@ -95,6 +95,7 @@ button.chip:hover{background:var(--panel2)}
 .flash{position:fixed;inset:0;background:#fff;pointer-events:none;animation:flash .5s ease forwards}
 @keyframes flash{from{opacity:.9}to{opacity:0}}
 .savep{position:absolute;right:10px;bottom:50px;width:min(640px,calc(100% - 20px));max-height:calc(100% - 58px);overflow:auto;box-sizing:border-box;background:rgba(249,249,255,.97);border:1.5px solid #fff;border-radius:16px;padding:6px 10px 8px;box-shadow:0 4px 14px rgba(60,60,140,.22);user-select:text}
+.bkbar{margin-top:6px;align-items:center}.bklist{display:flex;gap:5px;flex-wrap:wrap}.bkrow{display:flex;align-items:center;gap:6px;font-size:11px;background:#fff;border:1.5px solid var(--line);border-radius:8px;padding:2px 6px}.bkrow .sbtn{font-size:11px;padding:2px 8px}.bkbar .sbtn{font-size:12px;padding:4px 10px}.bkbar .lbl{font-size:11px}
 .savep h2{margin:0 0 4px;font-family:"Klee One","Zen Maru Gothic",serif;font-weight:600;font-size:14px;color:#5b64b8}
 .scols{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .scol{display:flex;flex-direction:column;gap:4px}
@@ -249,6 +250,7 @@ body.ring #derby.racing{display:none!important}
       <div class="scol"><div class="srow"><button class="sbtn" id="importBtn" type="button">読み込む</button></div>
         <textarea id="codeIn" rows="2" placeholder="ひきつぎコードを貼りつけ"></textarea></div>
     </div>
+    <div class="srow bkbar"><button class="sbtn" id="fileSaveBtn" type="button">バックアップをファイルに保存</button><button class="sbtn ghost" id="fileLoadBtn" type="button">ファイルから読み込む</button><input type="file" id="fileIn" accept=".txt,text/plain" hidden><span class="lbl">じどうバックアップ：</span><div id="bkList" class="bklist"></div></div>
     <div class="sconfirm" id="importConfirm" hidden><span id="importMsg"></span><button class="sbtn danger" id="importYes" type="button">上書きする</button><button class="sbtn ghost" id="importNo" type="button">やめる</button></div>
   </section>
   <section class="diary ui" id="diary" hidden aria-label="ウミミにっき">
@@ -485,11 +487,23 @@ function serialize(){
     umimi:S.umimi.map(u=>({id:u.id,name:u.name,color:u.color,x:Math.round(u.x),d:+u.d.toFixed(3),aff:u.aff,outfit:u.outfit,lvSeen:u.lvSeen,pers:u.pers,born:u.born,pets:u.pets,feeds:u.feeds,worn:u.worn,mem:u.mem,ann:u.ann,wins:u.wins||0,druns:u.druns||0,dbest:u.dbest||0,tricks:u.tricks,learned:u.learned,lessonDay:u.lessonDay,room:u.room})),
     past:S.past,
     closet:S.closet, closetNew:S.closetNew, pets:S.pets, days:S.days, feeds:S.feeds, starsCaught:S.starsCaught, metVisitors:S.metVisitors,
-    diary:S.diary.slice(0,60), day:S.day, visitorDay:S.visitorDay, visitLog:S.visitLog, nextVisit:S.nextVisit, curVisit:S.curVisit, lastVisitor:S.lastVisitor, unlocked:S.unlocked, diaryNew:S.diaryNew, myBday:S.myBday, evSeen:S.evSeen, derby:S.derby, furn:S.furn, omikujiDay:S.omikujiDay, wishes:S.wishes, presentYear:S.presentYear, trickDay:S.trickDay, profileOnTap:S.profileOnTap, bdayBlown:S.bdayBlown, bdayDiary:S.bdayDiary,
+    diary:S.diary.slice(0,60), day:S.day, visitorDay:S.visitorDay, visitLog:S.visitLog, nextVisit:S.nextVisit, curVisit:S.curVisit, lastVisitor:S.lastVisitor, unlocked:S.unlocked, diaryNew:S.diaryNew, myBday:S.myBday, lastExport:S.lastExport||0, bkNagAt:S.bkNagAt||0, evSeen:S.evSeen, derby:S.derby, furn:S.furn, omikujiDay:S.omikujiDay, wishes:S.wishes, presentYear:S.presentYear, trickDay:S.trickDay, profileOnTap:S.profileOnTap, bdayBlown:S.bdayBlown, bdayDiary:S.bdayDiary,
     decor:S.decor.map(o=>Object.assign({id:o.id,type:o.type,x:Math.round(o.x),d:+o.d.toFixed(3)}, o.on!=null?{on:o.on,dx:+(o.dx||0).toFixed(1)}:{})),
     ground:S.ground.map(g=>({x:Math.round(g.x),d:+g.d.toFixed(3)}))};
 }
-function save(){ if(window.__noSave) return; try{ localStorage.setItem('umimi-desktop-v1', JSON.stringify(serialize())); }catch(e){} }
+const SAVE_KEY = 'umimi-desktop-v1', BK_KEY = SAVE_KEY + '-bk';
+function save(){ if(window.__noSave) return; try{ localStorage.setItem(SAVE_KEY, JSON.stringify(serialize())); }catch(e){} }
+// ---------- じどうバックアップ（同じ端末の中に3世代。セーブが読めないときに使う） ----------
+const BK_MAX = 3, BK_GAP = 8*3600e3;   // 8時間に1回まで＝1日に3回くらい
+function validSave(d){ return !!(d && typeof d==='object' && Array.isArray(d.umimi) && d.umimi.length); }
+function getBackups(){ try{ const a=JSON.parse(localStorage.getItem(BK_KEY)||'[]'); return Array.isArray(a) ? a.filter(b=>b && b.t && typeof b.d==='string') : []; }catch(e){ return []; } }
+function putBackups(a){ while(a.length){ try{ localStorage.setItem(BK_KEY, JSON.stringify(a)); return true; }catch(e){ a.pop(); } } try{ localStorage.removeItem(BK_KEY); }catch(e){} return false; }
+function takeBackup(raw, force){
+  try{ if(window.__noSave) return; raw = raw || JSON.stringify(serialize()); const d=JSON.parse(raw); if(!validSave(d)) return;
+    const a=getBackups(); if(!force && a[0] && Date.now()-a[0].t < BK_GAP) return;
+    if(a[0] && a[0].d===raw) return;
+    a.unshift({t:Date.now(), n:d.umimi.length, d:raw}); putBackups(a.slice(0,BK_MAX)); }catch(e){}
+}
 
 // ---------- geometry ----------
 function resize(){
@@ -2204,22 +2218,53 @@ function readCode(code){
 }
 let pendingImport=null;
 function _dummy(){}
-function openSave(){ $('album').hidden=true; $('savep').hidden=false; $('diary').hidden=true; $('closet').hidden=true; closeCard(); $('importConfirm').hidden=true; }
+function openSave(){ $('album').hidden=true; $('savep').hidden=false; $('diary').hidden=true; $('closet').hidden=true; closeCard(); $('importConfirm').hidden=true; renderBackups(); }
+const fmtWhen = t => { const w=new Date(t); return `${w.getMonth()+1}/${w.getDate()} ${w.getHours()}:${String(w.getMinutes()).padStart(2,'0')}`; };
+function askImport(d, what){ pendingImport=d; $('importMsg').textContent = `${what}（ウミミ${d.umimi.length}匹${d.last?`・${fmtWhen(d.last)} のデータ`:''}）で、いまの水そうを上書きします。`; $('importConfirm').hidden=false; }
+function renderBackups(){ const box=$('bkList'); if(!box) return; box.textContent='';
+  const a=getBackups();
+  if(!a.length){ box.append(el('div','pnote','まだ ありません（あそびに来ると 自動で とられます）')); return; }
+  a.forEach(b=>{ const row=el('div','bkrow'); row.append(el('span','',`${fmtWhen(b.t)}　ウミミ${b.n||'?'}匹`));
+    const btn=el('button','sbtn ghost','この時点に もどす'); btn.type='button';
+    btn.addEventListener('click',()=>{ try{ const d=JSON.parse(b.d); if(!validSave(d)) throw 0; askImport(d, `${fmtWhen(b.t)} の じどうバックアップ`); }catch(e){ toast('このバックアップは 読めませんでした'); } });
+    row.append(btn); box.append(row); });
+}
+// ファイルに保存（スマホなら「ファイル」アプリ、PCならダウンロード）・ファイルから読み込む
+async function saveBackupFile(){
+  const d=new Date(), p=n=>String(n).padStart(2,'0');
+  const name=`umimi-backup-${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}-${p(d.getHours())}${p(d.getMinutes())}.txt`;
+  const text = 'ウミミの箱庭 ひきつぎコード（' + fmtWhen(Date.now()) + '）\n「ひきつぎ」→「ファイルから読み込む」で もどせます。\n\n' + makeCode() + '\n';
+  const done=()=>{ S.lastExport=Date.now(); save(); };
+  if(window.desk && window.desk.savePhoto){ try{ const where=await window.desk.savePhoto(name, 'data:text/plain;base64,'+b64enc(text)); if(where){ done(); toast('「ピクチャ」の UmimiDesktop に 保存したよ'); } else toast('保存できませんでした'); }catch(e){ toast('保存できませんでした'); } return; }
+  const dl = window.claude && window.claude.use ? await window.claude.use('downloads').catch(()=>null) : null;
+  if(dl){ try{ await dl.save({filename:name, data:new Blob([text],{type:'text/plain'})}); done(); toast('バックアップを 保存したよ'); }catch(e){ if(!(e && e.code==='declined')) toast('保存できませんでした。コードを書き出して メモに 貼っておいてね'); } return; }
+  try{ const url=URL.createObjectURL(new Blob([text],{type:'text/plain'})); const a=document.createElement('a'); a.href=url; a.download=name; document.body.append(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),4000); done(); toast('バックアップを 保存したよ'); }
+  catch(e){ toast('保存できませんでした。コードを書き出して メモに 貼っておいてね'); }
+}
+function bkNag(){   // しばらく外にバックアップしていないとき、3日に1回だけ やさしく声をかける
+  try{ if((S.days||1) < 3) return; const now=Date.now();
+    if(now-(S.lastExport||0) < 7*864e5 || now-(S.bkNagAt||0) < 3*864e5) return;
+    S.bkNagAt=now; setTimeout(()=>toast('しばらく バックアップしていないよ。「ひきつぎ」から ファイルに保存しておくと 安心'),9000); }catch(e){}
+}
 $('saveBtn').addEventListener('click', () => { if(!$('savep').hidden){ $('savep').hidden=true; return; } openSave(); });
 $('saveClose').addEventListener('click', () => { $('savep').hidden=true; });
-$('exportBtn').addEventListener('click', () => { const c=makeCode(); $('codeOut').value=c; $('copyBtn').hidden=false; const d=new Date(); toast(`${d.getMonth()+1}/${d.getDate()} ${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')} の データを書き出したよ`); });
+$('exportBtn').addEventListener('click', () => { const c=makeCode(); S.lastExport=Date.now(); save(); $('codeOut').value=c; $('copyBtn').hidden=false; const d=new Date(); toast(`${d.getMonth()+1}/${d.getDate()} ${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')} の データを書き出したよ`); });
 $('copyBtn').addEventListener('click', () => { const ta=$('codeOut'); const done=()=>toast('コピーしたよ');
   const fb=()=>{ ta.focus(); ta.select(); toast('選択したので、長押しかCtrl+Cでコピーしてね'); };
   try{ navigator.clipboard.writeText(ta.value).then(done,fb); }catch(e){ fb(); } });
 $('importBtn').addEventListener('click', () => {
   try{ pendingImport = readCode($('codeIn').value); }
   catch(e){ pendingImport=null; toast('コードが読めませんでした。さいごまで ぜんぶ貼りつけてあるか 確かめてね'); return; }
-  const n=pendingImport.umimi.length, when=pendingImport.last?new Date(pendingImport.last):null;
-  $('importMsg').textContent = `ウミミ${n}匹${when?`（${when.getMonth()+1}/${when.getDate()} ${when.getHours()}:${String(when.getMinutes()).padStart(2,'0')} のデータ）`:''}で、いまの水そうを上書きします。`;
-  $('importConfirm').hidden=false;
+  askImport(pendingImport, 'コード');
 });
 $('importNo').addEventListener('click', () => { pendingImport=null; $('importConfirm').hidden=true; });
-$('importYes').addEventListener('click', () => { if(!pendingImport) return; applySave(pendingImport); pendingImport=null; $('importConfirm').hidden=true; $('codeIn').value=''; $('savep').hidden=true; toast('読み込んだよ。つづきから あそべます'); sfx('invite'); });
+$('fileSaveBtn').addEventListener('click', saveBackupFile);
+$('fileLoadBtn').addEventListener('click', () => $('fileIn').click());
+$('fileIn').addEventListener('change', () => { const f=$('fileIn').files[0]; $('fileIn').value=''; if(!f) return;
+  const r=new FileReader(); r.onload=()=>{ const m=String(r.result||'').match(/UMIMI1-[A-Za-z0-9+\/=\s]+/);
+    try{ askImport(readCode(m?m[0]:''), 'ファイルのデータ'); }catch(e){ toast('このファイルからは 読めませんでした'); } };
+  r.readAsText(f); });
+$('importYes').addEventListener('click', () => { if(!pendingImport) return; takeBackup(null,true); applySave(pendingImport); pendingImport=null; $('importConfirm').hidden=true; $('codeIn').value=''; $('savep').hidden=true; toast('読み込んだよ。つづきから あそべます'); sfx('invite'); });
 function normalizeState(){
   if(!Array.isArray(S.umimi) || !S.umimi.length) S.umimi = defaultState().umimi;
   S.decor = (S.decor||[]).filter(o=>DECOR[o.type]); S.ground = S.ground || [];
@@ -3553,7 +3598,16 @@ function awayDiary(){
 }
 function boot(data){
   let saved = data && data.save;
-  if(!saved){ try{ const raw=localStorage.getItem('umimi-desktop-v1'); if(raw) saved=JSON.parse(raw); }catch(e){} }
+  let rescued = null;
+  if(!saved){
+    let raw=null; try{ raw=localStorage.getItem(SAVE_KEY); }catch(e){}
+    try{ if(raw) saved=JSON.parse(raw); }catch(e){ saved=null; }
+    if(raw && !validSave(saved)){ try{ localStorage.setItem(SAVE_KEY+'-broken', raw); }catch(e){} saved=null; }   // こわれたセーブは別の場所にとっておく
+    if(!validSave(saved)){   // セーブが読めない・ない → じどうバックアップから戻す
+      for(const b of getBackups()){ try{ const d=JSON.parse(b.d); if(validSave(d)){ saved=d; rescued=b; break; } }catch(e){} }
+    }
+    if(validSave(saved) && !rescued) takeBackup(raw);
+  }
   resize();
   S = Object.assign(defaultState(), saved || {});
   if(!Array.isArray(S.umimi) || !S.umimi.length) S.umimi = defaultState().umimi;
@@ -3564,7 +3618,8 @@ function boot(data){
   refreshShards(); updateTimeBtn(); renderTray();
   soundLabel();
   const mins = saved && saved.last ? (Date.now()-saved.last)/60000 : 0;
-  if(!S.welcomed && !isBirthday()){ S.welcomed=true; setTimeout(()=>toast('ウミミが デスクトップに やってきたよ。右下のメニューで あそべるよ'),600); }
+  if(rescued){ const w=new Date(rescued.t); setTimeout(()=>toast(`セーブが読めなかったので、${w.getMonth()+1}/${w.getDate()} ${w.getHours()}:${String(w.getMinutes()).padStart(2,'0')} の じどうバックアップから 戻したよ`),900); }
+  else if(!S.welcomed && !isBirthday()){ S.welcomed=true; setTimeout(()=>toast('ウミミが デスクトップに やってきたよ。右下のメニューで あそべるよ'),600); }
   else if(mins>=15){ const n=Math.min(5,Math.floor(mins/15)); S.shards+=n; refreshShards(true); setTimeout(()=>toast(`おかえり。つきのかけらが ${n} こ 落ちてたよ`),600); awayDiary(); }
   if(!Array.isArray(S.diary)) S.diary=[]; if(!Array.isArray(S.unlocked)) S.unlocked=[];
   if(!Array.isArray(S.closet)) S.closet=['normal']; if(!Array.isArray(S.metVisitors)) S.metVisitors=[];
@@ -3581,6 +3636,8 @@ function boot(data){
   const testVisit = () => { const m=location.hash.match(/^#visit-(\w+)$/); if(m && VISITORS.some(x=>x.key===m[1])){ visitor=null; S.curVisit={key:m[1],until:Date.now()+36e5}; spawnVisitor(m[1]); } };
   window.addEventListener('hashchange', testVisit); setTimeout(testVisit, 1200);
   save();
+  if(!getBackups().length) takeBackup();
+  bkNag();
   new ResizeObserver(resize).observe(stage);
   if(DESK_RING){ document.body.classList.add('ring'); document.body.appendChild($('derby')); setTimeout(openDerby, 50); } else deskHooks();
   document.addEventListener('visibilitychange', () => { if(document.hidden) save(); });
