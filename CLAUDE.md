@@ -32,17 +32,19 @@
 1. 開発版で実装し、ユーザーに確認してもらう
 2. OK が出たら、本番アーティファクト → このリポジトリ（index.html を作り直す） → デスクトップ版の zip の順に反映する
 3. **セーブ互換は絶対に守る**：localStorage `umimi-hakoniwa-v1`（写真は `umimi-photos-v1`、デスクトップ版は `umimi-desktop-v1`）。項目を追加するときは、`defaultState()` と boot 時の補完で古いデータに初期値を入れる。好感度などが消えないようにする
-4. ひきつぎコード：`UMIMI1-` + base64(JSON)。PC とスマホの間の移動用
+4. ひきつぎコード：`UMIMI2-`（圧縮）か `UMIMI1-` + base64(JSON)。PC とスマホの間の移動用。写真は入らない
 
 ## いまの状態（2026-10-02 時点）
 - 本番＝開発版＝GitHub Pages＝`source/game.html`（おきがえ123種・2コマ目のキラキラまで反映済み）。`DESK_RING` のコードはブラウザ版では何もしない
 - デスクトップ版の最新は 0.13.0（2コマ目のキラキラ・おきがえ123種・BGM・おきがえ分類タブ入り。画面一周ダービーもそのまま。画面一周の窓ではBGMは鳴らさない）。デスクトップの画面は `desktop/desktop_head.html` が別にあるので、本体に要素を足したらこちらにも足す（足りないと getElementById が null で止まる）
 - おきがえを増やすとき：1枚のシートは50種くらいまでを目安に。超えそうなら分類を分ける（例：きせつ → はるなつ／あきふゆ）。シートの中身は `CAT`（build_all.py）、タブは `OCATS`（game.html）
 - ピッちゃん（ChatGPT）が家具・飾り・衣装の絵を作ってくれる。届いたら背景を抜いてシリーズ別シートに追加する
+- じどうバックアップ（`umimi-hakoniwa-v1-bk`、3世代・8時間に1回まで・セーブが読めないと自動で戻す、壊れたセーブは `-broken` にとっておく）、ファイルに保存/読み込み（txt。中身はふつうのコード）、1週間ファイル保存していないと3日に1回声かけ（S.lastExport / S.bkNagAt）。ひきつぎコードは `UMIMI2-`（deflate-raw 圧縮＋base64、約1/8〜1/11）と `UMIMI1-`（ふつう）を選べ、読み込みはどちらも自動判別
 - 今後の候補：おへやコード（部屋の見せ合い）、デスクトップ版でおけいこ・おへやをウインドウで開く、配信モード
 
 ## ファイル
-- `index.html` … Pages 用。`source/game.html` の前に head（PWA タグ、manifest、icon）を付け、最後に `</body></html>` を足したもの。今の index.html の先頭14行が head
+- `index.html` と `sw.js` … Pages 用（ホーム画面版）。**`python3 source/build_pages.py` で作る**（手で組み立てない）。head（PWA タグ）＋ game.html ＋「ホーム画面に追加」の案内（スマホのブラウザで1回だけ）＋ サービスワーカーの登録。sw.js は `source/sw_template.js` から作られ、VERSION は中身のハッシュで自動（ゲームや画像を変えると自動で新しい版が配られる）。全部の png を最初にまとめて保存するので、電波がなくても遊べる。新しい版は「開いて20秒以内なら すぐ読み込み直し／遊んでいる途中なら 次にアプリに戻ったとき」に切り替わる。png を足したら build_pages.py が自動で拾う
+  - ホーム画面版のデータは Safari 本体と別で、7日ルールで消されない。ただしアイコン削除・容量不足・機種変更では消えるので、ファイル保存のバックアップとセット
 - `source/game.html` … 本体。1ファイル（HTML と canvas、全体が IIFE）
 - `umimi-sprites.png` … ウミミ10コマ（セル 245x222、目の位置合わせ済み）。作り直すときは `source/sprites/build_sprites.py`（元画像は src.png）
 - `c_<分類>.png` … おきがえ120枚を分類ごとに分けたシート（animal/food/season/work/fashion/relax/dream/adv=ぼうけん/princess=おひめさま、4列、セル 240x208、scale .8）。**使うときだけ読み込む**（`cosImgFor()`、色変えも分類×色ごと）。作り直すときは `source/costumes/build_all.py`（元画像は src/。新しい衣装は SRC と CAT の両方に足す）。出力された costumes.json の中身を、game.html の `const COS = {...}` に貼る（m[k].s が分類、i はシート内の番号）

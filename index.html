@@ -8,6 +8,7 @@
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-180.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="ウミミ">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}</style>
 </head>
@@ -3748,6 +3749,39 @@ function boot(data){
 }
 window.claude?.hot?.snapshot?.(() => ({save: serialize()}));
 if(window.claude?.hot?.ready) window.claude.hot.ready(boot); else boot(window.claude?.hot?.data ?? {});
+})();
+</script>
+<div id="a2hs" hidden style="position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:50;max-width:460px;margin:0 auto;background:rgba(249,249,255,.97);border:1.5px solid #d9dcf5;border-radius:16px;padding:10px 38px 10px 14px;box-shadow:0 6px 20px rgba(80,90,170,.25);font:13.5px/1.6 'Zen Maru Gothic',sans-serif;color:#4a4f7a">
+<b style="color:#5b64b8">アプリみたいに あそべます</b><br><span id="a2hsTxt"></span>
+<button type="button" id="a2hsX" aria-label="とじる" style="position:absolute;right:8px;top:6px;border:0;background:none;font-size:20px;color:#8a8fb8;cursor:pointer">×</button></div>
+<script>
+/* ホーム画面に追加の案内（ブラウザで開いているときだけ、1回だけ） */
+(function(){
+  try{
+    var standalone = window.navigator.standalone || (window.matchMedia && matchMedia('(display-mode: standalone)').matches);
+    if(standalone || localStorage.getItem('umimi-a2hs-seen')) return;
+    var ios = /iPhone|iPad|iPod/.test(navigator.userAgent), android = /Android/.test(navigator.userAgent);
+    if(!ios && !android) return;
+    document.getElementById('a2hsTxt').textContent = ios
+      ? 'Safari の 共有ボタン（□に↑）→「ホーム画面に追加」で、全画面で開けて、電波がなくても あそべます。データも消えにくくなります。'
+      : 'ブラウザの メニュー（︙）→「ホーム画面に追加」で、全画面で開けて、電波がなくても あそべます。';
+    var box=document.getElementById('a2hs'); setTimeout(function(){ box.hidden=false; }, 2500);
+    document.getElementById('a2hsX').onclick=function(){ box.hidden=true; try{ localStorage.setItem('umimi-a2hs-seen','1'); }catch(e){} };
+  }catch(e){}
+})();
+</script>
+<script>
+/* オフライン用（GitHub Pages のときだけ）。新しい版が入ったら、次にアプリに戻ってきたときに読み込み直す */
+(function(){
+  if(!('serviceWorker' in navigator) || !(location.protocol==='https:' || location.hostname==='localhost')) return;
+  var t0=Date.now(), had=!!navigator.serviceWorker.controller, pending=false;
+  var reg=null; navigator.serviceWorker.register('sw.js').then(function(r){ reg=r; r.update().catch(function(){}); }).catch(function(){});
+  navigator.serviceWorker.addEventListener('controllerchange', function(){
+    if(!had) return;                              /* はじめて入ったときは、もう新しい版を開いているので何もしない */
+    if(Date.now()-t0 < 20000) location.reload();  /* 開いたばかりなら すぐ新しい版に */
+    else pending=true;                            /* 遊んでいる途中なら、次に戻ってきたときに */
+  });
+  document.addEventListener('visibilitychange', function(){ if(document.hidden) return; if(pending) location.reload(); else if(reg) reg.update().catch(function(){}); });  /* アプリに戻ってきたら 新しい版がないか見る */
 })();
 </script>
 </body></html>
