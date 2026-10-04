@@ -3610,10 +3610,14 @@ function awayDiary(){
 }
 // ---------- ながめモード ----------
 let nagame=false, wakeLock=null, nagT=0;
+const WD='日月火水木金土';
+function nagTick(){ const d=new Date(); $('nagTime').textContent=`${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`; $('nagDate').textContent=`${d.getMonth()+1}/${d.getDate()}（${WD[d.getDay()]}）`; }
+let nagClockT=0;
 function nagShowExit(){ const b=$('nagameExit'); if(!b) return; b.hidden=false; b.classList.remove('fade'); document.body.classList.remove('idle'); clearTimeout(nagT); nagT=setTimeout(()=>{ b.classList.add('fade'); document.body.classList.add('idle'); }, 3000); }
 async function enterNagame(){
   if(nagame) return; nagame=true; hidePanels(); closeCard(); $('toast').hidden=true;
   document.body.classList.add('nagame'); nagShowExit();
+  const ck=$('nagClock'); if(ck){ ck.hidden=false; let off=false; try{ off=localStorage.getItem('umimi-nagclock')==='off'; }catch(e){} ck.classList.toggle('off',off); nagTick(); clearInterval(nagClockT); nagClockT=setInterval(nagTick, 5000); }
   const de=document.documentElement;
   const standalone = window.navigator.standalone || (window.matchMedia && matchMedia('(display-mode: standalone)').matches);
   if(!standalone && de.requestFullscreen){ try{ await de.requestFullscreen({navigationUI:'hide'}); }catch(e){} }
@@ -3622,7 +3626,7 @@ async function enterNagame(){
 }
 function exitNagame(){
   if(!nagame) return; nagame=false; clearTimeout(nagT);
-  document.body.classList.remove('nagame','idle'); $('nagameExit').hidden=true;
+  document.body.classList.remove('nagame','idle'); $('nagameExit').hidden=true; clearInterval(nagClockT); if($('nagClock')) $('nagClock').hidden=true;
   if(document.fullscreenElement && document.exitFullscreen){ document.exitFullscreen().catch(()=>{}); }
   try{ if(wakeLock) wakeLock.release(); }catch(e){} wakeLock=null;
   setTimeout(resize, 60);
@@ -3630,6 +3634,7 @@ function exitNagame(){
 if($('nagameBtn')){
   $('nagameBtn').addEventListener('click', enterNagame);
   $('nagameExit').addEventListener('click', exitNagame);
+  $('nagClock').addEventListener('click', () => { const ck=$('nagClock'); const off=!ck.classList.contains('off'); ck.classList.toggle('off',off); try{ localStorage.setItem('umimi-nagclock', off?'off':'on'); }catch(e){} nagShowExit(); });  // 時計はタップで うすく（もう一度で もどる）
   cv.addEventListener('pointerdown', () => { if(nagame) nagShowExit(); });
   cv.addEventListener('pointermove', e => { if(nagame && e.pointerType==='mouse') nagShowExit(); });
   document.addEventListener('keydown', e => { if(nagame && e.key==='Escape') exitNagame(); });

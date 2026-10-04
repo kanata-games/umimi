@@ -33,7 +33,11 @@ body.nagame{overflow:hidden}
 body.nagame #app{position:fixed;inset:0;height:100%;min-height:0;max-width:none;padding:0;gap:0;margin:0;z-index:20;background:#000}
 body.nagame #app>:not(.stage){display:none!important}
 body.nagame .stage{border:0;border-radius:0;box-shadow:none;min-height:0}
-body.nagame .stage>:not(canvas):not(.nagex){display:none!important}
+body.nagame .stage>:not(canvas):not(.nagex):not(.nagclock){display:none!important}
+.nagclock{position:absolute;left:calc(16px + env(safe-area-inset-left,0px));top:calc(12px + env(safe-area-inset-top,0px));z-index:9;display:flex;align-items:baseline;gap:8px;color:rgba(255,255,255,.88);text-shadow:0 1px 6px rgba(40,40,90,.45);font-family:"Klee One","Zen Maru Gothic",sans-serif;cursor:pointer;user-select:none;transition:opacity .4s}
+.nagclock b{font-size:30px;font-weight:600;letter-spacing:.04em;font-variant-numeric:tabular-nums}
+.nagclock span{font-size:14px}
+.nagclock.off{opacity:.14}
 body.nagame.idle .stage canvas{cursor:none}
 .toast{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);background:rgba(61,58,92,.84);color:#fff;border-radius:999px;padding:8px 16px;font-size:14px;white-space:nowrap;max-width:calc(100% - 32px);overflow:hidden;text-overflow:ellipsis;pointer-events:none;animation:toastIn .35s ease}
 @keyframes toastIn{from{opacity:0;transform:translate(-50%,8px)}}
@@ -332,6 +336,7 @@ button:focus-visible,input:focus-visible{outline:2.5px solid var(--peri-deep);ou
     </div>
     <div class="toast" id="toast" hidden></div>
     <button class="nagex" id="nagameExit" type="button" hidden>もどる</button>
+    <div class="nagclock" id="nagClock" hidden title="タップで かくす／出す"><b id="nagTime"></b><span id="nagDate"></span></div>
     <div class="bday" id="bday" hidden>
       <div class="inner" role="dialog" aria-labelledby="hbTitle">
         <h2 class="hb" id="hbTitle">Happy Birthday!</h2>
@@ -3701,10 +3706,14 @@ function awayDiary(){
 }
 // ---------- ながめモード ----------
 let nagame=false, wakeLock=null, nagT=0;
+const WD='日月火水木金土';
+function nagTick(){ const d=new Date(); $('nagTime').textContent=`${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`; $('nagDate').textContent=`${d.getMonth()+1}/${d.getDate()}（${WD[d.getDay()]}）`; }
+let nagClockT=0;
 function nagShowExit(){ const b=$('nagameExit'); if(!b) return; b.hidden=false; b.classList.remove('fade'); document.body.classList.remove('idle'); clearTimeout(nagT); nagT=setTimeout(()=>{ b.classList.add('fade'); document.body.classList.add('idle'); }, 3000); }
 async function enterNagame(){
   if(nagame) return; nagame=true; hidePanels(); closeCard(); $('toast').hidden=true;
   document.body.classList.add('nagame'); nagShowExit();
+  const ck=$('nagClock'); if(ck){ ck.hidden=false; let off=false; try{ off=localStorage.getItem('umimi-nagclock')==='off'; }catch(e){} ck.classList.toggle('off',off); nagTick(); clearInterval(nagClockT); nagClockT=setInterval(nagTick, 5000); }
   const de=document.documentElement;
   const standalone = window.navigator.standalone || (window.matchMedia && matchMedia('(display-mode: standalone)').matches);
   if(!standalone && de.requestFullscreen){ try{ await de.requestFullscreen({navigationUI:'hide'}); }catch(e){} }
@@ -3713,7 +3722,7 @@ async function enterNagame(){
 }
 function exitNagame(){
   if(!nagame) return; nagame=false; clearTimeout(nagT);
-  document.body.classList.remove('nagame','idle'); $('nagameExit').hidden=true;
+  document.body.classList.remove('nagame','idle'); $('nagameExit').hidden=true; clearInterval(nagClockT); if($('nagClock')) $('nagClock').hidden=true;
   if(document.fullscreenElement && document.exitFullscreen){ document.exitFullscreen().catch(()=>{}); }
   try{ if(wakeLock) wakeLock.release(); }catch(e){} wakeLock=null;
   setTimeout(resize, 60);
@@ -3721,6 +3730,7 @@ function exitNagame(){
 if($('nagameBtn')){
   $('nagameBtn').addEventListener('click', enterNagame);
   $('nagameExit').addEventListener('click', exitNagame);
+  $('nagClock').addEventListener('click', () => { const ck=$('nagClock'); const off=!ck.classList.contains('off'); ck.classList.toggle('off',off); try{ localStorage.setItem('umimi-nagclock', off?'off':'on'); }catch(e){} nagShowExit(); });  // 時計はタップで うすく（もう一度で もどる）
   cv.addEventListener('pointerdown', () => { if(nagame) nagShowExit(); });
   cv.addEventListener('pointermove', e => { if(nagame && e.pointerType==='mouse') nagShowExit(); });
   document.addEventListener('keydown', e => { if(nagame && e.key==='Escape') exitNagame(); });
