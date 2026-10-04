@@ -296,17 +296,18 @@ button:focus-visible,input:focus-visible{outline:2.5px solid var(--peri-deep);ou
   .card canvas{width:88px;height:70px}
 }
 /* エリア（A いつもの海 / B サンゴの森 / C ひみつ） */
-.areatabs{position:absolute;right:10px;top:10px;z-index:3;display:flex;gap:2px;padding:3px;border-radius:999px;background:rgba(255,255,255,.8);border:1.5px solid rgba(255,255,255,.95);box-shadow:0 2px 10px rgba(92,104,190,.16);backdrop-filter:blur(4px)}
+.areatabs{position:absolute;left:10px;top:10px;z-index:4;display:flex;gap:2px;padding:3px;border-radius:999px;background:rgba(255,255,255,.8);border:1.5px solid rgba(255,255,255,.95);box-shadow:0 2px 10px rgba(92,104,190,.16);backdrop-filter:blur(4px)}
 .areatabs button{font:inherit;font-size:13px;font-weight:700;color:var(--ink2);background:none;border:0;border-radius:999px;padding:5px 11px;cursor:pointer;white-space:nowrap}
 .areatabs button[aria-pressed="true"]{background:var(--peri);color:#fff}
 .areatabs button.lock{color:#aeadc9}
 .card{z-index:5}
+.stage:has(> section:not([hidden])) .areatabs, .stage:has(> .bday:not([hidden])) .areatabs{display:none}
 body.areaB .tools, body.areaB #decorCats{display:none!important}
 .bhint{flex:0 0 min(300px,64vw)}
 .bhint .hint{font-size:13px;line-height:1.6}
 .item .bst{font-size:11px;font-weight:700;color:var(--ink2)}
 .item[aria-pressed="true"] .bst{color:var(--peri-deep)}
-@media (max-width:520px){ .areatabs{right:6px;top:6px} .areatabs button{font-size:12px;padding:4px 8px} }
+@media (max-width:520px){ .areatabs{left:6px;top:6px} .areatabs button{font-size:12px;padding:4px 8px} }
 </style>
 
 <div id="app">
