@@ -295,6 +295,18 @@ button:focus-visible,input:focus-visible{outline:2.5px solid var(--peri-deep);ou
   .chip .wl{display:none}
   .card canvas{width:88px;height:70px}
 }
+/* エリア（A いつもの海 / B サンゴの森 / C ひみつ） */
+.areatabs{position:absolute;right:10px;top:10px;z-index:3;display:flex;gap:2px;padding:3px;border-radius:999px;background:rgba(255,255,255,.8);border:1.5px solid rgba(255,255,255,.95);box-shadow:0 2px 10px rgba(92,104,190,.16);backdrop-filter:blur(4px)}
+.areatabs button{font:inherit;font-size:13px;font-weight:700;color:var(--ink2);background:none;border:0;border-radius:999px;padding:5px 11px;cursor:pointer;white-space:nowrap}
+.areatabs button[aria-pressed="true"]{background:var(--peri);color:#fff}
+.areatabs button.lock{color:#aeadc9}
+.card{z-index:5}
+body.areaB .tools, body.areaB #decorCats{display:none!important}
+.bhint{flex:0 0 min(300px,64vw)}
+.bhint .hint{font-size:13px;line-height:1.6}
+.item .bst{font-size:11px;font-weight:700;color:var(--ink2)}
+.item[aria-pressed="true"] .bst{color:var(--peri-deep)}
+@media (max-width:520px){ .areatabs{right:6px;top:6px} .areatabs button{font-size:12px;padding:4px 8px} }
 </style>
 
 <div id="app">
@@ -595,7 +607,7 @@ function isBirthday(){ const d=new Date(); const lily=(d.getMonth()===8 && d.get
 let T = 0, phase = 2, night = 1, dusk = 0, shardTimer = 12, saveTimer = 0, meetCD = 8, timeCheck = 0, tPhase = 2;
 
 function defaultState(){
-  return {v:1, shards:3, timeMode:'auto', sound:false, bgm:true, nextId:3, decorId:7, welcomed:false, last:Date.now(),
+  return {v:1, area:'a', shards:3, timeMode:'auto', sound:false, bgm:true, nextId:3, decorId:7, welcomed:false, last:Date.now(),
     umimi:[{id:1,name:'ウミミ',color:'lavender',x:380,d:0.6,aff:0},{id:2,name:'ミナモ',color:'sky',x:650,d:0.32,aff:0}],
     decor:[{id:1,type:'grass',x:110,d:0.12},{id:2,type:'coral',x:880,d:0.06},{id:3,type:'grass',x:940,d:0.5},
            {id:4,type:'shell',x:250,d:0.88},{id:5,type:'pebble',x:720,d:0.8},{id:6,type:'lamp',x:520,d:0.04}],
@@ -617,7 +629,7 @@ function serialize(){
     umimi:S.umimi.map(u=>({id:u.id,name:u.name,color:u.color,x:Math.round(u.x),d:+u.d.toFixed(3),aff:u.aff,outfit:u.outfit,lvSeen:u.lvSeen,pers:u.pers,born:u.born,pets:u.pets,feeds:u.feeds,worn:u.worn,mem:u.mem,ann:u.ann,wins:u.wins||0,druns:u.druns||0,dbest:u.dbest||0,tricks:u.tricks,learned:u.learned,lessonDay:u.lessonDay,room:u.room})),
     past:S.past,
     closet:S.closet, closetNew:S.closetNew, pets:S.pets, days:S.days, feeds:S.feeds, starsCaught:S.starsCaught, metVisitors:S.metVisitors,
-    diary:S.diary.slice(0,60), day:S.day, visitorDay:S.visitorDay, visitLog:S.visitLog, nextVisit:S.nextVisit, curVisit:S.curVisit, lastVisitor:S.lastVisitor, unlocked:S.unlocked, diaryNew:S.diaryNew, myBday:S.myBday, lastExport:S.lastExport||0, bkNagAt:S.bkNagAt||0, evSeen:S.evSeen, derby:S.derby, furn:S.furn, omikujiDay:S.omikujiDay, wishes:S.wishes, presentYear:S.presentYear, trickDay:S.trickDay, profileOnTap:S.profileOnTap, bdayBlown:S.bdayBlown, bdayDiary:S.bdayDiary,
+    diary:S.diary.slice(0,60), day:S.day, visitorDay:S.visitorDay, visitLog:S.visitLog, nextVisit:S.nextVisit, curVisit:S.curVisit, lastVisitor:S.lastVisitor, unlocked:S.unlocked, diaryNew:S.diaryNew, myBday:S.myBday, lastExport:S.lastExport||0, bkNagAt:S.bkNagAt||0, evSeen:S.evSeen, derby:S.derby, furn:S.furn, omikujiDay:S.omikujiDay, wishes:S.wishes, presentYear:S.presentYear, trickDay:S.trickDay, area:S.area==='b'?'b':'a', areaB:S.areaB, profileOnTap:S.profileOnTap, bdayBlown:S.bdayBlown, bdayDiary:S.bdayDiary,
     decor:S.decor.map(o=>Object.assign({id:o.id,type:o.type,x:Math.round(o.x),d:+o.d.toFixed(3)}, o.on!=null?{on:o.on,dx:+(o.dx||0).toFixed(1)}:{})),
     ground:S.ground.map(g=>({x:Math.round(g.x),d:+g.d.toFixed(3)}))};
 }
@@ -1302,6 +1314,7 @@ function drawFood(c,f){
 }
 
 function draw(){
+  if(S.area==='b'){ drawAreaB(); if(!$('card').hidden) drawCardPic(); return; }
   const c = ctx;
   c.setTransform(dpr*k,0,0,dpr*k,0,0);
   glows = [];
@@ -1517,6 +1530,7 @@ function update(dt){
     if(p.type==='puff'||p.type==='ring'){ p.r += dt*(p.type==='ring'?60:14); } });
   particles = particles.filter(p=>p.life>0);
   plankton.forEach(pl => { pl.x += pl.vx*dt; pl.y += pl.vy*dt/H; if(pl.x<0)pl.x+=W; if(pl.x>W)pl.x-=W; if(pl.y<0)pl.y+=1; if(pl.y>1)pl.y-=1; });
+  if(S.area==='b') updateB(dt);
   saveTimer += dt; if(saveTimer>4){ saveTimer=0; save(); }
   if(!$('card').hidden) updateCardMeta(dt);
 }
@@ -2117,6 +2131,7 @@ const FRAMES=[['none','なし'],['polaroid','ポラロイド'],['shell','貝が�
 const STAMPS=['heart','spark','moon','note','bubble','t:すき','t:だいすき','t:なかよし','t:おやすみ','t:ありがとう'];
 function liveUmi(){ return S.umimi.filter(u=>u.state!=='leaving'); }
 function openShoot(){
+  if(S.area==='b') setArea('a');
   hidePanels('shootp'); closeCard(); $('shootp').hidden=false;
   const live=liveUmi(); if(!shootOpt.who) shootOpt.who=new Set(live.map(u=>u.id));
   live.forEach(u=>{ if(!shootOpt.who.has(u.id) && shootOpt.who.size===0) shootOpt.who.add(u.id); });
@@ -2413,7 +2428,7 @@ function applySave(d){
   S.umimi.forEach(u=>{ u.x=clamp(u.x,50,W-50); }); S.decor.forEach(o=>{ o.x=clamp(o.x,20,W-20); }); S.ground.forEach(g=>{ g.x=clamp(g.x,40,W-40); });
   S.umimi.forEach(hydrateU);
   S.umimi.forEach(u=>{ if(u.outfit && !S.closet.includes(u.outfit)) S.closet.push(u.outfit); });
-  foods=[]; selId=null; closeCard(); visitor=null;
+  foods=[]; selId=null; closeCard(); visitor=null; bCopies=[]; pB=[]; refreshAreaTabs(); if(S.area==='b') syncB();
   tPhase=targetPhase(); refreshShards(); updateTimeBtn(); renderTray();
   soundLabel();
   save();
@@ -2452,6 +2467,7 @@ function collect(g){
 cv.addEventListener('pointerdown', e => {
   const p = toWorld(e); try{ cv.setPointerCapture(e.pointerId); }catch(_){}
   ensureAudio();
+  if(S.area==='b'){ drag=null; bTap(p); return; }
   if(star && Math.hypot(p.x-star.x,p.y-star.y) < 90){ const sx=star.x, sy=star.y; star=null; starTimer=rand(70,130); S.shards+=3; S.starsCaught=(S.starsCaught||0)+1; addMemAll(`${fmtDate(Date.now())} みんなで ながれぼしを つかまえた`,true); setTimeout(checkUnlocks,1500); sparks(sx,sy,20,1.4); sfx('invite'); refreshShards(true); toast('ながれぼしを つかまえた！ つきのかけら +3'); addDiary('ながれぼしを つかまえた'); save(); drag=null; return; }
   if(bigB && Math.hypot(p.x-bigB.x,p.y-bigB.y) < bigB.r*1.5){ const b=bigB; bigB=null; bigTimer=rand(40,70); S.shards+=1; addP({type:'ring',x:b.x,y:b.y,vx:0,vy:0,r:b.r,life:.5,max:.5}); sparks(b.x,b.y,10,1); sfx('shard'); refreshShards(true); save(); drag=null; return; }
   if(EVON.length && evTap(p)){ drag=null; return; }
@@ -2562,6 +2578,7 @@ const DERBY_DECOR = ['trophy','rosette','goalflag','podium'];
 function decorSeries(k){ const D=DECOR[k]; if(DERBY_DECOR.includes(k)) return 'derby'; if(D.img && FIMG.m[k]) return FIMG.m[k].s; if(D.gift) return 'omiyage'; return 'kihon'; }
 let decorCat = 'kihon';
 function renderTray(){
+  if(S.area==='b' && areaUI()){ renderTrayB(); return; }
   const tr = $('tray'); tr.innerHTML = '';
   const dc = $('decorCats'); dc.hidden = mode!=='decor';
   if(mode==='decor'){ dc.innerHTML = DSERIES.filter(([k])=>Object.keys(DECOR).some(x=>decorSeries(x)===k)).map(([k,n])=>`<button type="button" class="dm${decorCat===k?' on':''}" data-cat="${k}">${n}</button>`).join(''); dc.querySelectorAll('[data-cat]').forEach(b=>b.addEventListener('click',()=>{ decorCat=b.dataset.cat; renderTray(); })); }
@@ -3694,6 +3711,292 @@ $('asobiBtn').addEventListener('click', () => { if(!$('asobi').hidden){ $('asobi
 $('asobiClose').addEventListener('click', () => { $('asobi').hidden=true; });
 
 // ---------- boot ----------
+// ---------- エリア（A いつもの海 / B サンゴの森 / C ひみつ） ----------
+// A はいままでの水そうそのまま。B にはえらんだ子が「おでかけ」している（コピーなので A にもいる）。
+// S.area = 'a' | 'b'（いま見ているエリア）、S.areaB = {members:[id…], visited}
+const B_MAX = 3;
+const AREAS = [['a','いつもの海'],['b','サンゴの森'],['c','？？？']];
+const SCENE_B = [
+  {wt:'#c8f0ea', wb:'#93d9d2', st:'#f7ecd6', sb:'#ebd8b6', far:'#86ccc5', ray:.26},
+  {wt:'#f8dbd2', wb:'#c3b5e2', st:'#f2dfcf', sb:'#dcc5b5', far:'#b5a6d8', ray:.14},
+  {wt:'#24456f', wb:'#173056', st:'#506290', sb:'#384870', far:'#2e5684', ray:0},
+];
+function scenePalB(p){
+  const i = Math.min(1, Math.floor(p)), t = p - i, a = SCENE_B[i], b = SCENE_B[Math.min(2,i+1)];
+  return {wt:mixC(a.wt,b.wt,t), wb:mixC(a.wb,b.wb,t), st:mixC(a.st,b.st,t), sb:mixC(a.sb,b.sb,t), far:mixC(a.far,b.far,t), ray:a.ray+(b.ray-a.ray)*t};
+}
+let bCopies = [], pB = [], bScn = null, bSyncT = 0;
+function areaB(){
+  if(!S.areaB || typeof S.areaB!=='object') S.areaB = {members:[]};
+  if(!Array.isArray(S.areaB.members)) S.areaB.members = [];
+  S.areaB.members = S.areaB.members.filter(id => S.umimi.some(u=>u.id===id && u.state!=='leaving')).slice(0,B_MAX);
+  return S.areaB;
+}
+const CORAL_COLS = ['#f49aa6','#f6b37f','#c99be8','#f5cf78','#8fd3b8','#f7a8c8'];
+function buildSceneB(){
+  const R = mulberry(23), sc = {H, ft:floorTop, back:[], fans:[], kelp:[], bits:[], front:[]};
+  const branch = (segs,x,y,ang,len,w,dep) => { const x2=x+Math.sin(ang)*len, y2=y-Math.cos(ang)*len; segs.push([x,y,x2,y2,w]);
+    if(dep>0){ const n = R()<.35 ? 3 : 2; for(let i=0;i<n;i++) branch(segs,x2,y2,ang+(i-(n-1)/2)*(.5+R()*.35),len*(.62+R()*.18),w*.72,dep-1); } else segs.push([x2,y2,x2,y2,w*1.35]); };
+  const coral = (x,base,h,col,dep) => { const segs=[]; branch(segs,0,0,(R()-.5)*.25,h*.42,Math.max(5,h*.11),dep); return {x,base,col,segs,ph:R()*TAU}; };
+  // 奥の サンゴの林（シルエット）
+  for(let i=0;i<9;i++) sc.back.push(coral(40+i*118+R()*40, floorTop+16, 70+R()*70, null, 2+(R()<.5?1:0)));
+  for(let i=0;i<5;i++) sc.fans.push({x:R()*W, base:floorTop+14, r:40+R()*36, ph:R()*TAU});
+  sc.kelp = [{x:16,h:floorTop*.95,ph:0},{x:48,h:floorTop*.7,ph:1.1},{x:985,h:floorTop*.85,ph:2.3}];
+  // 手前の色つきサンゴ（左右のはし）
+  [[70,.55,150],[150,.9,110],[905,.62,120],[960,.95,95],[340,.04,90]].forEach(([x,d,h],i) => sc.front.push(Object.assign(coral(x,0,h,CORAL_COLS[i%CORAL_COLS.length],2+(i%2)),{d})));
+  // 砂の上の 小さなもの（そのうち そざいになる予定の見た目）
+  const kinds = ['shell','glass','wood','shell','glass','pebble'];
+  for(let i=0;i<14;i++) sc.bits.push({k:kinds[i%kinds.length], x:200+R()*460, d:R(), rot:R()*TAU, col:['#9fdad3','#a9c6f2','#c9b2ee','#f3c1a4'][Math.floor(R()*4)]});
+  bScn = sc;
+}
+// 作業台と 貝殻窯（まだ使えない。タップすると「もうすぐ」）
+const B_BENCH = {x:735, d:.2}, B_KILN = {x:882, d:.1}, B_SIGN = {x:615, d:.02};
+function syncB(){
+  const ids = areaB().members;
+  bCopies = bCopies.filter(c => c.leaving || ids.includes(c.id));
+  ids.forEach(id => { if(!bCopies.some(c=>c.id===id && !c.leaving)) bCopies.push(newCopy(id,false)); });
+  bCopies.forEach(c => { c.src = S.umimi.find(u=>u.id===c.id); if(!c.src && !c.leaving){ c.leaving=true; c.tx=c.x; } });
+}
+function newCopy(id, arrive){
+  const src = S.umimi.find(u=>u.id===id);
+  const c = {id, src, x:rand(200,620), d:rand(.3,.95), dir:Math.random()<.5?1:-1, state:'idle', timer:rand(.5,2), ph:rand(0,TAU), blinkT:rand(1,4), blink:0, lift:0, t:0, expr:'normal', tx:0, td:0, petCD:0};
+  if(arrive){ c.x = 190; c.dir = 1; c.fade = 0; c.state='walk'; c.tx = rand(280,580); c.td = c.d; c.timer = 10; }
+  mirrorCopy(c); return c;
+}
+function mirrorCopy(c){ const s=c.src; if(!s) return; c.color=s.color; c.outfit=s.outfit; c.pers=s.pers; c.name=s.name; }
+function bAdd(o){ if(pB.length < 200) pB.push(o); }
+function bSay(c,text){ const s=scaleD(c.d); bAdd({type:'say',text,x:c.x,y:floorY(c.d)-c.lift-100*s,vx:0,vy:-8,r:15*s,life:2.2,max:2.2}); }
+function bHearts(c,n){ const s=scaleD(c.d); for(let i=0;i<n;i++) bAdd({type:'heart',x:c.x+rand(-24,24)*s,y:floorY(c.d)-c.lift-60*s,vx:rand(-8,8),vy:rand(-34,-22),r:rand(7,10)*s,life:1.6,max:1.6}); }
+function bBubbles(x,y,n){ for(let i=0;i<n;i++) bAdd({type:'bubble',x:x+rand(-10,10),y,vx:0,vy:rand(-70,-40),r:rand(2,5),life:5,max:5,wob:rand(0,TAU)}); }
+const B_SEARCH_SAY = ['なにか あるかな','きらきら…','ふむふむ','これ なんだろ','いいもの みっけ？'];
+function bPick(c){
+  const r = Math.random();
+  if(night > .6){
+    if(r<.5){ c.state='sleep'; c.timer=rand(14,28); c.zT=.5; }
+    else if(r<.8){ c.state='walk'; c.tx=clamp(c.x+rand(-260,260),190,660); c.td=clamp(c.d+rand(-.3,.3),.25,1); c.timer=14; }
+    else { c.state='idle'; c.timer=rand(2,4); }
+    return;
+  }
+  if(r<.38 && bScn){ const b = bScn.bits[Math.floor(Math.random()*bScn.bits.length)]; c.state='walk'; c.goal='search'; c.tx=clamp(b.x+(Math.random()<.5?-50:50),190,660); c.td=clamp(b.d,.25,1); c.faceX=b.x; c.timer=14; }
+  else if(r<.46){ c.state='walk'; c.goal='bench'; c.tx=B_BENCH.x-110; c.td=clamp(B_BENCH.d+.18,.25,1); c.faceX=B_BENCH.x; c.timer=16; }
+  else if(r<.66){ c.state='walk'; c.tx=clamp(c.x+rand(-300,300),190,660); c.td=clamp(c.d+rand(-.35,.35),.25,1); c.timer=14; }
+  else if(r<.78){ c.state='happy'; c.timer=1.6; }
+  else if(r<.86){ c.state='sleep'; c.timer=rand(6,11); c.zT=.5; }
+  else { c.state='idle'; c.timer=rand(2,4); }
+}
+function updCopy(c,dt){
+  mirrorCopy(c);
+  c.t += dt; c.blinkT -= dt; if(c.blinkT<0){ c.blink=.14; c.blinkT=rand(2.5,6); } if(c.blink>0) c.blink -= dt;
+  c.petCD = Math.max(0,c.petCD-dt); c.moving = false;
+  if(c.leaving){ c.fade = (c.fade==null?1:c.fade) - dt*.9; c.state='walk'; moveTo(c,c.tx,c.d,60,dt); c.expr='normal'; return; }
+  if(c.fade!=null){ c.fade = Math.min(1,c.fade+dt*1.2); if(c.fade>=1) c.fade = null; }
+  if(c.lift>0) c.lift = Math.max(0, c.lift-(20+c.lift*.45)*dt);
+  switch(c.state){
+    case 'idle': c.timer-=dt; if(c.timer<=0) bPick(c); break;
+    case 'walk': c.timer-=dt;
+      if(moveTo(c,c.tx,c.td,36,dt) || c.timer<=0){
+        if(c.goal){ c.dir = c.faceX>=c.x ? 1 : -1; c.state='curious'; c.timer=rand(2.2,3.2);
+          if(c.goal==='bench'){ if(Math.random()<.5) bSay(c, Math.random()<.5 ? 'ここで なにか つくれそう' : 'さぎょうだい…？'); }
+          else if(Math.random()<.45) bSay(c, B_SEARCH_SAY[Math.floor(Math.random()*B_SEARCH_SAY.length)]);
+          c.goal=null; }
+        else { c.state='idle'; c.timer=rand(1,3); } }
+      break;
+    case 'curious': c.timer-=dt; if(Math.random()<dt*1.5){ const s=scaleD(c.d); bBubbles(c.x+c.dir*44*s, floorY(c.d)-20*s, 1); }
+      if(c.timer<=0){ c.state = Math.random()<.4 ? 'happy' : 'idle'; c.timer = c.state==='happy' ? 1.6 : rand(1,2.5); } break;
+    case 'sleep': c.timer-=dt; c.zT-=dt; if(c.zT<=0){ c.zT=1.7; const s=scaleD(c.d); bAdd({type:'z',x:c.x+c.dir*30*s,y:floorY(c.d)-c.lift-70*s,vx:rand(6,14)*-c.dir,vy:-16,r:rand(14,20)*s,life:2.2,max:2.2}); }
+      if(c.timer<=0){ c.state='idle'; c.timer=1; } break;
+    default: c.timer-=dt; if(c.timer<=0){ c.state='idle'; c.timer=rand(1,2.5); }
+  }
+  c.expr = c.state==='happy' ? 'happy' : c.state==='sleep' ? 'sleep' : 'normal';
+}
+function updateB(dt){
+  bSyncT -= dt; if(bSyncT<=0){ bSyncT=1; syncB(); }
+  bCopies.forEach(c => updCopy(c,dt));
+  bCopies = bCopies.filter(c => !(c.leaving && c.fade!=null && c.fade<=0));
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(Math.random() < dt*(reduce?.3:.8)) bAdd({type:'bubble',x:rand(24,976),y:floorY(rand(0,1)),vx:0,vy:rand(-70,-40),r:rand(2,6),life:9,max:9,wob:rand(0,TAU)});
+  if(Math.random() < dt*.6){ const h=B_KILN; const s=scaleD(h.d); bAdd({type:'bubble',x:h.x+rand(-8,8)*s,y:floorY(h.d)-78*s,vx:0,vy:rand(-50,-30),r:rand(2,4),life:4,max:4,wob:rand(0,TAU)}); }
+  pB.forEach(p => { p.life -= dt; p.x += p.vx*dt; p.y += p.vy*dt; if(p.type==='bubble'){ p.x += Math.sin(T*3+p.wob)*.4; if(p.y<22) p.life=0; } if(p.type==='spark'){ p.vx*=.93; p.vy*=.93; } if(p.type==='ring') p.r += dt*60; });
+  pB = pB.filter(p => p.life>0);
+}
+function drawCoral(c,co,x,base,s,col,sway){
+  c.save(); c.translate(x,base); c.scale(s,s); c.rotate(Math.sin(T*.5+co.ph)*sway); c.lineCap='round'; c.strokeStyle=col; c.fillStyle=col;
+  co.segs.forEach(([x1,y1,x2,y2,w]) => { if(x1===x2 && y1===y2){ c.beginPath(); c.arc(x1,y1,w*.5,0,TAU); c.fill(); } else { c.lineWidth=w; c.beginPath(); c.moveTo(x1,y1); c.lineTo(x2,y2); c.stroke(); } });
+  c.restore();
+}
+function drawBgB(p){
+  const c = ctx, sc = bScn;
+  let g = c.createLinearGradient(0, 0, 0, floorTop+40); g.addColorStop(0,p.wt); g.addColorStop(1,p.wb);
+  c.fillStyle = g; c.fillRect(0,0,W,H);
+  const moonX = W*0.2, moonY = 56;
+  if(night > .01){ c.globalAlpha = night;
+    g = c.createRadialGradient(moonX,moonY,0,moonX,moonY,120); g.addColorStop(0,'rgba(255,246,214,.5)'); g.addColorStop(1,'rgba(255,246,214,0)');
+    c.fillStyle = g; c.fillRect(moonX-120,moonY-120,240,240);
+    c.fillStyle = 'rgba(255,245,210,.9)'; c.beginPath(); c.ellipse(moonX+Math.sin(T*.8)*2,moonY,22,19,0,0,TAU); c.fill(); c.globalAlpha = 1; }
+  for(let i=0;i<5;i++){ const a = p.ray*1.2 + .06*night; if(a<.005) continue; const x0 = night>.5 ? moonX-60+i*60 : 120+i*190, sway = Math.sin(T*.33+i*1.7)*30;
+    const gr = c.createLinearGradient(0, 0, 0, floorTop+60); const col = night>.5 ? '225,232,255' : '255,255,240';
+    gr.addColorStop(0,`rgba(${col},${a})`); gr.addColorStop(1,`rgba(${col},0)`); c.fillStyle = gr;
+    c.beginPath(); c.moveTo(x0-18, 0); c.lineTo(x0+26, 0); c.lineTo(x0+140+sway+(night>.5?120:0),floorTop+60); c.lineTo(x0+40+sway+(night>.5?120:0),floorTop+60); c.closePath(); c.fill(); }
+  g = c.createLinearGradient(0, 0, 0, 46); g.addColorStop(0,`rgba(255,255,255,${.38-.26*night})`); g.addColorStop(1,'rgba(255,255,255,0)'); c.fillStyle = g; c.fillRect(0, 0, W, 46);
+  c.strokeStyle = `rgba(255,255,255,${.5-.3*night})`; c.lineWidth = 2; c.beginPath();
+  for(let x=0; x<=W; x+=20) c.lineTo(x, 16+Math.sin(x*.02+T*1.2)*3+Math.sin(x*.047-T)*2); c.stroke();
+  // 奥：海藻・うちわサンゴ・サンゴの林（シルエット）
+  c.strokeStyle = p.far; c.globalAlpha = .5; c.lineCap = 'round';
+  sc.kelp.forEach(kp => { c.lineWidth = 12; c.beginPath(); const base = floorTop+30; c.moveTo(kp.x,base);
+    for(let j=1;j<=8;j++) c.lineTo(kp.x + Math.sin(T*.8+kp.ph+j*.6)*j*2.2, base - kp.h*j/8); c.stroke(); });
+  c.globalAlpha = .55; c.fillStyle = p.far;
+  sc.fans.forEach(f => { c.save(); c.translate(f.x,f.base); c.rotate(Math.sin(T*.4+f.ph)*.03); c.beginPath(); c.moveTo(0,0); c.arc(0,0,f.r,Math.PI*1.08,Math.PI*1.92); c.closePath(); c.fill(); c.restore(); });
+  c.globalAlpha = .75; sc.back.forEach(co => drawCoral(c,co,co.x,co.base,1,p.far,.02)); c.globalAlpha = 1;
+  // 砂
+  g = c.createLinearGradient(0,floorTop,0,H); g.addColorStop(0,p.st); g.addColorStop(1,p.sb);
+  c.fillStyle = g; c.beginPath(); c.moveTo(0,H);
+  for(let x=0;x<=W;x+=20) c.lineTo(x, floorTop + Math.sin(x*.011+2)*9 + Math.sin(x*.029)*4);
+  c.lineTo(W,H); c.closePath(); c.fill();
+  sandDots.forEach(d => { c.fillStyle = d.l ? 'rgba(255,255,255,.5)' : 'rgba(170,140,110,.16)'; c.beginPath(); c.ellipse(d.x, floorTop+16+d.f*(H-floorTop-16), d.r*1.6, d.r*.8, 0, 0, TAU); c.fill(); });
+}
+function drawBit(c,b){
+  const s = scaleD(b.d)*.8, gy = floorY(b.d);
+  c.save(); c.translate(b.x,gy); c.scale(s,s);
+  if(b.k==='shell'){ c.fillStyle='#fbe9e0'; c.strokeStyle='#e2b8a6'; c.lineWidth=1.4; c.beginPath(); c.moveTo(-10,0); c.quadraticCurveTo(-11,-14,0,-15); c.quadraticCurveTo(11,-14,10,0); c.closePath(); c.fill(); c.stroke();
+    c.beginPath(); for(let i=-2;i<=2;i++){ c.moveTo(0,-1); c.lineTo(i*4,-13); } c.stroke(); }
+  else if(b.k==='glass'){ c.rotate(b.rot*.2); c.fillStyle=b.col; c.globalAlpha=.85; c.beginPath(); c.moveTo(-7,-2); c.lineTo(-2,-9); c.lineTo(7,-6); c.lineTo(6,0); c.lineTo(-4,1); c.closePath(); c.fill(); c.globalAlpha=1; c.fillStyle='rgba(255,255,255,.75)'; c.beginPath(); c.ellipse(-1,-6,2.2,1.2,-.5,0,TAU); c.fill();
+    if(night>.05) glows.push({x:b.x,y:gy-5*s,r:16*s,col:'170,230,255',a:.35*night}); }
+  else if(b.k==='wood'){ c.rotate(Math.sin(b.rot)*.15); c.fillStyle='#c39a72'; c.strokeStyle='#9c7552'; c.lineWidth=1.3; c.beginPath(); c.ellipse(0,-3,18,4,0,0,TAU); c.fill(); c.stroke(); c.beginPath(); c.moveTo(-10,-3); c.lineTo(8,-4); c.stroke(); }
+  else { c.fillStyle='#cfc5bf'; c.beginPath(); c.ellipse(0,-3,8,5,0,0,TAU); c.fill(); }
+  c.restore();
+}
+function drawBench(c){
+  const s = scaleD(B_BENCH.d), gy = floorY(B_BENCH.d);
+  c.fillStyle='rgba(120,100,90,.14)'; c.beginPath(); c.ellipse(B_BENCH.x,gy,92*s,10*s,0,0,TAU); c.fill();
+  c.save(); c.translate(B_BENCH.x,gy); c.scale(s,s);
+  c.fillStyle='#a57d58'; c.strokeStyle='#7e5a3d'; c.lineWidth=2;
+  [[-62,0],[52,0]].forEach(([x])=>{ c.beginPath(); c.moveTo(x,0); c.lineTo(x+4,-58); c.lineTo(x+14,-58); c.lineTo(x+12,0); c.closePath(); c.fill(); c.stroke(); });
+  c.fillStyle='#c79d73'; c.beginPath(); c.moveTo(-84,-58); c.quadraticCurveTo(-88,-72,-74,-74); c.lineTo(76,-76); c.quadraticCurveTo(90,-72,84,-60); c.closePath(); c.fill(); c.stroke();
+  c.strokeStyle='rgba(126,90,61,.45)'; c.lineWidth=1.4; c.beginPath(); c.moveTo(-70,-66); c.quadraticCurveTo(0,-70,70,-68); c.stroke();
+  // のっている物：貝のおわん・海ガラスのびん
+  c.fillStyle='#fbe9e0'; c.strokeStyle='#e2b8a6'; c.lineWidth=1.5; c.beginPath(); c.ellipse(-36,-80,16,8,0,0,Math.PI); c.closePath(); c.fill(); c.stroke();
+  c.fillStyle='rgba(159,218,211,.85)'; c.strokeStyle='#6fb5ad'; c.beginPath(); c.roundRect ? c.roundRect(20,-104,20,28,6) : c.rect(20,-104,20,28); c.fill(); c.stroke();
+  c.fillStyle='#c79d73'; c.fillRect(24,-110,12,7);
+  c.fillStyle='#f6b37f'; c.beginPath(); c.arc(30,-88,3.5,0,TAU); c.fill(); c.fillStyle='#c99be8'; c.beginPath(); c.arc(27,-82,3,0,TAU); c.fill();
+  c.restore();
+}
+function drawKiln(c){
+  const s = scaleD(B_KILN.d), gy = floorY(B_KILN.d);
+  c.fillStyle='rgba(120,100,90,.14)'; c.beginPath(); c.ellipse(B_KILN.x,gy,70*s,10*s,0,0,TAU); c.fill();
+  c.save(); c.translate(B_KILN.x,gy); c.scale(s,s);
+  c.fillStyle='#f4dccb'; c.strokeStyle='#d3a98f'; c.lineWidth=2.2;
+  c.beginPath(); c.moveTo(-60,0); c.quadraticCurveTo(-64,-70,0,-84); c.quadraticCurveTo(64,-70,60,0); c.closePath(); c.fill(); c.stroke();
+  c.lineWidth=1.6; c.beginPath(); for(let i=-3;i<=3;i++){ c.moveTo(i*8,-80); c.quadraticCurveTo(i*15,-40,i*19,0); } c.stroke();
+  const fl = .75+.25*Math.sin(T*6)+.1*Math.sin(T*13);
+  c.fillStyle='#5b3d3a'; c.beginPath(); c.moveTo(-22,0); c.quadraticCurveTo(-22,-34,0,-36); c.quadraticCurveTo(22,-34,22,0); c.closePath(); c.fill();
+  c.fillStyle=`rgba(255,170,90,${.55*fl})`; c.beginPath(); c.ellipse(0,-10,15,12,0,0,TAU); c.fill();
+  c.fillStyle='#f6c1a2'; c.beginPath(); c.ellipse(0,-88,10,6,0,0,TAU); c.fill();
+  c.restore();
+  glows.push({x:B_KILN.x, y:gy-12*s, r:48*s, col:'255,170,90', a:(.18+.4*night)*fl});
+}
+function drawSign(c){
+  const s = scaleD(B_SIGN.d), gy = floorY(B_SIGN.d);
+  c.save(); c.translate(B_SIGN.x,gy); c.scale(s,s);
+  c.fillStyle='#a57d58'; c.fillRect(-3,-46,6,46);
+  c.fillStyle='#c79d73'; c.strokeStyle='#7e5a3d'; c.lineWidth=1.8; c.beginPath(); c.moveTo(-40,-70); c.lineTo(36,-72); c.lineTo(44,-58); c.lineTo(36,-44); c.lineTo(-40,-44); c.closePath(); c.fill(); c.stroke();
+  c.font='700 15px "Klee One", "Zen Maru Gothic", sans-serif'; c.textAlign='center'; c.textBaseline='middle'; c.fillStyle='#5a3e2a'; c.fillText('こうぼう',-1,-57);
+  c.restore();
+}
+function hitCopy(p){ return [...bCopies].filter(c=>!c.leaving).sort((a,b)=>b.d-a.d).find(u => { const s=scaleD(u.d), cx=u.x+u.dir*4*s, cy=floorY(u.d)-u.lift-26*s; const dx=(p.x-cx)/(64*s), dy=(p.y-cy)/(44*s); return dx*dx+dy*dy<=1; }); }
+function hitProp(p,o,rx,ry){ const s=scaleD(o.d), gy=floorY(o.d); return Math.abs(p.x-o.x)<rx*s && p.y<gy+8*s && p.y>gy-ry*s; }
+const B_PET_SAY = ['えへへ','もりたのしい','サンゴ きれい','♪','おさんぽちゅう'];
+function bTap(p){
+  ensureAudio();
+  const u = hitCopy(p);
+  if(u){ if(u.petCD<=0){ u.state='happy'; u.timer=1.6; u.petCD=.6; bHearts(u,2); sfx('pet'); if(Math.random()<.5) bSay(u, B_PET_SAY[Math.floor(Math.random()*B_PET_SAY.length)]); } return; }
+  if(hitProp(p,B_BENCH,95,120)){ sfx('place'); toast('さぎょうだい：もうすぐ ここで 家具が つくれるように なるよ'); return; }
+  if(hitProp(p,B_KILN,66,100)){ sfx('pop'); toast('かいがらがま：もうすぐ 使えるように なるよ'); return; }
+  if(hitProp(p,B_SIGN,44,76)){ toast('サンゴの森の こうぼう。おでかけした子が のんびり すごしているよ'); return; }
+  bAdd({type:'ring',x:p.x,y:p.y,vx:0,vy:0,r:6,life:.6,max:.6}); bBubbles(p.x,p.y,3); sfx('pop');
+}
+function drawAreaB(){
+  const c = ctx;
+  c.setTransform(dpr*k,0,0,dpr*k,0,0);
+  if(!bScn || bScn.H!==H || bScn.ft!==floorTop) buildSceneB();
+  glows = [];
+  const p = scenePalB(phase);
+  drawBgB(p);
+  const items = [];
+  bScn.front.forEach(co => items.push({y:floorY(co.d)-.02, f:() => { const s=scaleD(co.d); drawCoral(c,co,co.x,floorY(co.d)+4*s,s,co.col,.03);
+    if(night>.05) co.segs.forEach(sg => { if(sg[0]===sg[2] && sg[1]===sg[3]) glows.push({x:co.x+sg[0]*s, y:floorY(co.d)+4*s+sg[1]*s, r:14*s, col:'255,200,230', a:.22*night}); }); }}));
+  bScn.bits.forEach(b => items.push({y:floorY(b.d)-.03, f:() => drawBit(c,b)}));
+  items.push({y:floorY(B_SIGN.d)-.01, f:() => drawSign(c)});
+  items.push({y:floorY(B_BENCH.d)-.01, f:() => drawBench(c)});
+  items.push({y:floorY(B_KILN.d)-.01, f:() => drawKiln(c)});
+  bCopies.forEach(u => items.push({y:floorY(u.d)+.02, f:() => drawUmimiAt(c,u,u.x,floorY(u.d),scaleD(u.d),T,u.lift,{glows,marks:true})}));
+  items.sort((a,b)=>a.y-b.y).forEach(it=>it.f());
+  pB.forEach(pt => { if(pt.type==='say') return; c.globalAlpha = clamp(pt.life/pt.max*1.6,0,1);
+    if(pt.type==='bubble'){ c.strokeStyle='rgba(255,255,255,.8)'; c.lineWidth=1.4; c.beginPath(); c.arc(pt.x,pt.y,pt.r,0,TAU); c.stroke(); c.fillStyle='rgba(255,255,255,.7)'; c.beginPath(); c.arc(pt.x-pt.r*.35,pt.y-pt.r*.35,pt.r*.28,0,TAU); c.fill(); }
+    else if(pt.type==='heart'){ heartPath(c,pt.x,pt.y,pt.r); c.fillStyle='#f59ab4'; c.fill(); c.strokeStyle='#fff'; c.lineWidth=1.5; c.stroke(); }
+    else if(pt.type==='z'){ c.font=`600 ${Math.round(pt.r)}px "Klee One", sans-serif`; c.fillStyle= night>.5 ? '#d6dbff' : '#7fb4c9'; c.textAlign='center'; c.fillText('z',pt.x,pt.y); }
+    else if(pt.type==='spark'){ c.fillStyle='#ffe9a6'; sparkle(c,pt.x,pt.y,pt.r); }
+    else if(pt.type==='ring'){ c.strokeStyle='rgba(255,255,255,.8)'; c.lineWidth=2; c.beginPath(); c.ellipse(pt.x,pt.y,pt.r,pt.r*.45,0,0,TAU); c.stroke(); } });
+  c.globalAlpha = 1;
+  const veil = .2*night + .05*dusk;
+  if(veil > .005){ c.fillStyle = `rgba(14,26,58,${veil})`; c.fillRect(0,0,W,H); }
+  pB.forEach(pt => { if(pt.type!=='say') return; c.globalAlpha = clamp(pt.life/pt.max*1.6,0,1);
+    c.font=`600 ${Math.round(pt.r)}px "Klee One", "Zen Maru Gothic", sans-serif`; c.textAlign='center'; c.lineWidth=4; c.strokeStyle='rgba(255,255,255,.92)'; c.strokeText(pt.text,pt.x,pt.y); c.fillStyle='#3f5a74'; c.fillText(pt.text,pt.x,pt.y); });
+  c.globalAlpha = 1;
+  c.globalCompositeOperation = 'lighter';
+  glows.forEach(gl => { if(gl.a<=0) return; const g = c.createRadialGradient(gl.x,gl.y,0,gl.x,gl.y,gl.r); g.addColorStop(0,`rgba(${gl.col},${gl.a})`); g.addColorStop(1,`rgba(${gl.col},0)`); c.fillStyle=g; c.fillRect(gl.x-gl.r,gl.y-gl.r,gl.r*2,gl.r*2); });
+  if(night > .05) plankton.forEach(pl => { const a = night*(.35+.35*Math.sin(T*2+pl.ph)); const x = pl.x, y = 30+pl.y*(H-60);
+    const g = c.createRadialGradient(x,y,0,x,y,7); g.addColorStop(0,`rgba(170,240,230,${a})`); g.addColorStop(1,'rgba(170,240,230,0)'); c.fillStyle=g; c.fillRect(x-7,y-7,14,14); });
+  c.globalCompositeOperation = 'source-over';
+}
+// ---- エリアのきりかえ ----
+function areaUI(){ return !!document.querySelector('nav.tools') && !DESK_RING; }
+function buildAreaTabs(){
+  if(!areaUI() || $('areaTabs')) return;
+  const box = document.createElement('div'); box.className='areatabs'; box.id='areaTabs'; box.setAttribute('role','group'); box.setAttribute('aria-label','エリア');
+  box.innerHTML = AREAS.map(([k,n]) => `<button type="button" data-area="${k}"${k==='c'?' class="lock" title="まだ ひみつ"':''}>${n}</button>`).join('');
+  stage.append(box);
+  box.querySelectorAll('button').forEach(b => b.addEventListener('click', () => { ensureAudio();
+    if(b.dataset.area==='c'){ toast('この先は まだ ひみつの海。いつか いけるように なるよ'); return; }
+    setArea(b.dataset.area); }));
+  refreshAreaTabs();
+}
+function refreshAreaTabs(){
+  if(!areaUI()) S.area = 'a';
+  document.querySelectorAll('#areaTabs [data-area]').forEach(b => b.setAttribute('aria-pressed', b.dataset.area===S.area));
+  document.body.classList.toggle('areaB', S.area==='b');
+}
+function setArea(a){
+  if(a!=='b') a='a';
+  if(a===S.area) return;
+  S.area = a; closeCard(); drag = null; pB = [];
+  if(a==='b'){ const B = areaB();
+    if(!B.visited){ B.visited = true; const pick = liveUmi().slice(0,2); B.members = pick.map(u=>u.id);
+      pick.forEach(u => addMem(u,'はじめて サンゴの森に おでかけした',true));
+      setTimeout(() => toast(`${pick.map(u=>u.name).join('と')}が サンゴの森に おでかけしたよ`), 500); }
+    bCopies = []; syncB(); }
+  refreshAreaTabs(); renderTray(); save(); sfx('pop');
+}
+function toggleOuting(u){
+  const B = areaB(), on = B.members.includes(u.id);
+  if(on){ B.members = B.members.filter(id=>id!==u.id); const c = bCopies.find(x=>x.id===u.id && !x.leaving); if(c){ c.leaving=true; c.tx = c.x<420 ? 190 : 660; c.dir = c.tx<c.x?-1:1; } toast(`${u.name}は いつもの海に もどったよ`); }
+  else { if(B.members.length>=B_MAX){ toast(`おでかけできるのは ${B_MAX}ひきまで。だれかを もどしてあげてね`); return; }
+    B.members.push(u.id); bCopies.push(newCopy(u.id,true)); addMem(u,'はじめて サンゴの森に おでかけした',true); sfx('invite'); toast(`${u.name}が サンゴの森に おでかけしたよ`); }
+  save(); renderTray();
+}
+function renderTrayB(){
+  const tr = $('tray'); tr.innerHTML = ''; $('decorCats').hidden = true;
+  const B = areaB();
+  tr.insertAdjacentHTML('beforeend', `<div class="hintwrap bhint"><p class="hint"><b>サンゴの森</b>に おでかけする子を えらんでね（いつもの海にも ちゃんと いるよ）。<b>こうぼう</b>は もうすぐ 使えるように なるよ。</p><span class="count" style="align-self:flex-start">おでかけ ${B.members.length}/${B_MAX}</span></div>`);
+  liveUmi().forEach(u => {
+    const on = B.members.includes(u.id);
+    const b = document.createElement('button'); b.type='button'; b.className='item'; b.setAttribute('aria-pressed', on);
+    b.disabled = !on && B.members.length>=B_MAX;
+    const [c,x] = thumbCanvas(64,52); const fake = Object.assign(hydrateU({color:u.color,x:0,d:0}), {outfit:u.outfit, dir:-1, ph:0}); drawUmimiAt(x,fake,33,48,.46,.1,0,{});
+    b.append(c); b.insertAdjacentHTML('beforeend', `<span>${esc(u.name)}</span><span class="bst">${on?'おでかけ中':'つれていく'}</span>`);
+    b.addEventListener('click', () => toggleOuting(u)); tr.append(b);
+  });
+}
+
 let last = performance.now();
 function frame(now){ const dt=Math.min(.05,(now-last)/1000); last=now; T+=dt; update(dt); draw(); if(derby) updateDerby(dt); updateLesson(dt); updateRoom(dt); requestAnimationFrame(frame); }
 function awayDiary(){
@@ -3755,6 +4058,7 @@ function boot(data){
   S.umimi.forEach(hydrateU);
   resize();
   tPhase = targetPhase(); phase = tPhase; night = clamp(phase-1,0,1); dusk = clamp(1-Math.abs(phase-1),0,1);
+  buildAreaTabs(); refreshAreaTabs(); if(S.area==='b') syncB();
   refreshShards(); updateTimeBtn(); renderTray();
   soundLabel();
   const mins = saved && saved.last ? (Date.now()-saved.last)/60000 : 0;
