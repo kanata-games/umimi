@@ -11,7 +11,7 @@
 ## ★新しい会話で続けるとき（最初に読む）
 - 作業場所：このリポジトリを clone（例 /home/claude/umimi-repo）。本体は `source/game.html`、画像は直下の png
 - **本番・開発版のリンクは絶対に変えない**。Artifact を公開するときは必ず `url` に下の既存URLを渡す（url なしで公開すると別リンクが新しくできてしまう）。別の会話から更新する前に、いったん `action: "read"` でその URL を読む
-- 公開するとき、画像は `files` に**絶対パス**で全部渡す：`c_animal.png` `c_food.png` `c_season.png` `c_work.png` `c_fashion.png` `c_relax.png` `c_dream.png` `c_adv.png` `c_princess.png`、2コマ目の `c_<分類>2.png`（9枚）、`umimi-sprites.png` `visitors.png` `roomtex.png` `f_base.png` `f_pearl.png` `f_autumn.png` `f_halloween.png`。capability は `downloads`（前のバージョンから引き継がれる）
+- 公開するとき、画像は `files` に**絶対パス**で全部渡す：`c_animal.png` `c_food.png` `c_season.png` `c_work.png` `c_fashion.png` `c_relax.png` `c_dream.png` `c_adv.png` `c_princess.png`、2コマ目の `c_<分類>2.png`（9枚）、`umimi-sprites.png` `visitors.png` `roomtex.png` `f_base.png` `f_pearl.png` `f_autumn.png` `f_halloween.png` `f_craft.png`。capability は `downloads`（前のバージョンから引き継がれる）
 - 開発版は `<title>ウミミの箱庭</title>` を `<title>ウミミの箱庭 開発版</title>` に置き換えたものを公開する
 - 確認用：ローカルで `python3 -m http.server` を立て、`<!doctype html><meta charset=utf-8>` を先頭に付けた試験用コピーを Playwright（/opt/pw-browsers）で開く。本体は IIFE なので、試すときは試験用コピーにだけ window.__xxx のフックを足す
 - 公開するときは「開発版か本番か」を必ずユーザーに伝える。本番は OK が出てから
@@ -61,7 +61,7 @@
   - うさぎのきぐるみは10コマ分（ふつうのウミミと同じ並び）が届いているので、将来アニメに使える
   - ウミミの色に合わせた色変え：`recolorSheet()`。色を変えない衣装は `COS_KEEP`。チョコとマントはコードで描いている
 - `visitors.png` … 訪問者10種×2コマ。作り直すときは `source/visitors/build_visitors.py`。出力された visitors_meta.json を game.html の `const VIS_SPR = {...}` に貼る。絵がまだ読み込まれていないときは、コードで描いた旧訪問者を表示する
-- `f_base.png` `f_pearl.png` `f_autumn.png` `f_halloween.png` … 家具・飾りのシリーズ別シート（ピッちゃん=ChatGPT作の絵を背景抜き・色数圧縮）。**使うときだけ読み込む**（`fsheet()`）。作り直しは `source/furniture/build_furniture2.py`（SERIES に「キー:(おへや幅, 水そう幅[, コマ数, 基準])」を足す）→ 出力 furniture_meta.json を game.html の `const FIMG = {m:...}` に貼る（jbox/chandelier は _0 のエイリアスも）
+- `f_base.png` `f_pearl.png` `f_autumn.png` `f_halloween.png` `f_craft.png` … 家具・飾りのシリーズ別シート（ピッちゃん=ChatGPT作の絵を背景抜き・色数圧縮）。**使うときだけ読み込む**（`fsheet()`）。作り直しは `source/furniture/build_furniture2.py`（SERIES に「キー:(おへや幅, 水そう幅[, コマ数, 基準])」を足す）→ 出力 furniture_meta.json を game.html の `const FIMG = {m:...}` に貼る。`python3 build_furniture2.py craft` のようにシリーズ名を渡すと、そのシートだけ作り直す（他のシートの meta は残す）（jbox/chandelier は _0 のエイリアスも）
 - `roomtex.png` … おへやの壁紙・床の模様タイル4枚（`source/furniture/build_tex.py`）
 - デスクトップ版の「画面一周ダービー」：水そうの「ダービー」ボタン → main.js が作業領域いっぱいの透明ウインドウを `index.html#derby` で開く（`DESK_RING`）。予想の画面は真ん中、スタートするとクリックが下のアプリに通る。5匹は画面のいちばん外側を1列で一周（左下がスタート・ゴール、水そうの上も通る）。名前は出さず、賭けた子が金色に光る。閉じると水そうが読み込み直して結果を反映（開いているあいだは水そう側は保存しない `window.__noSave`）。Esc で閉じる
 - `desktop/` … Windows デスクトップ版（Electron）。`python3 build_desktop.py` で、game.html から画面の下に出る細長い水そう版の `desktop/app/index.html` を作る（ウミミ・訪問者・おきがえ c_*.png は data URI で埋め込む＝色変えのため。家具 f_*.png と roomtex.png は app に png をコピー。どこから実行してもよい。index.html から作るので、先に index.html を作り直す。置き換える文字列が合わないと assert で止まるので、本体を変えたら置き換え側も直す）
@@ -80,7 +80,7 @@
   - 森で「？」になった子が ときどき「みっけ！」と その場に落とす
   - トレイに所持数（`#matRow`）。最初に森へ行くと そざいが3こ 落ちている
 - こうぼう（ステップ3）：森の さぎょうだいを タップ → パネル `#craftp`（JS で作る。`buildCraftPanel()`）。レシピは `RECIPES` の5種（流木のベンチ／貝がらランプ／流木のミニテーブル／サンゴのうえきばち／海ガラスのモビール。ピッちゃん案）
-  - てづくり家具は `DECOR` の `craft:1`（絵は `drawCraft()`、コードで描く。1.25倍）。`FINE_RATE`=15% で「きれいにできた」版＝キー`_f`（貝が1こ多い等、みためだけ）。もちものは `S.crafted`、つくった回数 `S.craftN`
+  - てづくり家具は `DECOR` の `craft:1`。絵はピッちゃん作の `f_craft.png`（ふつう5＋きれい5、こうぼうの作業台 bwork・看板 bsign・貝殻窯 bkiln もこのシート）。シートが読み込まれるまでは `drawCraft()` のコードの絵で代わりに描く。モビールは吊るす物なので、流木の柱をコードで描いて つるしている。`FINE_RATE`=15% で「きれいにできた」版＝キー`_f`（貝が1こ多い等、みためだけ）。もちものは `S.crafted`、つくった回数 `S.craftN`
   - 置き場所：いつもの海の「かざる」→「てづくり」タブ（もちものが あるときだけ出る）。置くと1つへり、しまうと もどる（かけらは使わない）。ミニテーブルは `SURF` なので小物がのる
   - 方針：ふつうの家具＝完成品／てづくり＝そざい感のある手作り／将来のプレミア家具＝専用アニメ・特別な反応
 - 次の予定：④作った家具を森やおへやにも置く・ウミミがベンチに座る など → ⑤畑 → ⑥C エリア
