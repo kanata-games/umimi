@@ -397,9 +397,9 @@ button:focus-visible,input:focus-visible{outline:2.5px solid var(--peri-deep);ou
       <button class="x" id="saveClose" type="button" aria-label="とじる">×</button>
       <h2 id="saveTitle">ひきつぎコード</h2>
       <p class="csub">いまのデータを コードにして とっておけます。べつの端末で読み込むと、同じ水そうの つづきから あそべます。</p>
-      <div class="srow"><button class="sbtn" id="exportBtn" type="button">いまのデータを書き出す</button><button class="sbtn ghost" id="copyBtn" type="button" hidden>コピー</button></div>
+      <div class="srow"><button class="sbtn" id="exportBtn" type="button">みじかいコードで書き出す</button><button class="sbtn ghost" id="exportPlainBtn" type="button">ふつうのコード</button><button class="sbtn ghost" id="copyBtn" type="button" hidden>コピー</button></div>
       <label class="lbl" for="codeOut">書き出したコード</label>
-      <textarea id="codeOut" rows="3" readonly placeholder="「いまのデータを書き出す」を押すと、ここにコードが出ます"></textarea>
+      <textarea id="codeOut" rows="3" readonly placeholder="書き出すと、ここにコードが出ます（読み込みは どちらのコードでも OK）"></textarea>
       <label class="lbl" for="codeIn">コードを読み込む</label>
       <textarea id="codeIn" rows="3" placeholder="ここに ひきつぎコードを貼りつけ"></textarea>
       <div class="srow"><button class="sbtn" id="importBtn" type="button">読み込む</button></div>
@@ -2331,9 +2331,19 @@ $('stDiscard').addEventListener('click',()=>{ const b=$('stDiscard'); if(b.datas
 function b64enc(str){ const bytes=new TextEncoder().encode(str); let bin=''; for(let i=0;i<bytes.length;i+=8192) bin+=String.fromCharCode.apply(null,bytes.subarray(i,i+8192)); return btoa(bin); }
 function b64dec(b){ const bin=atob(b); const bytes=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++) bytes[i]=bin.charCodeAt(i); return new TextDecoder().decode(bytes); }
 function makeCode(){ return 'UMIMI1-' + b64enc(JSON.stringify(serialize())); }
-function readCode(code){
-  code=(code||'').replace(/\s+/g,''); if(!code.startsWith('UMIMI1-')) throw new Error('head');
-  const d=JSON.parse(b64dec(code.slice(7)));
+// みじかいコード UMIMI2- ＝ 圧縮（deflate-raw）してから base64。古い UMIMI1- もそのまま読める
+const CAN_ZIP = typeof CompressionStream==='function' && typeof DecompressionStream==='function';
+async function zipB64(str){ const cs=new CompressionStream('deflate-raw'); const w=cs.writable.getWriter(); w.write(new TextEncoder().encode(str)).catch(()=>{}); w.close().catch(()=>{});
+  const bytes=new Uint8Array(await new Response(cs.readable).arrayBuffer()); let bin=''; for(let i=0;i<bytes.length;i+=8192) bin+=String.fromCharCode.apply(null,bytes.subarray(i,i+8192)); return btoa(bin); }
+async function unzipB64(b){ const bin=atob(b); const bytes=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++) bytes[i]=bin.charCodeAt(i);
+  const ds=new DecompressionStream('deflate-raw'); const w=ds.writable.getWriter(); w.write(bytes).catch(()=>{}); w.close().catch(()=>{}); return await new Response(ds.readable).text(); }
+async function makeShortCode(){ if(!CAN_ZIP) return null; try{ return 'UMIMI2-' + await zipB64(JSON.stringify(serialize())); }catch(e){ return null; } }
+async function readCode(code){
+  code=(code||'').replace(/\s+/g,''); let txt;
+  if(code.startsWith('UMIMI2-')){ if(!CAN_ZIP) throw new Error('zip'); txt=await unzipB64(code.slice(7)); }
+  else if(code.startsWith('UMIMI1-')) txt=b64dec(code.slice(7));
+  else throw new Error('head');
+  const d=JSON.parse(txt);
   if(!d || !Array.isArray(d.umimi) || !d.umimi.length) throw new Error('body');
   return d;
 }
@@ -2369,21 +2379,23 @@ function bkNag(){   // しばらく外にバックアップしていないとき
 }
 $('saveBtn').addEventListener('click', () => { if(!$('savep').hidden){ $('savep').hidden=true; return; } openSave(); });
 $('saveClose').addEventListener('click', () => { $('savep').hidden=true; });
-$('exportBtn').addEventListener('click', () => { const c=makeCode(); S.lastExport=Date.now(); save(); $('codeOut').value=c; $('copyBtn').hidden=false; const d=new Date(); toast(`${d.getMonth()+1}/${d.getDate()} ${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')} の データを書き出したよ`); });
+function showCode(c, kind){ $('codeOut').value=c; $('copyBtn').hidden=false; S.lastExport=Date.now(); save(); const d=new Date(); toast(`${d.getMonth()+1}/${d.getDate()} ${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')} の データを ${kind}（${c.length.toLocaleString()}文字）で 書き出したよ`); }
+$('exportBtn').addEventListener('click', async () => { const c=await makeShortCode(); if(c) showCode(c,'みじかいコード'); else { showCode(makeCode(),'ふつうのコード'); } });
+$('exportPlainBtn').addEventListener('click', () => showCode(makeCode(),'ふつうのコード'));
 $('copyBtn').addEventListener('click', () => { const ta=$('codeOut'); const done=()=>toast('コピーしたよ');
   const fb=()=>{ ta.focus(); ta.select(); toast('選択したので、長押しかCtrl+Cでコピーしてね'); };
   try{ navigator.clipboard.writeText(ta.value).then(done,fb); }catch(e){ fb(); } });
-$('importBtn').addEventListener('click', () => {
-  try{ pendingImport = readCode($('codeIn').value); }
-  catch(e){ pendingImport=null; toast('コードが読めませんでした。さいごまで ぜんぶ貼りつけてあるか 確かめてね'); return; }
+$('importBtn').addEventListener('click', async () => {
+  try{ pendingImport = await readCode($('codeIn').value); }
+  catch(e){ pendingImport=null; toast(e && e.message==='zip' ? 'このブラウザでは みじかいコードが読めません。ふつうのコードで 書き出してね' : 'コードが読めませんでした。さいごまで ぜんぶ貼りつけてあるか 確かめてね'); return; }
   askImport(pendingImport, 'コード');
 });
 $('importNo').addEventListener('click', () => { pendingImport=null; $('importConfirm').hidden=true; });
 $('fileSaveBtn').addEventListener('click', saveBackupFile);
 $('fileLoadBtn').addEventListener('click', () => $('fileIn').click());
 $('fileIn').addEventListener('change', () => { const f=$('fileIn').files[0]; $('fileIn').value=''; if(!f) return;
-  const r=new FileReader(); r.onload=()=>{ const m=String(r.result||'').match(/UMIMI1-[A-Za-z0-9+\/=\s]+/);
-    try{ askImport(readCode(m?m[0]:''), 'ファイルのデータ'); }catch(e){ toast('このファイルからは 読めませんでした'); } };
+  const r=new FileReader(); r.onload=async ()=>{ const m=String(r.result||'').match(/UMIMI[12]-[A-Za-z0-9+\/=\s]+/);
+    try{ askImport(await readCode(m?m[0]:''), 'ファイルのデータ'); }catch(e){ toast('このファイルからは 読めませんでした'); } };
   r.readAsText(f); });
 $('importYes').addEventListener('click', () => { if(!pendingImport) return; takeBackup(null,true); applySave(pendingImport); pendingImport=null; $('importConfirm').hidden=true; $('codeIn').value=''; $('savep').hidden=true; toast('読み込んだよ。つづきから あそべます'); sfx('invite'); });
 function normalizeState(){
