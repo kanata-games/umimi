@@ -309,6 +309,20 @@ body.areaB .tools, body.areaB #decorCats{display:none!important}
 .mats span{display:inline-flex;align-items:center;gap:2px;white-space:nowrap}
 .mats b{color:var(--ink)}
 .mats canvas{width:22px;height:22px}
+.clist{display:grid;gap:8px}
+.crow{display:flex;gap:10px;align-items:center;background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:8px 10px}
+.crow.fine{border-color:#f3d27a;box-shadow:0 0 0 2px #fbe7a8;background:#fffcf0}
+.crow>canvas{width:72px;height:64px;flex:none}
+.ci{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}
+.ci b{color:#5b64b8;font-size:14.5px}
+.ci>span{font-size:12px;color:var(--ink2)}
+.cneed{display:flex;flex-wrap:wrap;gap:2px 10px;font-size:12.5px;color:var(--ink)}
+.cneed span{display:inline-flex;align-items:center;gap:2px;white-space:nowrap}
+.cneed canvas{width:18px;height:18px}
+.cneed small{color:var(--ink2)}
+.cneed .short{color:#c0607e}
+.ci .cown{font-size:11.5px;color:#a0701a}
+@media (max-width:520px){ .crow{flex-wrap:wrap} .crow .dbtn{margin-left:auto} }
 .item .bst{font-size:11px;font-weight:700;color:var(--ink2)}
 .item[aria-pressed="true"] .bst{color:var(--peri-deep)}
 @media (max-width:520px){ .areatabs{left:6px;top:6px} .areatabs button{font-size:12px;padding:4px 8px} }
@@ -513,6 +527,12 @@ const DECOR = {
   rosette:{name:'ゆうしょうロゼット',cost:1, r:22, h:44, gift:true},
   goalflag:{name:'ゴールフラッグ',cost:1, r:26, h:70, gift:true},
   podium:{name:'ひょうしょうだい',cost:3, r:52, h:34, gift:true},
+  // てづくり（サンゴの森の こうぼうで つくる。_f は きれいに できた版）
+  cbench:{name:'流木の 小さなベンチ',cost:0, r:55, h:35, craft:1}, cbench_f:{name:'きれいな 流木のベンチ',cost:0, r:55, h:35, craft:1},
+  cshelllamp:{name:'貝がらランプ',cost:0, r:30, h:72, craft:1}, cshelllamp_f:{name:'きれいな 貝がらランプ',cost:0, r:30, h:72, craft:1},
+  ctable:{name:'流木の ミニテーブル',cost:0, r:45, h:50, craft:1}, ctable_f:{name:'きれいな 流木テーブル',cost:0, r:45, h:50, craft:1},
+  ccoralpot:{name:'サンゴの うえきばち',cost:0, r:25, h:58, craft:1}, ccoralpot_f:{name:'きれいな サンゴのはち',cost:0, r:25, h:58, craft:1},
+  cmobile:{name:'海ガラスの モビール',cost:0, r:40, h:115, craft:1}, cmobile_f:{name:'きれいな 海ガラスモビール',cost:0, r:40, h:115, craft:1},
 };
 const COS = {"cw": 240, "ch": 208, "cols": 4, "s": 0.8, "ex": 130, "ey": 165, "m": {"bear": {"g": 220.0, "lid": "#fdfdff", "le": [-39.0, -4.2], "s": "animal", "i": 0}, "space": {"g": 230.0, "lid": "#fdfdff", "le": [-39.0, -2.1], "s": "dream", "i": 1}, "explorer": {"g": 221.2, "lid": "#fdfdff", "le": [-39.0, -3.8], "s": "work", "i": 0}, "newyear": {"g": 227.5, "lid": "#fdfdff", "le": [-39.0, -3.0], "s": "season", "i": 10}, "witch": {"g": 216.2, "lid": "#ede3fc", "le": [-39.0, -3.3], "s": "season", "i": 8}, "santa": {"g": 213.8, "lid": "#fdfdff", "le": [-39.0, -3.7], "s": "season", "i": 9}, "yukata": {"g": 217.5, "lid": "#fdfdff", "le": [-39.0, -3.7], "s": "season", "i": 2}, "knit": {"g": 238.8, "lid": "#fdfdff", "le": [-39.0, -3.2], "s": "fashion", "i": 4}, "hoodie": {"g": 230.0, "lid": "#fcfdff", "le": [-35.9, -2.9], "s": "fashion", "i": 5}, "miko": {"g": 228.8, "lid": "#fcfdff", "le": [-39.0, -2.4], "s": "work", "i": 5}, "idol": {"g": 233.8, "lid": "#fcfdfe", "le": [-39.0, -3.1], "s": "work", "i": 6}, "maid": {"g": 188.8, "lid": "#ded9f6", "le": [-47.6, -6.3], "s": "work", "i": 7}, "gothic": {"g": 225.0, "lid": "#2f2c42", "le": [-39.0, -2.4], "s": "fashion", "i": 6}, "sakura": {"g": 220.0, "lid": "#fdecf4", "le": [-39.0, -3.0], "s": "season", "i": 0}, "blueberry": {"g": 215.0, "lid": "#6658d1", "le": [-39.0, -3.2], "s": "food", "i": 3}, "lemon": {"g": 215.0, "lid": "#fbf9c1", "le": [-39.0, -4.1], "s": "food", "i": 1}, "strawberry": {"g": 217.5, "lid": "#fef8fc", "le": [-39.0, -3.7], "s": "food", "i": 0}, "chick": {"g": 216.2, "lid": "#fdfdff", "le": [-39.0, -3.8], "s": "animal", "i": 1}, "dog": {"g": 215.0, "lid": "#fdfdff", "le": [-39.0, -3.1], "s": "animal", "i": 2}, "mango": {"g": 213.8, "lid": "#fbb910", "le": [-39.0, -4.3], "s": "food", "i": 4}, "raincoat": {"g": 223.8, "lid": "#fdfdfd", "le": [-39.0, -3.0], "s": "relax", "i": 3}, "matcha": {"g": 216.2, "lid": "#9ed543", "le": [-39.0, -2.9], "s": "food", "i": 2}, "chef": {"g": 218.8, "lid": "#fdfdff", "le": [-39.0, -4.6], "s": "work", "i": 1}, "musician": {"g": 226.2, "lid": "#fdfdff", "le": [-39.0, -5.0], "s": "work", "i": 3}, "nurse": {"g": 216.2, "lid": "#fbfcff", "le": [-39.0, -3.0], "s": "work", "i": 2}, "camping": {"g": 232.5, "lid": "#fdfdff", "le": [-35.9, -4.1], "s": "relax", "i": 2}, "pajama": {"g": 225.0, "lid": "#fdfdff", "le": [-39.0, -3.6], "s": "relax", "i": 0}, "ghostmaid": {"g": 226.2, "lid": "#fdfbff", "le": [-35.9, -3.8], "s": "dream", "i": 4}, "constellation": {"g": 216.2, "lid": "#fdfdff", "le": [-39.0, -3.8], "s": "dream", "i": 0}, "asagao": {"g": 227.5, "lid": "#fdfdff", "le": [-34.3, -2.8], "s": "season", "i": 4}, "grape": {"g": 217.5, "lid": "#fdfdff", "le": [-39.0, -3.2], "s": "food", "i": 5}, "higanbana": {"g": 216.2, "lid": "#fdfdff", "le": [-39.0, -3.7], "s": "season", "i": 5}, "momiji": {"g": 216.2, "lid": "#fdfdff", "le": [-39.0, -3.5], "s": "season", "i": 7}, "randoseru": {"g": 221.2, "lid": "#fdfdff", "le": [-39.0, -4.0], "s": "season", "i": 1}, "goldfish": {"g": 223.8, "lid": "#fdfdff", "le": [-35.9, -3.5], "s": "season", "i": 3}, "angel": {"g": 218.8, "lid": "#fdfdff", "le": [-39.0, -3.4], "s": "dream", "i": 2}, "jugoya": {"g": 226.2, "lid": "#fcfdff", "le": [-31.2, -2.3], "s": "season", "i": 6}, "devil": {"g": 216.2, "lid": "#fdfdff", "le": [-39.0, -1.1], "s": "dream", "i": 3}, "crown": {"g": 220.0, "lid": "#fdfdff", "le": [-39.0, -3.5], "s": "fashion", "i": 2}, "flower": {"g": 215.0, "lid": "#fdfdff", "le": [-39.0, -3.5], "s": "fashion", "i": 1}, "cat": {"g": 217.5, "lid": "#fcfdff", "le": [-39.0, -3.2], "s": "animal", "i": 3}, "sailor": {"g": 221.2, "lid": "#fdfdff", "le": [-39.0, -3.4], "s": "fashion", "i": 3}, "rabbit": {"g": 217.5, "lid": "#fdfdff", "le": [-39.0, -2.7], "s": "animal", "i": 4}, "ribbon": {"g": 217.5, "lid": "#fcfdff", "le": [-39.0, -3.7], "s": "fashion", "i": 0}, "delivery": {"g": 215.0, "lid": "#fdfdff", "le": [-39.0, -3.2], "s": "work", "i": 4}, "bath": {"g": 238.8, "lid": "#fdfdff", "le": [-35.1, -3.5], "s": "relax", "i": 1}, "kinoko": {"ne": 1, "g": 245.0, "lid": "#ed584c", "le": [-39.0, 0.0], "s": "relax", "i": 4, "f2": 1}, "dragonarmor": {"ne": 1, "g": 245.0, "lid": "#a54459", "le": [-39.0, 0.0], "s": "adv", "i": 7, "f2": 1}, "mummy": {"ne": 1, "g": 246.2, "lid": "#f4d9ce", "le": [-39.0, 0.0], "s": "season", "i": 16, "f2": 1}, "diver": {"ne": 1, "g": 246.2, "lid": "#b56e68", "le": [-39.0, 0.0], "s": "work", "i": 10, "f2": 1}, "pumpkin": {"ne": 1, "g": 245.0, "lid": "#faa625", "le": [-39.0, 0.0], "s": "season", "i": 13, "f2": 1}, "knight": {"ne": 1, "g": 246.2, "lid": "#c29a63", "le": [-39.0, 0.0], "s": "adv", "i": 0, "f2": 1}, "obake": {"ne": 1, "g": 245.0, "lid": "#fefefd", "le": [-39.0, 0.0], "s": "season", "i": 15, "f2": 1}, "mahouhood": {"ne": 1, "g": 245.0, "lid": "#6b579a", "le": [-39.0, 0.0], "s": "adv", "i": 5, "f2": 1}, "hibiscus": {"g": 246.2, "lid": "#fefefd", "le": [-39.0, -4.2], "s": "season", "i": 12, "f2": 1}, "pumpkinhood": {"g": 222.5, "lid": "#fefefd", "le": [-39.0, -4.8], "s": "season", "i": 14}, "mintdress": {"g": 251.2, "lid": "#fefefd", "le": [-39.0, -2.7], "s": "princess", "i": 4, "f2": 1}, "forest": {"g": 243.8, "lid": "#fefefd", "le": [-39.0, -4.8], "s": "relax", "i": 5, "f2": 1}, "clover": {"g": 257.5, "lid": "#fefefd", "le": [-39.0, -3.5], "s": "princess", "i": 5, "f2": 1}, "ranger": {"g": 252.5, "lid": "#fefefd", "le": [-39.0, -3.5], "s": "adv", "i": 2, "f2": 1}, "darkwitch": {"g": 253.8, "lid": "#fefefd", "le": [-39.0, -4.2], "s": "adv", "i": 6, "f2": 1}, "dragonknight": {"g": 253.8, "lid": "#fefdfd", "le": [-39.0, -3.5], "s": "adv", "i": 8, "f2": 1}, "pinkprincess": {"g": 231.2, "lid": "#fefefe", "le": [-39.0, -4.2], "s": "princess", "i": 0, "f2": 1}, "wizard": {"g": 235.0, "lid": "#fefefe", "le": [-39.0, -4.3], "s": "adv", "i": 3, "f2": 1}, "saint": {"g": 243.8, "lid": "#fefefe", "le": [-39.0, -3.5], "s": "princess", "i": 6, "f2": 1}, "hero": {"g": 240.0, "lid": "#fefefd", "le": [-39.0, -4.3], "s": "adv", "i": 1, "f2": 1}, "sakuradress": {"g": 228.8, "lid": "#fefefe", "le": [-39.0, -4.6], "s": "season", "i": 11, "f2": 1}, "marine": {"g": 230.0, "lid": "#fefefe", "le": [-39.0, -4.6], "s": "fashion", "i": 7, "f2": 1}, "starwizard": {"g": 233.8, "lid": "#fefefd", "le": [-39.0, -4.5], "s": "adv", "i": 4, "f2": 1}, "snow": {"g": 232.5, "lid": "#fefefd", "le": [-39.0, -4.6], "s": "season", "i": 17, "f2": 1}, "ume": {"g": 235.0, "lid": "#fefefd", "le": [-39.0, -5.7], "s": "season", "i": 18, "f2": 1}, "painter": {"g": 228.8, "lid": "#fefefd", "le": [-39.0, -5.1], "s": "work", "i": 8, "f2": 1}, "circus": {"g": 197.5, "lid": "#cd6b6f", "le": [-39.0, 1.3], "s": "work", "i": 9, "f2": 1}, "angel3": {"g": 240.0, "lid": "#fefefd", "le": [-39.0, -5.0], "s": "dream", "i": 5, "f2": 1}, "harugi": {"g": 228.8, "lid": "#fefefd", "le": [-39.0, -5.0], "s": "season", "i": 19, "f2": 1}, "headphone": {"g": 228.8, "lid": "#fefefe", "le": [-39.0, -5.7], "s": "fashion", "i": 9, "f2": 1}, "alice": {"g": 235.0, "lid": "#fdfdfc", "le": [-39.0, -6.4], "s": "fashion", "i": 10, "f2": 1}, "prince": {"g": 226.2, "lid": "#fefefe", "le": [-39.0, -6.2], "s": "princess", "i": 3, "f2": 1}, "sumire": {"g": 222.5, "lid": "#fefefe", "le": [-39.0, -4.4], "s": "princess", "i": 1, "f2": 1}, "marine2": {"g": 222.5, "lid": "#fefefe", "le": [-39.0, -5.0], "s": "fashion", "i": 8, "f2": 1}, "ichigocake": {"g": 227.5, "lid": "#fefefe", "le": [-39.0, -3.7], "s": "food", "i": 6, "f2": 1}, "patchwork": {"g": 227.5, "lid": "#fefefd", "le": [-39.0, -4.5], "s": "fashion", "i": 11, "f2": 1}, "queen": {"g": 243.8, "lid": "#fefefe", "le": [-39.0, -5.0], "s": "princess", "i": 2, "f2": 1}, "sweets": {"g": 252.5, "lid": "#fefefe", "le": [-39.0, -4.3], "s": "food", "i": 7, "f2": 1}, "toy": {"g": 250.0, "lid": "#fefefd", "le": [-39.0, -4.3], "s": "fashion", "i": 12, "f2": 1}, "teahat": {"g": 240.0, "lid": "#fefefd", "le": [-39.0, -3.6], "s": "food", "i": 8, "f2": 1}, "detective": {"g": 238.8, "lid": "#fefefe", "le": [-39.0, -3.6], "s": "work", "i": 11, "f2": 1}, "cyber": {"g": 238.8, "lid": "#fefefd", "le": [-39.0, -4.3], "s": "fashion", "i": 13, "f2": 1}, "starangel": {"g": 240.0, "lid": "#fefefd", "le": [-39.0, -4.2], "s": "dream", "i": 6, "f2": 1}, "tiara": {"g": 237.5, "lid": "#fefefd", "le": [-39.0, -3.7], "s": "princess", "i": 7, "f2": 1}, "strawdress": {"g": 238.8, "lid": "#fefefe", "le": [-39.0, -3.7], "s": "food", "i": 9, "f2": 1}, "blackmaid": {"g": 238.8, "lid": "#fefefe", "le": [-39.0, -3.7], "s": "fashion", "i": 14, "f2": 1}, "planet": {"g": 238.8, "lid": "#fefefe", "le": [-39.0, -4.4], "s": "dream", "i": 7, "f2": 1}, "akiha": {"g": 231.2, "lid": "#fefefe", "le": [-39.0, -3.5], "s": "season", "i": 20, "f2": 1}, "candy": {"g": 235.0, "lid": "#fefefe", "le": [-39.0, -4.2], "s": "food", "i": 10, "f2": 1}, "yozora": {"g": 232.5, "lid": "#fefefd", "le": [-39.0, -3.5], "s": "dream", "i": 8, "f2": 1}, "fox": {"g": 236.2, "lid": "#fefefe", "le": [-39.0, -2.7], "s": "animal", "i": 6, "f2": 1}, "candycorn": {"g": 222.5, "lid": "#fefefe", "le": [-39.0, -4.8], "s": "season", "i": 22}, "spider": {"g": 225.0, "lid": "#fefefe", "le": [-39.0, -4.0], "s": "season", "i": 23, "f2": 1}, "scarecrow": {"g": 226.2, "lid": "#fefefe", "le": [-39.0, -4.8], "s": "season", "i": 21}, "hbunny": {"g": 221.2, "lid": "#fefefe", "le": [-39.0, -5.9], "s": "season", "i": 24}, "mummyhood": {"g": 221.2, "lid": "#fefdfd", "le": [-39.0, -4.7], "s": "season", "i": 25}, "blackcat": {"g": 227.5, "lid": "#fefefd", "le": [-39.0, -4.8], "s": "season", "i": 26, "f2": 1}, "bat": {"g": 227.5, "lid": "#fefefd", "le": [-39.0, -4.1], "s": "season", "i": 27, "f2": 1}, "usagihood": {"g": 217.5, "lid": "#fefefd", "le": [-39.0, -5.8], "s": "animal", "i": 5, "f2": 1}, "bard": {"g": 243.8, "lid": "#fefefe", "le": [-39.0, -2.2], "s": "work", "i": 12, "f2": 1}, "thief": {"g": 247.5, "lid": "#fefefd", "le": [-39.0, -4.3], "s": "adv", "i": 9, "f2": 1}, "flameknight": {"g": 247.5, "lid": "#fefdfd", "le": [-39.0, -4.3], "s": "adv", "i": 10, "f2": 1}, "sakuraangel": {"g": 247.5, "lid": "#fefefd", "le": [-39.0, -3.5], "s": "season", "i": 28, "f2": 1}, "starsailor": {"g": 246.2, "lid": "#fefefd", "le": [-39.0, -4.3], "s": "dream", "i": 9, "f2": 1}, "leafdress": {"g": 253.8, "lid": "#fdfdfd", "le": [-39.0, -4.3], "s": "relax", "i": 6, "f2": 1}, "nightwitch": {"g": 250.0, "lid": "#fefdfc", "le": [-39.0, -4.3], "s": "adv", "i": 11, "f2": 1}, "lion": {"g": 243.8, "lid": "#fefefd", "le": [-39.0, -4.2], "s": "animal", "i": 7, "f2": 1}, "panda": {"g": 247.5, "lid": "#fefefd", "le": [-39.0, -1.4], "s": "animal", "i": 8, "f2": 1}, "giraffe": {"g": 237.5, "lid": "#fefdfd", "le": [-36.7, -3.9], "s": "animal", "i": 9, "f2": 1}, "penguin": {"g": 243.8, "lid": "#fefefd", "le": [-39.0, -4.2], "s": "animal", "i": 10, "f2": 1}, "elephant": {"g": 242.5, "lid": "#fefdfd", "le": [-39.0, -4.8], "s": "animal", "i": 11, "f2": 1}, "zebra": {"g": 247.5, "lid": "#fefdfd", "le": [-39.0, -5.0], "s": "animal", "i": 12, "f2": 1}, "monkey": {"g": 251.2, "lid": "#fefefd", "le": [-39.0, -4.9], "s": "animal", "i": 13, "f2": 1}, "flamingo": {"g": 255.0, "lid": "#fefefd", "le": [-39.0, -5.6], "s": "animal", "i": 14, "f2": 1}}};
 const OUTFITS = {
@@ -634,7 +654,7 @@ function serialize(){
     umimi:S.umimi.map(u=>({id:u.id,name:u.name,color:u.color,x:Math.round(u.x),d:+u.d.toFixed(3),aff:u.aff,outfit:u.outfit,lvSeen:u.lvSeen,pers:u.pers,born:u.born,pets:u.pets,feeds:u.feeds,worn:u.worn,mem:u.mem,ann:u.ann,wins:u.wins||0,druns:u.druns||0,dbest:u.dbest||0,tricks:u.tricks,learned:u.learned,lessonDay:u.lessonDay,room:u.room})),
     past:S.past,
     closet:S.closet, closetNew:S.closetNew, pets:S.pets, days:S.days, feeds:S.feeds, starsCaught:S.starsCaught, metVisitors:S.metVisitors,
-    diary:S.diary.slice(0,60), day:S.day, visitorDay:S.visitorDay, visitLog:S.visitLog, nextVisit:S.nextVisit, curVisit:S.curVisit, lastVisitor:S.lastVisitor, unlocked:S.unlocked, diaryNew:S.diaryNew, myBday:S.myBday, lastExport:S.lastExport||0, bkNagAt:S.bkNagAt||0, evSeen:S.evSeen, derby:S.derby, furn:S.furn, omikujiDay:S.omikujiDay, wishes:S.wishes, presentYear:S.presentYear, trickDay:S.trickDay, area:S.area==='b'?'b':'a', areaB:S.areaB, mats:S.mats, matFirst:S.matFirst, bDrops:(S.bDrops||[]).map(o=>({k:o.k,x:o.x,d:o.d})), profileOnTap:S.profileOnTap, bdayBlown:S.bdayBlown, bdayDiary:S.bdayDiary,
+    diary:S.diary.slice(0,60), day:S.day, visitorDay:S.visitorDay, visitLog:S.visitLog, nextVisit:S.nextVisit, curVisit:S.curVisit, lastVisitor:S.lastVisitor, unlocked:S.unlocked, diaryNew:S.diaryNew, myBday:S.myBday, lastExport:S.lastExport||0, bkNagAt:S.bkNagAt||0, evSeen:S.evSeen, derby:S.derby, furn:S.furn, omikujiDay:S.omikujiDay, wishes:S.wishes, presentYear:S.presentYear, trickDay:S.trickDay, area:S.area==='b'?'b':'a', areaB:S.areaB, mats:S.mats, matFirst:S.matFirst, crafted:S.crafted, craftN:S.craftN, bDrops:(S.bDrops||[]).map(o=>({k:o.k,x:o.x,d:o.d})), profileOnTap:S.profileOnTap, bdayBlown:S.bdayBlown, bdayDiary:S.bdayDiary,
     decor:S.decor.map(o=>Object.assign({id:o.id,type:o.type,x:Math.round(o.x),d:+o.d.toFixed(3)}, o.on!=null?{on:o.on,dx:+(o.dx||0).toFixed(1)}:{})),
     ground:S.ground.map(g=>({x:Math.round(g.x),d:+g.d.toFixed(3)}))};
 }
@@ -817,7 +837,7 @@ function animKey(k,seed){
 function drawFImg(c,k,w,h,seed){ const m=FIMG.m[animKey(k,seed)]||FIMG.m[k]; if(!m) return; const im=fsheet(m.s); if(im) c.drawImage(im, m.x, m.y, m.w, m.h, -w/2, -h, w, h); else { c.fillStyle='rgba(247,198,210,.6)'; c.beginPath(); c.roundRect(-w/2,-h,w,h,10); c.fill(); }
   if(k==='shellcake'){ const fy=-h*.86, fx=w*.03; c.fillStyle=`rgba(255,220,150,${.25+.1*Math.sin(T*9)})`; c.beginPath(); c.arc(fx,fy,8+Math.sin(T*7)*1.5,0,TAU); c.fill(); }
   if(k==='crystal2' && Math.sin(T*1.7)>.85){ c.fillStyle='rgba(255,255,255,.9)'; const sx=-w*.05, sy=-h*.75; c.beginPath(); c.moveTo(sx,sy-6); c.lineTo(sx+1.5,sy-1.5); c.lineTo(sx+6,sy); c.lineTo(sx+1.5,sy+1.5); c.lineTo(sx,sy+6); c.lineTo(sx-1.5,sy+1.5); c.lineTo(sx-6,sy); c.lineTo(sx-1.5,sy-1.5); c.fill(); } }
-const SURF = {shelltable:.62, table:.66};
+const SURF = {shelltable:.62, table:.66, ctable:.82, ctable_f:.82};
 const SMALLS = new Set(['bottle','shellcake','acorn','yakiimo','crystal2','plant','shell','conch','starfish','pearl','crystal','pot','otterstone','rosette','trophy','octopot','icecrystal']);
 // --- tank: small decor can sit on table-like decor
 function decorTable(o){ if(o.on==null) return null; const t=S.decor.find(x=>x.id===o.on); if(!t){ o.on=null; return null; } return t; }
@@ -1080,6 +1100,7 @@ function drawUmimiAt(c,u,x,gy,s,t,lift,opt){
 }
 
 function drawDecor(c,type,t,ph){
+  if(DECOR[type] && DECOR[type].craft){ drawCraft(c,type,t,ph); return; }
   c.lineCap = 'round'; c.lineJoin = 'round';
   switch(type){
     case 'grass': {
@@ -1236,6 +1257,7 @@ function drawDecor(c,type,t,ph){
   }
 }
 function decorGlow(o,x,gy,s){
+  if(DECOR[o.type] && DECOR[o.type].craft){ craftGlow(o,x,gy,s); return; }
   if(o.type==='pumpkinstand') glows.push({x:x, y:gy-50*s, r:45*s, col:'255,190,120', a:.1+.55*night});
   if(o.type==='lanternstand') glows.push({x:x+8*s, y:gy-45*s, r:50*s, col:'255,200,150', a:.1+.55*night});
   if(o.type==='chochin') glows.push({x:x-8*s, y:gy-55*s, r:40*s, col:'255,210,160', a:.1+.55*night});
@@ -2013,7 +2035,7 @@ function evTap(p){
 
 // ---------- album ----------
 let albumTab='u', albumSel=null;
-function hidePanels(except){ ['diary','closet','savep','album','shootp','studio','eventp','derby','asobi'].forEach(id=>{ if(id!==except) $(id).hidden=true; }); }
+function hidePanels(except){ ['diary','closet','savep','album','shootp','studio','eventp','derby','asobi','craftp'].forEach(id=>{ const e=$(id); if(e && id!==except) e.hidden=true; }); }
 function openAlbum(tab,sel){ hidePanels('album'); closeCard(); $('album').hidden=false; albumTab=tab||'u'; albumSel=sel||null; renderAlbum(); }
 $('albumBtn').addEventListener('click', () => { if(!$('album').hidden){ $('album').hidden=true; return; } openAlbum('u'); });
 $('albumClose').addEventListener('click', () => { $('album').hidden=true; });
@@ -2533,15 +2555,16 @@ function placeDecor(p){
   const D = DECOR[decorSel];
   if(S.decor.length>=MAX_DECOR){ toast('これ以上は置けないよ。しまうで片づけてね'); return; }
   if(S.shards < D.cost){ toast(`つきのかけらが ${D.cost-S.shards} こ たりないよ`); return; }
+  if(D.craft){ const cc=craftedOf(); if(!(cc[decorSel]>0)){ toast('もう のこっていないよ'); decorSel=null; renderTray(); return; } cc[decorSel]--; }
   S.shards -= D.cost;
   const d = p.y > floorTop ? invFloor(p.y) : .05;
   const o = {id:S.decorId++, type:decorSel, x:clamp(p.x,20,980), d};
   if(tankSnap(o, o.x, p.y+10)) toast('テーブルの うえに おいたよ');
-  S.decor.push(o); sparks(o.x, floorY(d)-20, 8, 1); sfx('place'); refreshShards(); renderTray(); save();
+  S.decor.push(o); sparks(o.x, floorY(d)-20, 8, 1); sfx('place'); if(D.craft && !(craftedOf()[decorSel]>0)) decorSel=null; refreshShards(); renderTray(); save();
 }
 function removeDecor(o){
   S.decor.forEach(x=>{ if(x.on===o.id){ x.x=o.x+(x.dx||0)*scaleD(o.d); x.d=Math.min(1,o.d+.01); x.on=null; } });
-  S.decor = S.decor.filter(x=>x!==o); S.shards += DECOR[o.type].cost;
+  S.decor = S.decor.filter(x=>x!==o); S.shards += DECOR[o.type].cost; if(DECOR[o.type].craft){ const cc=craftedOf(); cc[o.type]=(cc[o.type]||0)+1; }
   addP({type:'puff',x:o.x,y:floorY(o.d),vx:0,vy:0,r:14,life:.6,max:.6}); sfx('pop'); refreshShards(); renderTray(); save();
 }
 function invite(color){
@@ -2578,26 +2601,27 @@ document.querySelectorAll('.tool').forEach(b => b.addEventListener('click', () =
 
 function thumbCanvas(w,h){ const c=document.createElement('canvas'); c.width=w*2; c.height=h*2; const x=c.getContext('2d'); x.scale(2,2); return [c,x]; }
 const MOON_SVG = '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M11 2a8 8 0 1 0 7 11.5A7 7 0 0 1 11 2z" fill="#f1cf6c"/></svg>';
-const DSERIES = [['kihon','きほん'],['omiyage','おみやげ'],['derby','ダービー'],['pearl','パール'],['autumn','あきまつり'],['halloween','ハロウィン']];
+const DSERIES = [['kihon','きほん'],['omiyage','おみやげ'],['derby','ダービー'],['pearl','パール'],['autumn','あきまつり'],['halloween','ハロウィン'],['craft','てづくり']];
 const DERBY_DECOR = ['trophy','rosette','goalflag','podium'];
-function decorSeries(k){ const D=DECOR[k]; if(DERBY_DECOR.includes(k)) return 'derby'; if(D.img && FIMG.m[k]) return FIMG.m[k].s; if(D.gift) return 'omiyage'; return 'kihon'; }
+function decorSeries(k){ const D=DECOR[k]; if(D.craft) return 'craft'; if(DERBY_DECOR.includes(k)) return 'derby'; if(D.img && FIMG.m[k]) return FIMG.m[k].s; if(D.gift) return 'omiyage'; return 'kihon'; }
 let decorCat = 'kihon';
 function renderTray(){
   if(S.area==='b' && areaUI()){ renderTrayB(); return; }
   const tr = $('tray'); tr.innerHTML = '';
   const dc = $('decorCats'); dc.hidden = mode!=='decor';
-  if(mode==='decor'){ dc.innerHTML = DSERIES.filter(([k])=>Object.keys(DECOR).some(x=>decorSeries(x)===k)).map(([k,n])=>`<button type="button" class="dm${decorCat===k?' on':''}" data-cat="${k}">${n}</button>`).join(''); dc.querySelectorAll('[data-cat]').forEach(b=>b.addEventListener('click',()=>{ decorCat=b.dataset.cat; renderTray(); })); }
+  if(mode==='decor'){ if(decorCat==='craft' && !craftOwnedAny()) decorCat='kihon'; dc.innerHTML = DSERIES.filter(([k])=>Object.keys(DECOR).some(x=>decorSeries(x)===k) && (k!=='craft' || craftOwnedAny())).map(([k,n])=>`<button type="button" class="dm${decorCat===k?' on':''}" data-cat="${k}">${n}</button>`).join(''); dc.querySelectorAll('[data-cat]').forEach(b=>b.addEventListener('click',()=>{ decorCat=b.dataset.cat; renderTray(); })); }
   if(mode==='pet'){ tr.innerHTML = '<div class="hintwrap"><p class="hint"><b>タップ</b>でなでなで、<b>ドラッグ</b>でだっこして運べます。砂の上で光る<b>つきのかけら</b>はタップで拾えます。</p><label class="opt" for="optProfile"><input type="checkbox" id="optProfile"> タップしたら プロフィールを出す<span>（オフのときは ダブルタップで出せます）</span></label></div>';
     const cb=$('optProfile'); cb.checked=profileOn(); cb.addEventListener('change',()=>{ S.profileOnTap=cb.checked; if(!cb.checked) closeCard(); save(); toast(cb.checked?'タップで プロフィールを出すよ':'プロフィールは ダブルタップで出るよ'); });
     return; }
   if(mode==='food'){ tr.innerHTML = '<p class="hint">水の中をタップすると、<b>アオサ</b>がふわっと沈みます。ウミミたちが気づいて食べにきます。</p>'; return; }
   if(mode==='decor'){
-    Object.entries(DECOR).filter(([key])=>decorSeries(key)===decorCat).forEach(([key,D]) => {
+    if(decorCat==='craft' && !Object.keys(DECOR).some(k=>DECOR[k].craft && craftedOf()[k]>0)) tr.insertAdjacentHTML('beforeend','<p class="hint">てづくりの かざりは ぜんぶ おいてあるよ。サンゴの森の <b>さぎょうだい</b>で つくれます。</p>');
+    Object.entries(DECOR).filter(([key])=>decorSeries(key)===decorCat && (!DECOR[key].craft || craftedOf()[key]>0)).forEach(([key,D]) => {
       const locked = D.gift && !S.unlocked.includes(key);
       const b=document.createElement('button'); b.type='button'; b.className='item'; b.dataset.key=key; b.dataset.cost=D.cost; if(locked) b.dataset.locked='1'; b.setAttribute('aria-pressed', decorSel===key);
-      const [c,x]=thumbCanvas(64,52); x.save(); x.translate(32,49); const sc = ['coral','lamp','grass','jellylamp','seaflower','lantern','goalflag','podium','shellbed','shelltable','stall','omen','kingyo','bridge'].includes(key) ? (['stall','omen','bridge'].includes(key)?.4:.5) : ['shellchair','crystal2','lanternstand','mcushion','chochin','pumpkinstand','ghostcushion','candytable','hshelf','jbox','hrug'].includes(key) ? .62 : ['treasure','pearl'].includes(key) ? .65 : ['_x'].includes(key) ? .52 : key==='rock' ? .5 : .75; x.scale(sc,sc); drawDecor(x,key,1,0); x.restore();
+      const [c,x]=thumbCanvas(64,52); x.save(); x.translate(32,49); const sc = ['coral','lamp','grass','jellylamp','seaflower','lantern','goalflag','podium','shellbed','shelltable','stall','omen','kingyo','bridge'].includes(key) ? (['stall','omen','bridge'].includes(key)?.4:.5) : ['shellchair','crystal2','lanternstand','mcushion','chochin','pumpkinstand','ghostcushion','candytable','hshelf','jbox','hrug'].includes(key) ? .62 : ['treasure','pearl'].includes(key) ? .65 : DECOR[key].craft ? (craftBase(key)==='cmobile' ? .38 : craftBase(key)==='cshelllamp' ? .5 : .58) : ['_x'].includes(key) ? .52 : key==='rock' ? .5 : .75; x.scale(sc,sc); drawDecor(x,key,1,0); x.restore();
       if(locked){ x.globalCompositeOperation='source-in'; x.fillStyle='#c3c7e6'; x.fillRect(0,0,64,52); }
-      b.append(c); b.insertAdjacentHTML('beforeend', locked ? `<span>？？？</span><span class="cost" style="color:#6c6a94">おみやげ</span>` : `<span>${D.name}</span><span class="cost">${MOON_SVG}${D.cost}</span>`);
+      b.append(c); b.insertAdjacentHTML('beforeend', locked ? `<span>？？？</span><span class="cost" style="color:#6c6a94">おみやげ</span>` : D.craft ? `<span>${D.name}</span><span class="cost" style="color:#6c6a94">のこり ${craftedOf()[key]||0}</span>` : `<span>${D.name}</span><span class="cost">${MOON_SVG}${D.cost}</span>`);
       b.addEventListener('click', () => { decorSel = decorSel===key ? null : key; renderTray(); if(decorSel) toast(`置きたい場所をタップしてね(${D.name})`); });
       tr.append(b);
     });
@@ -3906,7 +3930,7 @@ function bTap(p){
   if(hitProp(p,B_BASKET,38,70)){ takeBag(); return; }
   const u = hitCopy(p);
   if(u){ if(u.petCD<=0){ u.state='happy'; u.timer=1.6; u.petCD=.6; bHearts(u,2); sfx('pet'); if(Math.random()<.5) bSay(u, B_PET_SAY[Math.floor(Math.random()*B_PET_SAY.length)]); } return; }
-  if(hitProp(p,B_BENCH,95,120)){ sfx('place'); toast('さぎょうだい：もうすぐ ここで 家具が つくれるように なるよ'); return; }
+  if(hitProp(p,B_BENCH,95,120)){ sfx('place'); openCraft(); return; }
   if(hitProp(p,B_KILN,66,100)){ sfx('pop'); toast('かいがらがま：もうすぐ 使えるように なるよ'); return; }
   if(hitProp(p,B_SIGN,44,76)){ toast('サンゴの森の こうぼう。おでかけした子が のんびり すごしているよ'); return; }
   bAdd({type:'ring',x:p.x,y:p.y,vx:0,vy:0,r:6,life:.6,max:.6}); bBubbles(p.x,p.y,3); sfx('pop');
@@ -3950,6 +3974,7 @@ function drawAreaB(){
 function areaUI(){ return !!document.querySelector('nav.tools') && !DESK_RING; }
 function buildAreaTabs(){
   if(!areaUI() || $('areaTabs')) return;
+  buildCraftPanel();
   const box = document.createElement('div'); box.className='areatabs'; box.id='areaTabs'; box.setAttribute('role','group'); box.setAttribute('aria-label','エリア');
   box.innerHTML = AREAS.map(([k,n]) => `<button type="button" data-area="${k}"${k==='c'?' class="lock" title="まだ ひみつ"':''}>${n}</button>`).join('');
   stage.append(box);
@@ -3984,7 +4009,7 @@ function toggleOuting(u){
 function renderTrayB(){
   const tr = $('tray'); tr.innerHTML = ''; $('decorCats').hidden = true;
   const B = areaB();
-  tr.insertAdjacentHTML('beforeend', `<div class="hintwrap bhint"><p class="hint"><b>サンゴの森</b>に おでかけする子を えらんでね（いつもの海にも いるよ）。砂の上の <b>そざい</b>は タップで ひろえて、おでかけ中の子は <b>かご</b>に ひろってきてくれるよ。</p><span class="count" style="align-self:flex-start">おでかけ ${B.members.length}/${B_MAX}</span><div class="mats" id="matRow"></div></div>`);
+  tr.insertAdjacentHTML('beforeend', `<div class="hintwrap bhint"><p class="hint"><b>サンゴの森</b>に おでかけする子を えらんでね（いつもの海にも いるよ）。砂の上の <b>そざい</b>は タップで ひろえて、おでかけ中の子は <b>かご</b>に ひろってきてくれるよ。<b>さぎょうだい</b>を タップすると こうぼう。</p><span class="count" style="align-self:flex-start">おでかけ ${B.members.length}/${B_MAX}</span><div class="mats" id="matRow"></div></div>`);
   const mr = $('matRow'), mm = matsOf(); MAT_KEYS.forEach(k=>{ const sp=document.createElement('span'); sp.title=MATS[k].name; sp.append(matIcon(k,22)); sp.insertAdjacentHTML('beforeend', `${MATS[k].name} <b>${mm[k]||0}</b>`); mr.append(sp); });
   liveUmi().forEach(u => {
     const on = B.members.includes(u.id);
@@ -4091,6 +4116,138 @@ function takeBag(){
   sfx('gift'); toast(`${who.length?who.join('と')+'が ':''}ひろった そざいを うけとったよ（${matList(got)}）`);
   addDiary(`${who.length?who.join('と')+'が ':''}サンゴの森で そざいを ${n}こ ひろってきてくれた`);
   save(); renderTray();
+}
+
+// ---- こうぼう（クラフト） ----
+// てづくり家具は DECOR の craft:1。きれいにできた版は キー_f（見た目だけ。性能の差はない）。もちものは S.crafted = {キー: 数}
+// いつもの海の「かざる」→「てづくり」タブで置ける（置くと1つへり、しまうと もどる）
+const RECIPES = [
+  {k:'cbench',    need:{wood:2, shell:1}, desc:'そぼくな ベンチ。いちばん さいしょに つくりたい'},
+  {k:'cshelllamp',need:{shell:2, glass:1}, desc:'貝がらの すきまから ぼんやり ひかる'},
+  {k:'ctable',    need:{wood:2, glass:1}, desc:'ベンチと ならべたい 小さな テーブル。小物も おける'},
+  {k:'ccoralpot', need:{coral:2, sand:1}, desc:'サンゴを そだてる 小さな はちうえ'},
+  {k:'cmobile',   need:{glass:2, shell:2}, desc:'海ガラスが ゆらゆら きらきら ゆれる'},
+];
+const FINE_RATE = .15;
+function craftedOf(){ if(!S.crafted || typeof S.crafted!=='object') S.crafted = {}; return S.crafted; }
+function craftBase(k){ return k.replace(/_f$/,''); }
+function canCraft(r){ const m=matsOf(); return Object.entries(r.need).every(([k,n])=>(m[k]||0)>=n); }
+function placedCount(k){ return S.decor.filter(o=>o.type===k).length; }
+function craftOwnedAny(){ const c=craftedOf(); return Object.values(c).some(n=>n>0) || S.decor.some(o=>DECOR[o.type] && DECOR[o.type].craft); }
+function doCraft(r){
+  if(!canCraft(r)){ toast('そざいが たりないよ'); return; }
+  const m=matsOf(); Object.entries(r.need).forEach(([k,n])=>{ m[k]-=n; });
+  const fine = Math.random() < FINE_RATE, key = fine ? r.k+'_f' : r.k, c = craftedOf();
+  c[key] = (c[key]||0)+1;
+  S.craftN = (S.craftN||0)+1;
+  const nm = DECOR[key].name;
+  // 森の こうぼうで みんなが よろこぶ
+  const s = scaleD(B_BENCH.d), y = floorY(B_BENCH.d)-80*s;
+  for(let i=0;i<(fine?26:14);i++){ const a=rand(0,TAU), v=rand(40,fine?120:80); bAdd({type:'spark',x:B_BENCH.x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,r:rand(3,6)*s,life:.9,max:.9}); }
+  bAdd({type:'say',text: fine ? 'きれいに できた！' : 'できた！', x:B_BENCH.x, y:y-30*s, vx:0, vy:-12, r:16*s, life:1.8, max:1.8});
+  bCopies.filter(o=>!o.leaving).forEach(o=>{ o.state='happy'; o.timer=2; o.dir = B_BENCH.x>o.x?1:-1; bHearts(o,1); });
+  sfx(fine?'invite':'gift');
+  if(S.craftN===1) addDiary(`サンゴの森の こうぼうで はじめて「${DECOR[r.k].name}」を つくった`);
+  else if(fine) addDiary(`「${nm}」が できた`);
+  const who = areaB().members.map(id=>S.umimi.find(u=>u.id===id)).filter(Boolean);
+  who.forEach(u=>addMem(u, `こうぼうで「${DECOR[r.k].name}」を つくった`, true));
+  toast(fine ? `きれいに できた！「${nm}」（いつもの海の かざる→てづくり で おけるよ）` : `「${nm}」が できたよ（いつもの海の かざる→てづくり で おけるよ）`);
+  save(); renderCraft(fine ? key : null); renderTray();
+}
+function openCraft(){ const p=$('craftp'); if(!p) return; hidePanels('craftp'); closeCard(); p.hidden=false; renderCraft(); }
+function renderCraft(justFine){
+  const b = $('craftBody'); if(!b) return; const sp0 = $('craftp').scrollTop; b.innerHTML='';
+  const m = matsOf(), c = craftedOf();
+  const mr = document.createElement('div'); mr.className='mats'; MAT_KEYS.forEach(k=>{ const sp=document.createElement('span'); sp.append(matIcon(k,22)); sp.insertAdjacentHTML('beforeend', `${MATS[k].name} <b>${m[k]||0}</b>`); mr.append(sp); }); b.append(mr);
+  b.insertAdjacentHTML('beforeend', `<p class="dsub">そざいを くみあわせて、てづくりの かざりを つくろう。ときどき「きれいに できた」版に なるよ（みためだけ）。つくった物は いつもの海の「かざる」→「てづくり」で おけます。</p>`);
+  const g = document.createElement('div'); g.className='clist'; b.append(g);
+  RECIPES.forEach(r=>{
+    const D = DECOR[r.k], ok = canCraft(r), have = (c[r.k]||0)+(c[r.k+'_f']||0), placed = placedCount(r.k)+placedCount(r.k+'_f');
+    const row = document.createElement('div'); row.className='crow'+(justFine && craftBase(justFine)===r.k ? ' fine' : '');
+    const [cv2,x] = thumbCanvas(72,64); x.save(); x.translate(36,58); const sc = r.k==='cmobile' ? .45 : r.k==='cshelllamp' ? .6 : .68; x.scale(sc,sc); drawDecor(x, justFine && craftBase(justFine)===r.k ? justFine : r.k, 1, 0); x.restore();
+    row.append(cv2);
+    const info = document.createElement('div'); info.className='ci';
+    info.innerHTML = `<b>${D.name}</b><span>${r.desc}</span>`;
+    const need = document.createElement('div'); need.className='cneed';
+    Object.entries(r.need).forEach(([k,n])=>{ const sp=document.createElement('span'); const enough=(m[k]||0)>=n; if(!enough) sp.className='short'; sp.append(matIcon(k,18)); sp.insertAdjacentHTML('beforeend', `${MATS[k].name}×${n}<small>（${m[k]||0}）</small>`); need.append(sp); });
+    info.append(need);
+    if(have || placed) info.insertAdjacentHTML('beforeend', `<span class="cown">もちもの ${have}${placed?`・おいている ${placed}`:''}${c[r.k+'_f']?`（きれい ${c[r.k+'_f']}）`:''}</span>`);
+    row.append(info);
+    const bt = document.createElement('button'); bt.type='button'; bt.className='dbtn'; bt.textContent='つくる'; bt.disabled = !ok;
+    bt.addEventListener('click', ()=>doCraft(r));
+    row.append(bt); g.append(row);
+  });
+  b.insertAdjacentHTML('beforeend', `<div class="dbar"><button class="dbtn sub" type="button" id="craftBack">とじる</button></div>`);
+  $('craftBack').addEventListener('click', ()=>{ $('craftp').hidden=true; });
+  $('craftp').scrollTop = sp0;
+}
+function buildCraftPanel(){
+  if($('craftp')) return;
+  const p = document.createElement('section'); p.className='derby'; p.id='craftp'; p.hidden=true; p.setAttribute('aria-labelledby','craftTitle');
+  p.innerHTML = `<button class="x" id="craftClose" type="button" aria-label="とじる">×</button><h2 id="craftTitle">こうぼう（さぎょうだい）</h2><div id="craftBody" style="display:flex;flex-direction:column;gap:8px"></div>`;
+  stage.append(p); $('craftClose').addEventListener('click', ()=>{ p.hidden=true; });
+}
+// てづくり家具の絵（DECOR と同じく 足もとが y=0）
+function drawCraft(c,type,t,ph){
+  const fine = type.endsWith('_f'), k = craftBase(type);
+  c.save(); c.scale(1.25,1.25); c.lineJoin='round'; c.lineCap='round';
+  const wood = (x0,y0,x1,y1,w) => { c.strokeStyle='#8e6744'; c.lineWidth=w+3; c.beginPath(); c.moveTo(x0,y0); c.lineTo(x1,y1); c.stroke(); c.strokeStyle= fine ? '#d4ab80' : '#c39a72'; c.lineWidth=w; c.beginPath(); c.moveTo(x0,y0); c.lineTo(x1,y1); c.stroke(); };
+  const shellAt = (x,y,s,rot) => { c.save(); c.translate(x,y); c.rotate(rot||0); c.scale(s,s); c.fillStyle='#fde6d7'; c.strokeStyle='#e2a98a'; c.lineWidth=1.4; c.beginPath(); c.moveTo(0,0); c.arc(0,0,10,Math.PI*1.07,Math.PI*1.93); c.closePath(); c.fill(); c.stroke(); c.lineWidth=1; for(let i=1;i<4;i++){ const a=Math.PI*1.07+i*(Math.PI*.86/4); c.beginPath(); c.moveTo(0,0); c.lineTo(Math.cos(a)*9,Math.sin(a)*9); c.stroke(); } c.restore(); };
+  const glassAt = (x,y,s,col,rot) => { c.save(); c.translate(x,y); c.rotate(rot||0); c.scale(s,s); c.fillStyle=col; c.strokeStyle='rgba(80,140,150,.7)'; c.lineWidth=1; c.beginPath(); c.moveTo(-6,0); c.lineTo(-2,-7); c.lineTo(6,-5); c.lineTo(5,1); c.lineTo(-3,2); c.closePath(); c.fill(); c.stroke(); c.fillStyle='rgba(255,255,255,.75)'; c.beginPath(); c.ellipse(-1,-4,1.8,.9,-.5,0,TAU); c.fill(); c.restore(); };
+  if(k==='cbench'){
+    wood(-30,0,-27,-18,6); wood(28,0,25,-18,6);
+    c.fillStyle= fine ? '#d4ab80' : '#c39a72'; c.strokeStyle='#8e6744'; c.lineWidth=2;
+    c.beginPath(); c.moveTo(-42,-18); c.quadraticCurveTo(-46,-27,-36,-28); c.lineTo(36,-29); c.quadraticCurveTo(46,-26,41,-18); c.closePath(); c.fill(); c.stroke();
+    c.strokeStyle='rgba(142,103,68,.5)'; c.lineWidth=1.3; c.beginPath(); c.moveTo(-32,-23); c.quadraticCurveTo(0,-26,32,-24); c.stroke();
+    shellAt(-30,-27,.75,-.3);
+    if(fine){ shellAt(30,-28,.65,.3); c.fillStyle='#a8d9b8'; c.beginPath(); c.ellipse(4,-30,7,2.4,-.2,0,TAU); c.fill(); }
+  } else if(k==='ctable'){
+    wood(-22,0,-18,-30,6); wood(22,0,18,-30,6); wood(-14,-14,14,-14,3);
+    c.fillStyle= fine ? '#d4ab80' : '#c39a72'; c.strokeStyle='#8e6744'; c.lineWidth=2;
+    c.beginPath(); c.ellipse(0,-33,34,8,0,0,TAU); c.fill(); c.stroke();
+    c.strokeStyle='rgba(142,103,68,.45)'; c.lineWidth=1.2; c.beginPath(); c.ellipse(0,-33,22,4.5,0,0,TAU); c.stroke();
+    glassAt(-18,-35,.8,'rgba(140,214,205,.92)',.2);
+    if(fine){ glassAt(20,-35,.7,'rgba(201,178,238,.92)',-.3); shellAt(4,-36,.5,0); }
+  } else if(k==='cshelllamp'){
+    const fl = .8+.2*Math.sin(t*2.2+ph);
+    wood(0,0,0,-30,4); c.fillStyle='#d9c3a4'; c.beginPath(); c.ellipse(0,-1,14,4,0,0,TAU); c.fill();
+    c.fillStyle=`rgba(255,226,170,${.35*fl})`; c.beginPath(); c.arc(0,-44,20,0,TAU); c.fill();
+    c.save(); c.translate(0,-30); c.fillStyle= fine ? '#fff1e6' : '#fde6d7'; c.strokeStyle='#e2a98a'; c.lineWidth=1.8;
+    c.beginPath(); c.moveTo(-18,0); c.quadraticCurveTo(-20,-24,0,-26); c.quadraticCurveTo(20,-24,18,0); c.closePath(); c.fill(); c.stroke();
+    c.lineWidth=1.2; for(let i=-2;i<=2;i++){ c.beginPath(); c.moveTo(i*3,-25); c.quadraticCurveTo(i*7,-12,i*8,0); c.stroke(); }
+    c.fillStyle=`rgba(255,214,140,${.75*fl})`; c.beginPath(); c.ellipse(0,-2,11,4,0,0,TAU); c.fill();
+    if(fine){ c.fillStyle='#f4d27a'; sparkle(c,0,-30,4); glassAt(-14,-14,.55,'rgba(140,214,205,.9)',.4); }
+    c.restore();
+  } else if(k==='ccoralpot'){
+    const sw = Math.sin(t*1.1+ph)*.04;
+    c.save(); c.translate(0,-16); c.rotate(sw); c.strokeStyle='#f49aa6'; c.lineWidth=5;
+    c.beginPath(); c.moveTo(0,0); c.lineTo(0,-16); c.lineTo(-9,-28); c.moveTo(0,-16); c.lineTo(9,-30); c.moveTo(0,-8); c.lineTo(10,-14); c.moveTo(-1,-10); c.lineTo(-11,-15); c.stroke();
+    c.fillStyle='#fcd2da'; [[-9,-28],[9,-30],[10,-14],[-11,-15]].forEach(([a,b2])=>{ c.beginPath(); c.arc(a,b2,3,0,TAU); c.fill(); });
+    if(fine){ c.strokeStyle='#c99be8'; c.lineWidth=3.5; c.beginPath(); c.moveTo(4,-4); c.lineTo(14,-22); c.stroke(); c.fillStyle='#e6d2fa'; c.beginPath(); c.arc(14,-22,2.6,0,TAU); c.fill(); }
+    c.restore();
+    c.fillStyle= fine ? '#f9e9c6' : '#f2dfb8'; c.strokeStyle='#cfae78'; c.lineWidth=1.8;
+    c.beginPath(); c.moveTo(-16,-18); c.lineTo(16,-18); c.lineTo(12,0); c.lineTo(-12,0); c.closePath(); c.fill(); c.stroke();
+    c.fillStyle='#e8cf98'; c.beginPath(); c.ellipse(0,-18,16,4,0,0,TAU); c.fill(); c.stroke();
+    c.fillStyle='#f4d27a'; [[-6,-9],[5,-6],[1,-12]].forEach(([a,b2])=>sparkle(c,a,b2,1.8));
+    if(fine) shellAt(-12,-4,.5,-.4);
+  } else if(k==='cmobile'){
+    wood(-18,0,-16,-82,4); c.fillStyle='#d9c3a4'; c.beginPath(); c.ellipse(-17,-1,13,4,0,0,TAU); c.fill();
+    const sw = Math.sin(t*1.3+ph)*.12;
+    c.save(); c.translate(-16,-80); c.rotate(sw*.4); wood(0,0,40,-2,3);
+    const cols = ['rgba(140,214,205,.92)','rgba(169,198,242,.92)','rgba(201,178,238,.92)','rgba(243,193,164,.92)'];
+    const hang = fine ? [[12,22,0],[24,32,1],[36,18,2],[30,44,3]] : [[14,24,0],[28,34,1],[38,20,2]];
+    hang.forEach(([hx,len,i])=>{ const a = Math.sin(t*1.7+ph+i*1.3)*.22; c.save(); c.translate(hx,-1); c.rotate(a); c.strokeStyle='rgba(255,255,255,.85)'; c.lineWidth=1; c.beginPath(); c.moveTo(0,0); c.lineTo(0,len); c.stroke();
+      if(i%2) shellAt(0,len+8,.55,0); else glassAt(0,len+5,.8,cols[i%cols.length],Math.sin(t+i)*.3);
+      c.restore(); });
+    c.restore();
+  }
+  c.restore();
+}
+function craftGlow(o,x,gy,s){
+  const k = craftBase(o.type);
+  if(k==='cshelllamp') glows.push({x, y:gy-55*s, r:(70+6*Math.sin(T*2+o.id))*s, col:'255,220,160', a:.12+.6*night});
+  if(k==='cmobile') glows.push({x:x+8*s, y:gy-75*s, r:44*s, col:'200,240,240', a:.05+.3*night});
+  if(k==='ccoralpot' && o.type.endsWith('_f')) glows.push({x, y:gy-38*s, r:30*s, col:'255,200,230', a:.05+.3*night});
 }
 
 let last = performance.now();
