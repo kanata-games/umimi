@@ -3608,6 +3608,34 @@ function awayDiary(){
   if(hasLamp) lines.push(`るすのあいだ、${n}は ランプのあかりを ずっと ながめていた`);
   addDiary(lines[Math.floor(Math.random()*lines.length)]);
 }
+// ---------- ながめモード ----------
+let nagame=false, wakeLock=null, nagT=0;
+function nagShowExit(){ const b=$('nagameExit'); if(!b) return; b.hidden=false; b.classList.remove('fade'); document.body.classList.remove('idle'); clearTimeout(nagT); nagT=setTimeout(()=>{ b.classList.add('fade'); document.body.classList.add('idle'); }, 3000); }
+async function enterNagame(){
+  if(nagame) return; nagame=true; hidePanels(); closeCard(); $('toast').hidden=true;
+  document.body.classList.add('nagame'); nagShowExit();
+  const de=document.documentElement;
+  const standalone = window.navigator.standalone || (window.matchMedia && matchMedia('(display-mode: standalone)').matches);
+  if(!standalone && de.requestFullscreen){ try{ await de.requestFullscreen({navigationUI:'hide'}); }catch(e){} }
+  try{ if(navigator.wakeLock) wakeLock = await navigator.wakeLock.request('screen'); }catch(e){ wakeLock=null; }   // 画面が消えないように
+  setTimeout(resize, 60);
+}
+function exitNagame(){
+  if(!nagame) return; nagame=false; clearTimeout(nagT);
+  document.body.classList.remove('nagame','idle'); $('nagameExit').hidden=true;
+  if(document.fullscreenElement && document.exitFullscreen){ document.exitFullscreen().catch(()=>{}); }
+  try{ if(wakeLock) wakeLock.release(); }catch(e){} wakeLock=null;
+  setTimeout(resize, 60);
+}
+if($('nagameBtn')){
+  $('nagameBtn').addEventListener('click', enterNagame);
+  $('nagameExit').addEventListener('click', exitNagame);
+  cv.addEventListener('pointerdown', () => { if(nagame) nagShowExit(); });
+  cv.addEventListener('pointermove', e => { if(nagame && e.pointerType==='mouse') nagShowExit(); });
+  document.addEventListener('keydown', e => { if(nagame && e.key==='Escape') exitNagame(); });
+  document.addEventListener('fullscreenchange', () => { if(nagame && !document.fullscreenElement){ const sa = window.navigator.standalone || (window.matchMedia && matchMedia('(display-mode: standalone)').matches); if(!sa && document.documentElement.requestFullscreen) exitNagame(); } });
+  document.addEventListener('visibilitychange', async () => { if(nagame && !document.hidden && navigator.wakeLock){ try{ wakeLock = await navigator.wakeLock.request('screen'); }catch(e){} } });
+}
 function boot(data){
   let saved = data && data.save;
   let rescued = null;
