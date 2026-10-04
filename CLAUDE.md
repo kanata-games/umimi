@@ -45,6 +45,7 @@
 ## ファイル
 - `index.html` と `sw.js` … Pages 用（ホーム画面版）。**`python3 source/build_pages.py` で作る**（手で組み立てない）。head（PWA タグ）＋ game.html ＋「ホーム画面に追加」の案内（スマホのブラウザで1回だけ）＋ サービスワーカーの登録。sw.js は `source/sw_template.js` から作られ、VERSION は中身のハッシュで自動（ゲームや画像を変えると自動で新しい版が配られる）。全部の png を最初にまとめて保存するので、電波がなくても遊べる。新しい版は「開いて20秒以内なら すぐ読み込み直し／遊んでいる途中なら 次にアプリに戻ったとき」に切り替わる。png を足したら build_pages.py が自動で拾う
   - 更新のたびに全部（今は約4MB）を取り直す方式。差分アップデート（変わったファイルだけ）は、ユーザーと相談のうえ保留中。画像が20MBを超えるか、通信量の声が出たら切り替えを考える
+  - **umimi-portal と同じサイト（kanata-games.github.io）**なので、ブラウザで開くと localStorage とオフライン用キャッシュの置き場所を共有する。ポータル側は `umimi-hakoniwa-*` のキーと `hakoniwa-*` のキャッシュ名を使わないこと。箱庭の sw.js は `hakoniwa-<版>` と `hakoniwa-fonts` を使い、掃除するのは自分の古い版（と前の名前の `umimi-<10桁>` / `umimi-fonts`）だけ。iPhone のホーム画面版どうしは置き場所が別なので、連動はコードやファイルで
   - ホーム画面版のデータは Safari 本体と別で、7日ルールで消されない。ただしアイコン削除・容量不足・機種変更では消えるので、ファイル保存のバックアップとセット
 - `source/game.html` … 本体。1ファイル（HTML と canvas、全体が IIFE）
 - `umimi-sprites.png` … ウミミ10コマ（セル 245x222、目の位置合わせ済み）。作り直すときは `source/sprites/build_sprites.py`（元画像は src.png）

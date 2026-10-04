@@ -59,7 +59,7 @@ html = HEAD + game + REG + "</body></html>\n"
 open('index.html','w',encoding='utf-8').write(html)
 assets = ['./', 'index.html', 'manifest.json'] + sorted(f for f in glob.glob('*.png'))
 h = hashlib.sha1(html.encode())
-for f in sorted(glob.glob('*.png')) + ['manifest.json']: h.update(open(f,'rb').read())
+for f in sorted(glob.glob('*.png')) + ['manifest.json', 'source/sw_template.js']: h.update(open(f,'rb').read())
 ver = h.hexdigest()[:10]
 sw = open('source/sw_template.js', encoding='utf-8').read().replace('__VERSION__', ver).replace('__ASSETS__', ',\n  '.join("'%s'" % a for a in assets))
 open('sw.js','w',encoding='utf-8').write(sw)
