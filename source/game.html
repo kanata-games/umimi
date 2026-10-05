@@ -338,6 +338,10 @@ body.areaB .tools, body.areaB #decorCats{display:none!important}
 .exbar{height:10px;border-radius:5px;background:#e4e6f6;overflow:hidden}.exbar i{display:block;height:100%;background:linear-gradient(90deg,#9fd0f0,#7f8fe0)}
 .exdest.lock{background:#f4f4fb}.exdest .ci b small{font-size:12px;color:var(--ink2);font-weight:500;margin-left:4px}
 .exres{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;padding:6px}
+.exthumb{width:104px;height:58px;object-fit:cover;border-radius:10px;flex:none;border:1.5px solid var(--line);background:#dfe6fb}
+.exthumb.q{display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;color:#b3b8d8;background:#e9ebf7}
+.exban{display:block;width:100%;max-width:520px;aspect-ratio:16/9;object-fit:cover;border-radius:12px;border:1.5px solid var(--line);background:#dfe6fb;align-self:center}
+@media (max-width:520px){.exthumb{width:72px;height:41px}}
 .exres b{color:#5b64b8;font-size:16px}.exres p{margin:0;font-size:14px;line-height:1.8;color:var(--ink)}
 .exgot{display:flex;flex-wrap:wrap;gap:4px 10px;justify-content:center;font-size:13px;font-weight:700;color:#a0701a}
 .exup{color:#d0507a!important;font-weight:700}
@@ -4463,7 +4467,7 @@ function renderExpl(){
   }
   if(explView==='result' && E.last){
     const L=E.last;
-    b.insertAdjacentHTML('beforeend', `<div class="exres"><div class="lbig">🧭</div><b>「${DESTS[L.dest].name}」から かえってきた！</b><p>${L.lines.map(esc).join('<br>')}</p><div class="exgot">${gotHtml(L.got)}</div>${L.ups.length?`<p class="exup">${L.ups.map(esc).join('<br>')}</p>`:''}</div><div class="dbar"><button class="dbtn" type="button" id="exOk">やったね</button></div>`);
+    b.insertAdjacentHTML('beforeend', `<div class="exres"><img class="exban" src="ex_${L.dest}.png" alt=""><b>「${DESTS[L.dest].name}」から かえってきた！</b><p>${L.lines.map(esc).join('<br>')}</p><div class="exgot">${gotHtml(L.got)}</div>${L.ups.length?`<p class="exup">${L.ups.map(esc).join('<br>')}</p>`:''}</div><div class="dbar"><button class="dbtn" type="button" id="exOk">やったね</button></div>`);
     $('exOk').addEventListener('click',()=>{ explView='main'; renderExpl(); }); return;
   }
   const team = explTeam();
@@ -4477,7 +4481,7 @@ function renderExpl(){
   b.append(tm);
   if(E.trip){
     const D=DESTS[E.trip.dest], now=Date.now(), ready = now>=E.trip.end, p = clamp((now-E.trip.start)/(E.trip.end-E.trip.start),0,1);
-    b.insertAdjacentHTML('beforeend', `<div class="extrip"><b>「${D.name}」を たんけん中</b><div class="exbar"><i style="width:${Math.round(p*100)}%"></i></div><span id="exLeft">${ready?'かえってきたよ！':`のこり ${fmtLeft(E.trip.end-now)}（${new Date(E.trip.end).getHours()}:${String(new Date(E.trip.end).getMinutes()).padStart(2,'0')}ごろ）`}</span></div>
+    b.insertAdjacentHTML('beforeend', `<div class="extrip"><img class="exban" src="ex_${E.trip.dest}.png" alt=""><b>「${D.name}」を たんけん中</b><div class="exbar"><i style="width:${Math.round(p*100)}%"></i></div><span id="exLeft">${ready?'かえってきたよ！':`のこり ${fmtLeft(E.trip.end-now)}（${new Date(E.trip.end).getHours()}:${String(new Date(E.trip.end).getMinutes()).padStart(2,'0')}ごろ）`}</span></div>
       <div class="dbar">${ready?'<button class="dbtn" type="button" id="exClaim">おはなしを きく</button>':'<button class="dbtn sub" type="button" id="exCancel">よびもどす（なにも もらえない）</button>'}</div>`);
     if(ready) $('exClaim').addEventListener('click', explClaim);
     else $('exCancel').addEventListener('click', ()=>{ const bt=$('exCancel'); if(bt.dataset.c){ explCancel(); } else { bt.dataset.c='1'; bt.textContent='ほんとうに よびもどす'; bt.classList.remove('sub'); } });
@@ -4487,8 +4491,8 @@ function renderExpl(){
   const g = document.createElement('div'); g.className='clist'; b.append(g);
   DEST_KEYS.forEach(dk=>{ const D=DESTS[dk], open=E.found.includes(dk);
     const row=document.createElement('div'); row.className='crow exdest'+(open?'':' lock');
-    row.innerHTML = open ? `<div class="ci"><b>${D.name}<small>（${fmtLeft(D.hrs*(explHas(team,'genki')?.85:1)*36e5)}${explHas(team,'genki')?'・げんきで はやめ':''}）</small></b><span>${D.desc}</span><span class="cown">いった回数 ${E.runs[dk]||0}</span></div>`
-      : `<div class="ci"><b>？？？<small>（${D.hrs}時間）</small></b><span>まだ 見つかっていない場所。たんけんを つづけると 見つかるかも</span></div>`;
+    row.innerHTML = (open ? `<img class="exthumb" src="ex_${dk}.png" alt="" loading="lazy">` : `<div class="exthumb q">？</div>`) + (open ? `<div class="ci"><b>${D.name}<small>（${fmtLeft(D.hrs*(explHas(team,'genki')?.85:1)*36e5)}${explHas(team,'genki')?'・げんきで はやめ':''}）</small></b><span>${D.desc}</span><span class="cown">いった回数 ${E.runs[dk]||0}</span></div>`
+      : `<div class="ci"><b>？？？<small>（${D.hrs}時間）</small></b><span>まだ 見つかっていない場所。たんけんを つづけると 見つかるかも</span></div>`);
     if(open){ const bt=document.createElement('button'); bt.type='button'; bt.className='dbtn'; bt.textContent='しゅっぱつ'; bt.disabled=!team.length; bt.addEventListener('click',()=>explStart(dk)); row.append(bt); }
     g.append(row); });
 }

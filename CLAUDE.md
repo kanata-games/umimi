@@ -11,7 +11,7 @@
 ## ★新しい会話で続けるとき（最初に読む）
 - 作業場所：このリポジトリを clone（例 /home/claude/umimi-repo）。本体は `source/game.html`、画像は直下の png
 - **本番・開発版のリンクは絶対に変えない**。Artifact を公開するときは必ず `url` に下の既存URLを渡す（url なしで公開すると別リンクが新しくできてしまう）。別の会話から更新する前に、いったん `action: "read"` でその URL を読む
-- 公開するとき、画像は `files` に**絶対パス**で全部渡す：`c_animal.png` `c_food.png` `c_season.png` `c_work.png` `c_fashion.png` `c_relax.png` `c_dream.png` `c_adv.png` `c_princess.png`、2コマ目の `c_<分類>2.png`（9枚）、`umimi-sprites.png` `visitors.png` `roomtex.png` `f_base.png` `f_pearl.png` `f_autumn.png` `f_halloween.png` `f_craft.png` `f_forest.png` `bg_forest.png` `bg_forest_n.png`。capability は `downloads`（前のバージョンから引き継がれる）
+- 公開するとき、画像は `files` に**絶対パス**で全部渡す：`c_animal.png` `c_food.png` `c_season.png` `c_work.png` `c_fashion.png` `c_relax.png` `c_dream.png` `c_adv.png` `c_princess.png`、2コマ目の `c_<分類>2.png`（9枚）、`umimi-sprites.png` `visitors.png` `roomtex.png` `f_base.png` `f_pearl.png` `f_autumn.png` `f_halloween.png` `f_craft.png` `f_forest.png` `bg_forest.png` `bg_forest_n.png` `ex_shallows.png` `ex_wreck.png` `ex_deep.png`。capability は `downloads`（前のバージョンから引き継がれる）
 - 開発版は `<title>ウミミの箱庭</title>` を `<title>ウミミの箱庭 開発版</title>` に置き換えたものを公開する
 - 確認用：ローカルで `python3 -m http.server` を立て、`<!doctype html><meta charset=utf-8>` を先頭に付けた試験用コピーを Playwright（/opt/pw-browsers）で開く。本体は IIFE なので、試すときは試験用コピーにだけ window.__xxx のフックを足す
 - 公開するときは「開発版か本番か」を必ずユーザーに伝える。本番は OK が出てから
@@ -90,6 +90,7 @@
   - 時間は実時間（`trip.end`）。出かけているあいだ 森のコピーは消え、かごも たまらない。いつもの海には ふつうにいる。帰ると森に戻ってきて「おはなし きいて！」、タブに ピンクの点、パネルで「おはなしを きく」→ そざい・しんじゅ・日記・けいけん
   - 成長：ウミミごとの たんけんLv（`EXPL_LV`、けいけん＝行った時間、Lv8 まで。称号 みならい/たんけんか/ベテラン/でんせつ）。Lvで そざい・しんじゅが少し増える。性格の得意 `EXPL_PERS`（げんき＝15%はやく、くいしんぼう＝そざい+2、のんびり＝しんじゅ、こうきしん＝発見、ねぼすけ＝けいけん+1、あまえんぼう＝なかよし2倍）。3回いっしょに行った2匹は「たんけんなかま」。アルバムの詳しいページに たんけんLv
   - しんじゅ（`MATS.pearl`、rare：森では出ない）：こうぼうで 1こ使うと かならず「きれいにできた」になる
+  - 行き先の絵：ピッちゃん作 `ex_shallows.png` `ex_wreck.png` `ex_deep.png`（768x432、256色。元は source/furniture/src/ex_*_src.png）。行き先の一覧（`.exthumb`、まだ見つかっていない所は「？」）、たんけん中、帰ってきた おはなしの上（`.exban`）に出す。パネルを開いたときだけ読み込む
   - テスト用：`#tanken` を付けると 1時間＝5秒
 - 次の予定：⑤作った家具を森やおへやにも置く・ウミミがベンチに座る など → 畑 → C エリア
 
