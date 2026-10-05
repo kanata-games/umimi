@@ -74,7 +74,7 @@
 - B は同じキャンバスに `drawAreaB()` で描く。A の `update()` は B を見ているあいだも動き続ける（A の暮らしはそのまま）
 - おでかけ：えらんだ子（最大 `B_MAX`=3）の**コピー**が B を歩く（A にもいる）。`S.areaB = {members:[id], visited}`、いま見ているエリアは `S.area`（'a'|'b'）。コピーは `bCopies`（保存しない）、パーティクルは `pB`
 - B の背景はピッちゃん作の手前なしの絵：ひる `bg_forest.png`／よる `bg_forest_n.png`（1672x941、256色。元は source/furniture/src/forestday_src.png・forestnight_src.png）。絵の砂のはじまり `BGF_HZ`=.69 を floorTop に合わせ、よるは よるの絵を night の濃さで重ねる（よるの絵は よるに森を見たとき はじめて読み込む）。たて長の画面は 絵の下を砂の色でのばす。手前の岩・サンゴ・海藻は `B_ROCKS`（f_forest.png の frock1〜6・fkelp1〜2 と bcoral。海藻はゆらゆら）。ウミミと前後が入れかわる。読み込み前はコードの絵。おへやの壁紙「サンゴの森」（WALLS.coralforest）も この絵の上のほうを使う（デスクトップ版は bg_forest.png を app にコピー）
-- B の作業台（`B_BENCH`）・貝殻窯（`B_KILN`）・看板はまだ飾り（タップで「もうすぐ」）
+- B の作業台（`B_BENCH`）・貝殻窯（`B_KILN`）・看板（`B_SIGN`）は 2026-10-05 に森と同じタッチの絵へ差し替え（元は src/*_old.png）。看板の絵は無地で、「こうぼう」の文字は drawSign() がコードで書く
 - そざい（ステップ2）：`MATS` 5種＝流木 wood／貝がら shell／サンゴのかけら coral／海ガラス glass／ほしのすな sand（w は出やすさ）。もっている数は `S.mats`
   - 流れ着く：森の砂に `S.bDrops`（さいだい `DROP_MAX`=6）。開いているあいだ 70〜130秒に1こ（A を見ていても）、るすのあいだは30分に1こ（`awayDrops`）。タップで +1
   - おでかけの子が拾う：`S.areaB.bag`（かご、さいだい12）。メンバーがいれば `GATHER_MS`=20分に1こ、時刻 `S.areaB.gT` から計算するので見ていなくても たまる。かご（`B_BASKET`）をタップで まとめて受け取る。性格で拾いやすい物が少し変わる（`PERS_FIND`）
