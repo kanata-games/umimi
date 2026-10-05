@@ -7,7 +7,7 @@ RES = 2.0
 # series -> items: key: (room width, tank width[, frames, anchor])
 SERIES = {
  'base':    {'rug':(170,0),'bed':(150,0),'lamp':(66,0),'cushion':(80,0),'plant':(62,0),'shelf':(105,0),'window':(135,0),'windowday':(135,0),'frame':(72,0),'table':(115,0)},
- 'pearl':   {'shellbed':(175,110),'shelltable':(125,82),'shellchair':(105,72),'bottle':(58,42),'crystal2':(90,62),'shellcake':(78,54)},
+ 'pearl':   {'shellbed':(175,110),'shelltable':(125,82),'shellchair':(105,72),'bottle':(58,42),'crystal2':(90,62),'shellcake':(78,54),'pdresser':(125,84),'pdresser2':(120,82),'pnight':(78,56),'psofa':(185,124),'pbox':(50,36)},
  'autumn':  {'lanternstand':(100,95),'stall':(200,180),'kingyo':(190,160),'mcushion':(115,90),'garland':(300,200),'chochin':(80,80),'omen':(200,180),'acorn':(60,42),'yakiimo':(70,48),'bridge':(230,200)},
  'craft':   {'cbench':(130,110),'cbench_f':(130,110),'ctable':(110,92),'ctable_f':(110,92),'cshelllamp':(70,62),'cshelllamp_f':(70,62),'ccoralpot':(72,60),'ccoralpot_f':(72,60),'cmobile':(80,72),'cmobile_f':(80,72),'bwork':(190,190),'bsign':(150,150),'bkiln':(160,160)},
  'halloween':{'pumpkinstand':(85,80),'hrug':(170,120),'ghostcushion':(85,72),'hframe':(80,0),'candytable':(105,82),'hshelf':(115,100),'jbox':(85,74,4,'b'),'chandelier':(130,0,3,'t')},

@@ -97,6 +97,7 @@
 - おけいこ：うちの子に芸（ジャンプ・くるくる・おじぎ・ぷかぷか・ぴょんぴょん・ハートぽわぽわ）を1日1回練習。5ポイントで習得し水そうで自分から披露。性格ごとに得意芸。u.tricks / u.learned / u.lessonDay
 - おへや：うちの子ごとの部屋（u.room = {wall, floor, items:[{k,x,y,id,on,dx}]}）。家具は FURN、購入済みは S.furn（つきのかけらで1回買えば全員の部屋で使える）。壁紙・床は WALLS / FLOORS（tex は roomtex の番号）。ベッド・椅子・クッションで休む（REST）。写真をアルバムへ
 - 水そうの飾り DECOR：img:1 の物は画像。かざるはシリーズタブ（DSERIES：きほん/おみやげ/ダービー/パール/あきまつり/ハロウィン）
+- パールシリーズに 2026-10-05 追加（ピッちゃん作・ドット絵）：シェルドレッサー pdresser／パールのドレッサー pdresser2／つきのナイトテーブル pnight／シェルソファ psofa（おへやで座る REST）／リボンのかいがらばこ pbox（小物 SMALLS、テーブルにのる）。水そう DECOR と おへや FURN の両方
 - テーブルの上に小物を置ける：テーブル=SURF（shelltable, table）、小物=SMALLS。水そうは o.on=テーブルid, o.dx、おへやは it.on, it.dx
 - 動く家具はコマ切り替えだけ（animKey：かぼちゃびっくりばこ）。シャンデリアは静止に変更済み
 - BGM（`const BGM`）：音のファイルは使わず Web Audio でその場で鳴らす（数KB）。曲は `SONGS`：base（水そうのオルゴール。ひる72/ゆうがた64/よる56 BPM）、derby（待ち時間。オーケストラ風）、derbyRace（レース中）、room（木琴）、lesson（ピチカート）、halloween、tsukimi、xmas、wa（正月・ひなまつり・お花見・こどもの日）、natsu（七夕・夏祭り）。バレンタインは base。10月はじめのハロウィン＋お月見は、夜だけ tsukimi
