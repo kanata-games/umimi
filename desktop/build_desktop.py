@@ -188,6 +188,6 @@ body.ring #derby.racing{display:none!important}
 head = head.replace('</style>', dcss + '\n</style>', 1)
 # 家具（f_*.png）と模様は app フォルダに png のまま同梱する（使うときだけ読み込む）
 import glob as _glob, shutil as _sh
-for _f in _glob.glob('f_*.png')+['roomtex.png']: _sh.copy(_f, 'desktop/app/'+_f)
+for _f in _glob.glob('f_*.png')+['roomtex.png','bg_forest.png']: _sh.copy(_f, 'desktop/app/'+_f)
 open('desktop/app/index.html','w').write(head + "\n<script>" + s + "</script>\n</body></html>\n")
 print('built', len(s))

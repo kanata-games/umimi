@@ -11,7 +11,7 @@
 ## ★新しい会話で続けるとき（最初に読む）
 - 作業場所：このリポジトリを clone（例 /home/claude/umimi-repo）。本体は `source/game.html`、画像は直下の png
 - **本番・開発版のリンクは絶対に変えない**。Artifact を公開するときは必ず `url` に下の既存URLを渡す（url なしで公開すると別リンクが新しくできてしまう）。別の会話から更新する前に、いったん `action: "read"` でその URL を読む
-- 公開するとき、画像は `files` に**絶対パス**で全部渡す：`c_animal.png` `c_food.png` `c_season.png` `c_work.png` `c_fashion.png` `c_relax.png` `c_dream.png` `c_adv.png` `c_princess.png`、2コマ目の `c_<分類>2.png`（9枚）、`umimi-sprites.png` `visitors.png` `roomtex.png` `f_base.png` `f_pearl.png` `f_autumn.png` `f_halloween.png` `f_craft.png` `bg_forest.png`。capability は `downloads`（前のバージョンから引き継がれる）
+- 公開するとき、画像は `files` に**絶対パス**で全部渡す：`c_animal.png` `c_food.png` `c_season.png` `c_work.png` `c_fashion.png` `c_relax.png` `c_dream.png` `c_adv.png` `c_princess.png`、2コマ目の `c_<分類>2.png`（9枚）、`umimi-sprites.png` `visitors.png` `roomtex.png` `f_base.png` `f_pearl.png` `f_autumn.png` `f_halloween.png` `f_craft.png` `f_forest.png` `bg_forest.png` `bg_forest_n.png`。capability は `downloads`（前のバージョンから引き継がれる）
 - 開発版は `<title>ウミミの箱庭</title>` を `<title>ウミミの箱庭 開発版</title>` に置き換えたものを公開する
 - 確認用：ローカルで `python3 -m http.server` を立て、`<!doctype html><meta charset=utf-8>` を先頭に付けた試験用コピーを Playwright（/opt/pw-browsers）で開く。本体は IIFE なので、試すときは試験用コピーにだけ window.__xxx のフックを足す
 - 公開するときは「開発版か本番か」を必ずユーザーに伝える。本番は OK が出てから
@@ -61,7 +61,7 @@
   - うさぎのきぐるみは10コマ分（ふつうのウミミと同じ並び）が届いているので、将来アニメに使える
   - ウミミの色に合わせた色変え：`recolorSheet()`。色を変えない衣装は `COS_KEEP`。チョコとマントはコードで描いている
 - `visitors.png` … 訪問者10種×2コマ。作り直すときは `source/visitors/build_visitors.py`。出力された visitors_meta.json を game.html の `const VIS_SPR = {...}` に貼る。絵がまだ読み込まれていないときは、コードで描いた旧訪問者を表示する
-- `f_base.png` `f_pearl.png` `f_autumn.png` `f_halloween.png` `f_craft.png` … 家具・飾りのシリーズ別シート（ピッちゃん=ChatGPT作の絵を背景抜き・色数圧縮）。**使うときだけ読み込む**（`fsheet()`）。作り直しは `source/furniture/build_furniture2.py`（SERIES に「キー:(おへや幅, 水そう幅[, コマ数, 基準])」を足す）→ 出力 furniture_meta.json を game.html の `const FIMG = {m:...}` に貼る。`python3 build_furniture2.py craft` のようにシリーズ名を渡すと、そのシートだけ作り直す（他のシートの meta は残す）（jbox/chandelier は _0 のエイリアスも）
+- `f_base.png` `f_pearl.png` `f_autumn.png` `f_halloween.png` `f_craft.png` `f_forest.png`（森の岩・海藻。緑っぽい物は build の `NOSPILL`）… 家具・飾りのシリーズ別シート（ピッちゃん=ChatGPT作の絵を背景抜き・色数圧縮）。**使うときだけ読み込む**（`fsheet()`）。作り直しは `source/furniture/build_furniture2.py`（SERIES に「キー:(おへや幅, 水そう幅[, コマ数, 基準])」を足す）→ 出力 furniture_meta.json を game.html の `const FIMG = {m:...}` に貼る。`python3 build_furniture2.py craft` のようにシリーズ名を渡すと、そのシートだけ作り直す（他のシートの meta は残す）（jbox/chandelier は _0 のエイリアスも）
 - `roomtex.png` … おへやの壁紙・床の模様タイル4枚（`source/furniture/build_tex.py`）
 - デスクトップ版の「画面一周ダービー」：水そうの「ダービー」ボタン → main.js が作業領域いっぱいの透明ウインドウを `index.html#derby` で開く（`DESK_RING`）。予想の画面は真ん中、スタートするとクリックが下のアプリに通る。5匹は画面のいちばん外側を1列で一周（左下がスタート・ゴール、水そうの上も通る）。名前は出さず、賭けた子が金色に光る。閉じると水そうが読み込み直して結果を反映（開いているあいだは水そう側は保存しない `window.__noSave`）。Esc で閉じる
 - `desktop/` … Windows デスクトップ版（Electron）。`python3 build_desktop.py` で、game.html から画面の下に出る細長い水そう版の `desktop/app/index.html` を作る（ウミミ・訪問者・おきがえ c_*.png は data URI で埋め込む＝色変えのため。家具 f_*.png と roomtex.png は app に png をコピー。どこから実行してもよい。index.html から作るので、先に index.html を作り直す。置き換える文字列が合わないと assert で止まるので、本体を変えたら置き換え側も直す）
@@ -73,7 +73,7 @@
 - 水そうの左上のタブで切り替え（パネルを開いているあいだは隠れる）（`buildAreaTabs()`。`nav.tools` が無いデスクトップ版では作らない＝`areaUI()`）。B のときは body.areaB でツールを隠し、トレイは `renderTrayB()`（おでかけする子をえらぶ）
 - B は同じキャンバスに `drawAreaB()` で描く。A の `update()` は B を見ているあいだも動き続ける（A の暮らしはそのまま）
 - おでかけ：えらんだ子（最大 `B_MAX`=3）の**コピー**が B を歩く（A にもいる）。`S.areaB = {members:[id], visited}`、いま見ているエリアは `S.area`（'a'|'b'）。コピーは `bCopies`（保存しない）、パーティクルは `pB`
-- B の背景はピッちゃん作の `bg_forest.png`（1672x941、256色。元は source/furniture/src/forestbg_src.png）。**奥と足場を分けて**使う：絵の上から `BGF_CUT`=.64 までを奥の背景にして floorTop 付近に合わせ、足場の砂はコードで たいらに描く（絵の手前のサンゴは使わない）。夕方・夜は色をかぶせる。読み込み前はコードの絵。手前のサンゴは `bcoral`（f_craft.png）を5か所に置き、ウミミと前後が入れかわる。おへやの壁紙「サンゴの森」（WALLS.coralforest）も この絵の奥を使う
+- B の背景はピッちゃん作の手前なしの絵：ひる `bg_forest.png`／よる `bg_forest_n.png`（1672x941、256色。元は source/furniture/src/forestday_src.png・forestnight_src.png）。絵の砂のはじまり `BGF_HZ`=.69 を floorTop に合わせ、よるは よるの絵を night の濃さで重ねる（よるの絵は よるに森を見たとき はじめて読み込む）。たて長の画面は 絵の下を砂の色でのばす。手前の岩・サンゴ・海藻は `B_ROCKS`（f_forest.png の frock1〜6・fkelp1〜2 と bcoral。海藻はゆらゆら）。ウミミと前後が入れかわる。読み込み前はコードの絵。おへやの壁紙「サンゴの森」（WALLS.coralforest）も この絵の上のほうを使う（デスクトップ版は bg_forest.png を app にコピー）
 - B の作業台（`B_BENCH`）・貝殻窯（`B_KILN`）・看板はまだ飾り（タップで「もうすぐ」）
 - そざい（ステップ2）：`MATS` 5種＝流木 wood／貝がら shell／サンゴのかけら coral／海ガラス glass／ほしのすな sand（w は出やすさ）。もっている数は `S.mats`
   - 流れ着く：森の砂に `S.bDrops`（さいだい `DROP_MAX`=6）。開いているあいだ 70〜130秒に1こ（A を見ていても）、るすのあいだは30分に1こ（`awayDrops`）。タップで +1
