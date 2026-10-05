@@ -11,7 +11,7 @@
 ## ★新しい会話で続けるとき（最初に読む）
 - 作業場所：このリポジトリを clone（例 /home/claude/umimi-repo）。本体は `source/game.html`、画像は直下の png
 - **本番・開発版のリンクは絶対に変えない**。Artifact を公開するときは必ず `url` に下の既存URLを渡す（url なしで公開すると別リンクが新しくできてしまう）。別の会話から更新する前に、いったん `action: "read"` でその URL を読む
-- 公開するとき、画像は `files` に**絶対パス**で全部渡す：`c_animal.png` `c_food.png` `c_season.png` `c_work.png` `c_fashion.png` `c_relax.png` `c_dream.png` `c_adv.png` `c_princess.png`、2コマ目の `c_<分類>2.png`（9枚）、`umimi-sprites.png` `visitors.png` `roomtex.png` `f_base.png` `f_pearl.png` `f_autumn.png` `f_halloween.png` `f_craft.png`。capability は `downloads`（前のバージョンから引き継がれる）
+- 公開するとき、画像は `files` に**絶対パス**で全部渡す：`c_animal.png` `c_food.png` `c_season.png` `c_work.png` `c_fashion.png` `c_relax.png` `c_dream.png` `c_adv.png` `c_princess.png`、2コマ目の `c_<分類>2.png`（9枚）、`umimi-sprites.png` `visitors.png` `roomtex.png` `f_base.png` `f_pearl.png` `f_autumn.png` `f_halloween.png` `f_craft.png` `bg_forest.png`。capability は `downloads`（前のバージョンから引き継がれる）
 - 開発版は `<title>ウミミの箱庭</title>` を `<title>ウミミの箱庭 開発版</title>` に置き換えたものを公開する
 - 確認用：ローカルで `python3 -m http.server` を立て、`<!doctype html><meta charset=utf-8>` を先頭に付けた試験用コピーを Playwright（/opt/pw-browsers）で開く。本体は IIFE なので、試すときは試験用コピーにだけ window.__xxx のフックを足す
 - 公開するときは「開発版か本番か」を必ずユーザーに伝える。本番は OK が出てから
@@ -73,6 +73,7 @@
 - 水そうの左上のタブで切り替え（パネルを開いているあいだは隠れる）（`buildAreaTabs()`。`nav.tools` が無いデスクトップ版では作らない＝`areaUI()`）。B のときは body.areaB でツールを隠し、トレイは `renderTrayB()`（おでかけする子をえらぶ）
 - B は同じキャンバスに `drawAreaB()` で描く。A の `update()` は B を見ているあいだも動き続ける（A の暮らしはそのまま）
 - おでかけ：えらんだ子（最大 `B_MAX`=3）の**コピー**が B を歩く（A にもいる）。`S.areaB = {members:[id], visited}`、いま見ているエリアは `S.area`（'a'|'b'）。コピーは `bCopies`（保存しない）、パーティクルは `pB`
+- B の背景はピッちゃん作の `bg_forest.png`（1672x941、256色。元は source/furniture/src/forestbg_src.png）。絵の中の砂のはじまり `BGF_FLOOR`=.66 を floorTop に合わせて拡大・切り取り、うすい白をかけて手前を見やすくしている。夕方・夜は色をかぶせる。読み込み前はコードの絵。手前のサンゴは `bcoral`（f_craft.png）を左右に2つ
 - B の作業台（`B_BENCH`）・貝殻窯（`B_KILN`）・看板はまだ飾り（タップで「もうすぐ」）
 - そざい（ステップ2）：`MATS` 5種＝流木 wood／貝がら shell／サンゴのかけら coral／海ガラス glass／ほしのすな sand（w は出やすさ）。もっている数は `S.mats`
   - 流れ着く：森の砂に `S.bDrops`（さいだい `DROP_MAX`=6）。開いているあいだ 70〜130秒に1こ（A を見ていても）、るすのあいだは30分に1こ（`awayDrops`）。タップで +1
