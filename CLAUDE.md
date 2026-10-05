@@ -73,7 +73,7 @@
 - 水そうの左上のタブで切り替え（パネルを開いているあいだは隠れる）（`buildAreaTabs()`。`nav.tools` が無いデスクトップ版では作らない＝`areaUI()`）。B のときは body.areaB でツールを隠し、トレイは `renderTrayB()`（おでかけする子をえらぶ）
 - B は同じキャンバスに `drawAreaB()` で描く。A の `update()` は B を見ているあいだも動き続ける（A の暮らしはそのまま）
 - おでかけ：えらんだ子（最大 `B_MAX`=3）の**コピー**が B を歩く（A にもいる）。`S.areaB = {members:[id], visited}`、いま見ているエリアは `S.area`（'a'|'b'）。コピーは `bCopies`（保存しない）、パーティクルは `pB`
-- B の背景はピッちゃん作の `bg_forest.png`（1672x941、256色。元は source/furniture/src/forestbg_src.png）。絵の中の砂のはじまり `BGF_FLOOR`=.66 を floorTop に合わせて拡大・切り取り、うすい白をかけて手前を見やすくしている。夕方・夜は色をかぶせる。読み込み前はコードの絵。手前のサンゴは `bcoral`（f_craft.png）を左右に2つ
+- B の背景はピッちゃん作の `bg_forest.png`（1672x941、256色。元は source/furniture/src/forestbg_src.png）。**奥と足場を分けて**使う：絵の上から `BGF_CUT`=.64 までを奥の背景にして floorTop 付近に合わせ、足場の砂はコードで たいらに描く（絵の手前のサンゴは使わない）。夕方・夜は色をかぶせる。読み込み前はコードの絵。手前のサンゴは `bcoral`（f_craft.png）を5か所に置き、ウミミと前後が入れかわる。おへやの壁紙「サンゴの森」（WALLS.coralforest）も この絵の奥を使う
 - B の作業台（`B_BENCH`）・貝殻窯（`B_KILN`）・看板はまだ飾り（タップで「もうすぐ」）
 - そざい（ステップ2）：`MATS` 5種＝流木 wood／貝がら shell／サンゴのかけら coral／海ガラス glass／ほしのすな sand（w は出やすさ）。もっている数は `S.mats`
   - 流れ着く：森の砂に `S.bDrops`（さいだい `DROP_MAX`=6）。開いているあいだ 70〜130秒に1こ（A を見ていても）、るすのあいだは30分に1こ（`awayDrops`）。タップで +1
