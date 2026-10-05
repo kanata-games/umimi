@@ -323,6 +323,26 @@ body.areaB .tools, body.areaB #decorCats{display:none!important}
 .cneed .short{color:#c0607e}
 .ci .cown{font-size:11.5px;color:#a0701a}
 @media (max-width:520px){ .crow{flex-wrap:wrap} .crow .dbtn{margin-left:auto} }
+.areatabs button{position:relative}
+.areatabs button.ready::after{content:"";position:absolute;right:3px;top:2px;width:8px;height:8px;border-radius:50%;background:#f08aa8}
+.item.explbtn{justify-content:center;background:#fffaf0;border-color:#f3e1b5}
+.item.explbtn.ready{border-color:#f0a3bd;box-shadow:0 0 0 2px #f7c6d2;background:#fff4f8}
+.item.explbtn .ai{font-size:26px;line-height:1.2}
+.exteam{display:flex;gap:8px;flex-wrap:wrap}
+.exmem{flex:1 1 150px;display:flex;flex-direction:column;align-items:center;gap:1px;background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:6px 8px;font-size:12px;color:var(--ink2);text-align:center}
+.exmem canvas{width:96px;height:68px}
+.exmem b{font-size:14px;color:var(--ink)}
+.exmem .exp{font-size:11.5px}
+.extrip{background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--ink2)}
+.extrip b{color:#5b64b8;font-size:15px}
+.exbar{height:10px;border-radius:5px;background:#e4e6f6;overflow:hidden}.exbar i{display:block;height:100%;background:linear-gradient(90deg,#9fd0f0,#7f8fe0)}
+.exdest.lock{background:#f4f4fb}.exdest .ci b small{font-size:12px;color:var(--ink2);font-weight:500;margin-left:4px}
+.exres{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;padding:6px}
+.exres b{color:#5b64b8;font-size:16px}.exres p{margin:0;font-size:14px;line-height:1.8;color:var(--ink)}
+.exgot{display:flex;flex-wrap:wrap;gap:4px 10px;justify-content:center;font-size:13px;font-weight:700;color:#a0701a}
+.exup{color:#d0507a!important;font-weight:700}
+.exlog{background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:8px 12px;font-size:13px}
+.exlog b{color:#5b64b8}.exlog .exwho{margin-left:8px;font-size:12px;color:var(--ink2)}.exlog p{margin:4px 0;line-height:1.7}.exlog .exgot{justify-content:flex-start}
 .item .bst{font-size:11px;font-weight:700;color:var(--ink2)}
 .item[aria-pressed="true"] .bst{color:var(--peri-deep)}
 @media (max-width:520px){ .areatabs{left:6px;top:6px} .areatabs button{font-size:12px;padding:4px 8px} }
@@ -657,7 +677,7 @@ function serialize(){
     umimi:S.umimi.map(u=>({id:u.id,name:u.name,color:u.color,x:Math.round(u.x),d:+u.d.toFixed(3),aff:u.aff,outfit:u.outfit,lvSeen:u.lvSeen,pers:u.pers,born:u.born,pets:u.pets,feeds:u.feeds,worn:u.worn,mem:u.mem,ann:u.ann,wins:u.wins||0,druns:u.druns||0,dbest:u.dbest||0,tricks:u.tricks,learned:u.learned,lessonDay:u.lessonDay,room:u.room})),
     past:S.past,
     closet:S.closet, closetNew:S.closetNew, pets:S.pets, days:S.days, feeds:S.feeds, starsCaught:S.starsCaught, metVisitors:S.metVisitors,
-    diary:S.diary.slice(0,60), day:S.day, visitorDay:S.visitorDay, visitLog:S.visitLog, nextVisit:S.nextVisit, curVisit:S.curVisit, lastVisitor:S.lastVisitor, unlocked:S.unlocked, diaryNew:S.diaryNew, myBday:S.myBday, lastExport:S.lastExport||0, bkNagAt:S.bkNagAt||0, evSeen:S.evSeen, derby:S.derby, furn:S.furn, omikujiDay:S.omikujiDay, wishes:S.wishes, presentYear:S.presentYear, trickDay:S.trickDay, area:S.area==='b'?'b':'a', areaB:S.areaB, mats:S.mats, matFirst:S.matFirst, crafted:S.crafted, craftN:S.craftN, bDrops:(S.bDrops||[]).map(o=>({k:o.k,x:o.x,d:o.d})), profileOnTap:S.profileOnTap, bdayBlown:S.bdayBlown, bdayDiary:S.bdayDiary,
+    diary:S.diary.slice(0,60), day:S.day, visitorDay:S.visitorDay, visitLog:S.visitLog, nextVisit:S.nextVisit, curVisit:S.curVisit, lastVisitor:S.lastVisitor, unlocked:S.unlocked, diaryNew:S.diaryNew, myBday:S.myBday, lastExport:S.lastExport||0, bkNagAt:S.bkNagAt||0, evSeen:S.evSeen, derby:S.derby, furn:S.furn, omikujiDay:S.omikujiDay, wishes:S.wishes, presentYear:S.presentYear, trickDay:S.trickDay, area:S.area==='b'?'b':'a', areaB:S.areaB, mats:S.mats, matFirst:S.matFirst, crafted:S.crafted, craftN:S.craftN, expl:S.expl, bDrops:(S.bDrops||[]).map(o=>({k:o.k,x:o.x,d:o.d})), profileOnTap:S.profileOnTap, bdayBlown:S.bdayBlown, bdayDiary:S.bdayDiary,
     decor:S.decor.map(o=>Object.assign({id:o.id,type:o.type,x:Math.round(o.x),d:+o.d.toFixed(3)}, o.on!=null?{on:o.on,dx:+(o.dx||0).toFixed(1)}:{})),
     ground:S.ground.map(g=>({x:Math.round(g.x),d:+g.d.toFixed(3)}))};
 }
@@ -2038,7 +2058,7 @@ function evTap(p){
 
 // ---------- album ----------
 let albumTab='u', albumSel=null;
-function hidePanels(except){ ['diary','closet','savep','album','shootp','studio','eventp','derby','asobi','craftp'].forEach(id=>{ const e=$(id); if(e && id!==except) e.hidden=true; }); }
+function hidePanels(except){ ['diary','closet','savep','album','shootp','studio','eventp','derby','asobi','craftp','explp'].forEach(id=>{ const e=$(id); if(e && id!==except) e.hidden=true; }); }
 function openAlbum(tab,sel){ hidePanels('album'); closeCard(); $('album').hidden=false; albumTab=tab||'u'; albumSel=sel||null; renderAlbum(); }
 $('albumBtn').addEventListener('click', () => { if(!$('album').hidden){ $('album').hidden=true; return; } openAlbum('u'); });
 $('albumClose').addEventListener('click', () => { $('album').hidden=true; });
@@ -2092,6 +2112,7 @@ function renderUmiDetail(body, sel){
   stat('なでた回数', u.pets||0, '回'); stat('ごはん', u.feeds||0, '回');
   stat('着たおきがえ', isPast?u.worn:(u.worn||[]).length, `/ ${Object.keys(OUTFITS).length-1}`);
   stat('おぼえた芸', learnedOf(u).length, `/ ${Object.keys(TRICKS).length}`);
+  if(!isPast && S.expl && S.expl.xp && S.expl.xp[u.id]){ const lv=explLv(u.id); stat('たんけん', 'Lv'+lv, explTitle(lv)); }
   stat('ダービー', `${u.wins||0}勝`, `/ ${u.druns||0}レース`);
   if(u.druns) stat('ダービー さいこう', u.dbest ? `${u.dbest}着` : '—', u.druns ? `勝率${Math.round((u.wins||0)/u.druns*100)}%` : '');
   wrap.append(back, head, st, el('div','asec','おもいで'));
@@ -3789,9 +3810,10 @@ function buildSceneB(){
 // 作業台と 貝殻窯（まだ使えない。タップすると「もうすぐ」）
 const B_BENCH = {x:745, d:.2}, B_KILN = {x:905, d:.08}, B_SIGN = {x:545, d:.0};
 function syncB(){
-  const ids = areaB().members;
+  const away = explAway() ? explOf().trip.members : [], back = explOf().trip ? explOf().trip.members : [];
+  const ids = areaB().members.filter(id=>!away.includes(id));
   bCopies = bCopies.filter(c => c.leaving || ids.includes(c.id));
-  ids.forEach(id => { if(!bCopies.some(c=>c.id===id && !c.leaving)) bCopies.push(newCopy(id,false)); });
+  ids.forEach(id => { if(!bCopies.some(c=>c.id===id && !c.leaving)) bCopies.push(newCopy(id, back.includes(id))); });
   bCopies.forEach(c => { c.src = S.umimi.find(u=>u.id===c.id); if(!c.src && !c.leaving){ c.leaving=true; c.tx=c.x; } });
 }
 function newCopy(id, arrive){
@@ -3807,6 +3829,7 @@ function bHearts(c,n){ const s=scaleD(c.d); for(let i=0;i<n;i++) bAdd({type:'hea
 function bBubbles(x,y,n){ for(let i=0;i<n;i++) bAdd({type:'bubble',x:x+rand(-10,10),y,vx:0,vy:rand(-70,-40),r:rand(2,5),life:5,max:5,wob:rand(0,TAU)}); }
 const B_SEARCH_SAY = ['なにか あるかな','きらきら…','ふむふむ','これ なんだろ','いいもの みっけ？'];
 function bPick(c){
+  if(explReady() && explOf().trip.members.includes(c.id) && Math.random()<.35){ c.state='happy'; c.timer=1.6; bSay(c, ['おはなし きいて！','ただいま！','たのしかったよ'][Math.floor(Math.random()*3)]); return; }
   const r = Math.random();
   if(night > .6){
     if(r<.5){ c.state='sleep'; c.timer=rand(14,28); c.zT=.5; }
@@ -3940,6 +3963,7 @@ function bTap(p){
   const dr = hitDrop(p); if(dr){ pickDrop(dr); return; }
   if(hitProp(p,B_BASKET,38,70)){ takeBag(); return; }
   const u = hitCopy(p);
+  if(u && explReady() && explOf().trip.members.includes(u.id)){ openExpl(); return; }
   if(u){ if(u.petCD<=0){ u.state='happy'; u.timer=1.6; u.petCD=.6; bHearts(u,2); sfx('pet'); if(Math.random()<.5) bSay(u, B_PET_SAY[Math.floor(Math.random()*B_PET_SAY.length)]); } return; }
   if(hitProp(p,B_BENCH,100,175)){ sfx('place'); openCraft(); return; }
   if(hitProp(p,B_KILN,80,155)){ sfx('pop'); toast('かいがらがま：もうすぐ 使えるように なるよ'); return; }
@@ -3985,7 +4009,7 @@ function drawAreaB(){
 function areaUI(){ return !!document.querySelector('nav.tools') && !DESK_RING; }
 function buildAreaTabs(){
   if(!areaUI() || $('areaTabs')) return;
-  buildCraftPanel();
+  buildCraftPanel(); buildExplPanel();
   const box = document.createElement('div'); box.className='areatabs'; box.id='areaTabs'; box.setAttribute('role','group'); box.setAttribute('aria-label','エリア');
   box.innerHTML = AREAS.map(([k,n]) => `<button type="button" data-area="${k}"${k==='c'?' class="lock" title="まだ ひみつ"':''}>${n}</button>`).join('');
   stage.append(box);
@@ -3998,6 +4022,7 @@ function refreshAreaTabs(){
   if(!areaUI()) S.area = 'a';
   document.querySelectorAll('#areaTabs [data-area]').forEach(b => b.setAttribute('aria-pressed', b.dataset.area===S.area));
   document.body.classList.toggle('areaB', S.area==='b');
+  const tb=document.querySelector('#areaTabs [data-area=b]'); if(tb) tb.classList.toggle('ready', !!(S.areaB && S.areaB.visited && explReady()));
 }
 function setArea(a){
   if(a!=='b') a='a';
@@ -4011,6 +4036,7 @@ function setArea(a){
   refreshAreaTabs(); renderTray(); save(); sfx('pop');
 }
 function toggleOuting(u){
+  if(explOf().trip){ toast(explReady() ? 'たんけんの おはなしを きいてからね' : 'たんけん中は メンバーを かえられないよ'); return; }
   const B = areaB(), on = B.members.includes(u.id);
   if(on){ B.members = B.members.filter(id=>id!==u.id); const c = bCopies.find(x=>x.id===u.id && !x.leaving); if(c){ c.leaving=true; c.tx = c.x<420 ? 190 : 660; c.dir = c.tx<c.x?-1:1; } toast(`${u.name}は いつもの海に もどったよ`); }
   else { if(B.members.length>=B_MAX){ toast(`おでかけできるのは ${B_MAX}ひきまで。だれかを もどしてあげてね`); return; }
@@ -4021,13 +4047,14 @@ function renderTrayB(){
   const tr = $('tray'); tr.innerHTML = ''; $('decorCats').hidden = true;
   const B = areaB();
   tr.insertAdjacentHTML('beforeend', `<div class="hintwrap bhint"><p class="hint"><b>サンゴの森</b>に おでかけする子を えらんでね（いつもの海にも いるよ）。砂の上の <b>そざい</b>は タップで ひろえて、おでかけ中の子は <b>かご</b>に ひろってきてくれるよ。<b>さぎょうだい</b>を タップすると こうぼう。</p><span class="count" style="align-self:flex-start">おでかけ ${B.members.length}/${B_MAX}</span><div class="mats" id="matRow"></div></div>`);
-  const mr = $('matRow'), mm = matsOf(); MAT_KEYS.forEach(k=>{ const sp=document.createElement('span'); sp.title=MATS[k].name; sp.append(matIcon(k,22)); sp.insertAdjacentHTML('beforeend', `${MATS[k].name} <b>${mm[k]||0}</b>`); mr.append(sp); });
+  const mr = $('matRow'), mm = matsOf(); MAT_KEYS.filter(k=>!MATS[k].rare || mm[k]).forEach(k=>{ const sp=document.createElement('span'); sp.title=MATS[k].name; sp.append(matIcon(k,22)); sp.insertAdjacentHTML('beforeend', `${MATS[k].name} <b>${mm[k]||0}</b>`); mr.append(sp); });
+  { const E=explOf(), eb=document.createElement('button'); eb.type='button'; eb.className='item explbtn'+(explReady()?' ready':''); eb.innerHTML=`<span class="ai">🧭</span><span>たんけん</span><span class="bst" id="explStat">${explStatus()}</span>`; eb.addEventListener('click',()=>openExpl()); tr.append(eb); }
   liveUmi().forEach(u => {
-    const on = B.members.includes(u.id);
+    const on = B.members.includes(u.id), tk = explOf().trip && explOf().trip.members.includes(u.id);
     const b = document.createElement('button'); b.type='button'; b.className='item'; b.setAttribute('aria-pressed', on);
     b.disabled = !on && B.members.length>=B_MAX;
     const [c,x] = thumbCanvas(64,52); const fake = Object.assign(hydrateU({color:u.color,x:0,d:0}), {outfit:u.outfit, dir:-1, ph:0}); drawUmimiAt(x,fake,33,48,.46,.1,0,{});
-    b.append(c); b.insertAdjacentHTML('beforeend', `<span>${esc(u.name)}</span><span class="bst">${on?'おでかけ中':'つれていく'}</span>`);
+    b.append(c); b.insertAdjacentHTML('beforeend', `<span>${esc(u.name)}</span><span class="bst">${tk ? (explAway()?'たんけん中':'かえってきた') : on?'おでかけ中':'つれていく'}</span>`);
     b.addEventListener('click', () => toggleOuting(u)); tr.append(b);
   });
 }
@@ -4041,6 +4068,7 @@ const MATS = {
   coral:{name:'サンゴのかけら', w:20},
   glass:{name:'海ガラス',      w:15},
   sand: {name:'ほしのすな',    w:10},
+  pearl:{name:'しんじゅ',      w:0, rare:1},   // たんけんで みつかる。こうぼうで きれいに しあげるのに つかう
 };
 const MAT_KEYS = Object.keys(MATS);
 const DROP_MAX = 6, DROP_GAP = [70,130], BAG_MAX = 12, GATHER_MS = 20*60e3;
@@ -4058,7 +4086,7 @@ function gatherTick(){
   if(!S.areaB || !S.areaB.visited) return;
   const B = areaB(), now = Date.now();
   if(!Array.isArray(B.bag)) B.bag = [];
-  if(!B.gT || !B.members.length || B.bag.length>=BAG_MAX){ B.gT = now; return; }
+  if(!B.gT || !B.members.length || B.bag.length>=BAG_MAX || explAway()){ B.gT = now; return; }
   const n = Math.floor((now - B.gT) / GATHER_MS); if(n<=0) return;
   B.gT += n*GATHER_MS;
   for(let i=0;i<n && B.bag.length<BAG_MAX;i++){ const u = S.umimi.find(x=>x.id===B.members[i%B.members.length]); B.bag.push(pickMat(u && PERS_FIND[u.pers])); }
@@ -4071,6 +4099,7 @@ function bWorld(dt){
   dropT -= dt; if(dropT<=0){ dropT = rand(DROP_GAP[0],DROP_GAP[1]); const o=spawnDrop(null,null,null,S.area==='b'); if(o && S.area==='b'){ const s=scaleD(o.d); bBubbles(o.x, floorY(o.d)-8*s, 4); } }
   gatherT -= dt; if(gatherT<=0){ gatherT = 30; gatherTick(); }
   bDropsOf().forEach(o=>{ if(o.pop) o.pop = Math.max(0,o.pop-dt*2); });
+  explTick(dt);
 }
 // るすのあいだに 流れ着いた ぶん（30分に1こ、さいだい DROP_MAX まで）
 function awayDrops(mins){ if(!S.areaB || !S.areaB.visited) return; const n = Math.min(DROP_MAX, Math.floor(mins/30)); for(let i=0;i<n;i++) spawnDrop(); }
@@ -4082,6 +4111,7 @@ function drawMat(c,k,x,y,s,t){
     c.lineWidth=1; for(let i=1;i<5;i++){ const a=Math.PI*1.07+i*(Math.PI*.86/5); c.beginPath(); c.moveTo(0,-1); c.lineTo(Math.cos(a)*11,-1+Math.sin(a)*11); c.stroke(); } }
   else if(k==='coral'){ c.strokeStyle='#f49aa6'; c.lineWidth=4.5; c.beginPath(); c.moveTo(0,0); c.lineTo(0,-10); c.lineTo(-6,-17); c.moveTo(0,-10); c.lineTo(6,-18); c.moveTo(0,-5); c.lineTo(7,-9); c.stroke(); c.fillStyle='#fcd2da'; [[-6,-17],[6,-18],[7,-9]].forEach(([a,b])=>{ c.beginPath(); c.arc(a,b,2.4,0,TAU); c.fill(); }); }
   else if(k==='glass'){ c.fillStyle='rgba(140,214,205,.92)'; c.strokeStyle='#6fb5ad'; c.lineWidth=1.2; c.beginPath(); c.moveTo(-9,-2); c.lineTo(-3,-12); c.lineTo(9,-9); c.lineTo(8,-1); c.lineTo(-5,1); c.closePath(); c.fill(); c.stroke(); c.fillStyle='rgba(255,255,255,.8)'; c.beginPath(); c.ellipse(-1,-8,2.6,1.3,-.5,0,TAU); c.fill(); }
+  else if(k==='pearl'){ const g=c.createRadialGradient(-3,-9,1,0,-6,8); g.addColorStop(0,'#ffffff'); g.addColorStop(.6,'#f6eefc'); g.addColorStop(1,'#d9c8ee'); c.fillStyle=g; c.strokeStyle='#b9a6d8'; c.lineWidth=1.2; c.beginPath(); c.arc(0,-6,7,0,TAU); c.fill(); c.stroke(); c.fillStyle='rgba(255,255,255,.9)'; c.beginPath(); c.ellipse(-2.5,-8.5,2,1.3,-.5,0,TAU); c.fill(); }
   else if(k==='sand'){ c.fillStyle='#f6e4b8'; c.strokeStyle='#d9bf86'; c.lineWidth=1.2; c.beginPath(); c.ellipse(0,-4,12,5,0,0,TAU); c.fill(); c.stroke(); c.fillStyle='#f4d27a'; [[-5,-5],[3,-6],[6,-3],[-1,-3]].forEach(([a,b],i)=>sparkle(c,a,b,1.6+(i%2)*.6)); }
   c.restore();
 }
@@ -4142,13 +4172,15 @@ const RECIPES = [
 const FINE_RATE = .15;
 function craftedOf(){ if(!S.crafted || typeof S.crafted!=='object') S.crafted = {}; return S.crafted; }
 function craftBase(k){ return k.replace(/_f$/,''); }
+let craftPearl = false;
 function canCraft(r){ const m=matsOf(); return Object.entries(r.need).every(([k,n])=>(m[k]||0)>=n); }
 function placedCount(k){ return S.decor.filter(o=>o.type===k).length; }
 function craftOwnedAny(){ const c=craftedOf(); return Object.values(c).some(n=>n>0) || S.decor.some(o=>DECOR[o.type] && DECOR[o.type].craft); }
 function doCraft(r){
   if(!canCraft(r)){ toast('そざいが たりないよ'); return; }
   const m=matsOf(); Object.entries(r.need).forEach(([k,n])=>{ m[k]-=n; });
-  const fine = Math.random() < FINE_RATE, key = fine ? r.k+'_f' : r.k, c = craftedOf();
+  const usePearl = craftPearl && (m.pearl||0)>0; if(usePearl) m.pearl--;
+  const fine = usePearl || Math.random() < FINE_RATE, key = fine ? r.k+'_f' : r.k, c = craftedOf();
   c[key] = (c[key]||0)+1;
   S.craftN = (S.craftN||0)+1;
   const nm = DECOR[key].name;
@@ -4169,8 +4201,9 @@ function openCraft(){ const p=$('craftp'); if(!p) return; hidePanels('craftp'); 
 function renderCraft(justFine){
   const b = $('craftBody'); if(!b) return; const sp0 = $('craftp').scrollTop; b.innerHTML='';
   const m = matsOf(), c = craftedOf();
-  const mr = document.createElement('div'); mr.className='mats'; MAT_KEYS.forEach(k=>{ const sp=document.createElement('span'); sp.append(matIcon(k,22)); sp.insertAdjacentHTML('beforeend', `${MATS[k].name} <b>${m[k]||0}</b>`); mr.append(sp); }); b.append(mr);
+  const mr = document.createElement('div'); mr.className='mats'; MAT_KEYS.filter(k=>!MATS[k].rare || m[k]).forEach(k=>{ const sp=document.createElement('span'); sp.append(matIcon(k,22)); sp.insertAdjacentHTML('beforeend', `${MATS[k].name} <b>${m[k]||0}</b>`); mr.append(sp); }); b.append(mr);
   b.insertAdjacentHTML('beforeend', `<p class="dsub">そざいを くみあわせて、てづくりの かざりを つくろう。ときどき「きれいに できた」版に なるよ（みためだけ）。つくった物は いつもの海の「かざる」→「てづくり」で おけます。</p>`);
+  if(m.pearl>0){ const lb=document.createElement('label'); lb.className='opt'; lb.innerHTML=`<input type="checkbox" id="crPearl"${craftPearl?' checked':''}> しんじゅを 1こ つかって かならず「きれいに できた」に しあげる<span>（のこり ${m.pearl}こ）</span>`; b.append(lb); $('crPearl').addEventListener('change',e=>{ craftPearl=e.target.checked; }); } else craftPearl=false;
   const g = document.createElement('div'); g.className='clist'; b.append(g);
   RECIPES.forEach(r=>{
     const D = DECOR[r.k], ok = canCraft(r), have = (c[r.k]||0)+(c[r.k+'_f']||0), placed = placedCount(r.k)+placedCount(r.k+'_f');
@@ -4272,6 +4305,167 @@ function craftGlow(o,x,gy,s){
   if(k==='cmobile') glows.push({x, y:gy-70*s, r:40*s, col:'200,240,240', a:.03+.16*night});
   if(k==='ccoralpot' && o.type.endsWith('_f')) glows.push({x, y:gy-38*s, r:30*s, col:'255,200,230', a:.05+.3*night});
 }
+
+// ---- たんけん（サンゴの森から おでかけ組が いっしょに 出かける） ----
+// S.expl = {trip:{dest,start,end,members:[id]}|null, found:[行ける場所], runs:{行き先:回数}, xp:{id:けいけん}, pals:{'a-b':回数}, log:[…], cHint}
+// 時間は 本当の時間（1・3・6時間）。#tanken を付けると 1時間＝5秒で ためせる
+const DESTS = {
+  shallows:{name:'ひかりの浅瀬', hrs:1, desc:'日の光が きらきら とどく あさい海。はじめての たんけんに ぴったり', bias:{glass:2,sand:2,shell:1.3}, n:[4,6], pearl:.12, next:'wreck'},
+  wreck:   {name:'しずんだ ふね', hrs:3, desc:'海の底で ねむる 古い ふね。流木や 海ガラスが たくさん', bias:{wood:2.2,glass:1.6}, n:[7,10], pearl:.35, next:'deep'},
+  deep:    {name:'しんかいの谷', hrs:6, desc:'まっくらな 谷の そこ。ひかる いきものと めずらしい たからもの', bias:{coral:2,shell:1.6}, n:[10,14], pearl:1, next:null},
+};
+const DEST_KEYS = Object.keys(DESTS);
+const EXPL_LV = [0,3,8,15,25,40,60,85];   // たんけんLv1〜8 に ひつような けいけん（1時間=1、3時間=3、6時間=6）
+const EXPL_PERS = {
+  koukishin:'あたらしい 場所を 見つけやすい', genki:'すこし はやく かえってくる', nonbiri:'しんじゅに 気づきやすい',
+  kuishinbo:'そざいを たくさん ひろう', nebosuke:'けいけんが たまりやすい', amaenbo:'みんなと なかよくなりやすい',
+};
+const EXPL_EV = {
+  shallows:['{A}が 砂の中から きらっと ひかる 海ガラスを 見つけた','{A}と{B}が 小さな 魚の むれと いっしょに およいだ','ヤドカリが {A}の まえを よこぎって、みんなで あとを ついていった','{A}が 波の もようを ずっと ながめていた','みんなで 岩かげで ひとやすみした'],
+  wreck:['{A}が ふねの まどから のぞいたら、タコと めが あった','{A}と{B}が 木の はしごを のぼって、かんぱんに 出た','古い たからばこを 見つけた。からっぽ…と思ったら すみに 貝がらが','{A}が かじを まわすまねを して、みんなで わらった','ふねの へやに 海ガラスの かけらが いっぱい ちらばっていた'],
+  deep:['まっくらな 谷で、{A}の 三日月が ぽうっと あたりを てらした','ひかる クラゲが 道あんないを してくれた','{A}と{B}が よりそって「こわくないよ」と はげましあった','谷の そこで、大きな しんじゅ貝が ゆっくり ひらいた','とおくで 大きな クジラの かげが ゆっくり およいでいった'],
+};
+const EXPL_PEV = {
+  koukishin:'{A}が「あっちに なにか あるよ！」と みんなを ひっぱっていった', genki:'{A}が 先頭で ぐんぐん およいで、みんな ついていくのが たいへんだった',
+  nonbiri:'{A}が のんびり あるいていたおかげで、ちいさな しんじゅに 気づいた', kuishinbo:'{A}が おやつを さがしていたら、そざいも いっぱい ひろえた',
+  nebosuke:'とちゅうで {A}が うとうと… みんなで ちょっと ひるねした', amaenbo:'{A}が みんなに くっついて はなれなかった',
+};
+const EXPL_FIND = {
+  wreck:'とおくに 古い ふねの かげが 見えた！「しずんだ ふね」に いけるように なったよ',
+  deep:'ふねの ちずに、ふかい 谷の しるしが…！「しんかいの谷」に いけるように なったよ',
+};
+function explOf(){ const E = (S.expl && typeof S.expl==='object') ? S.expl : (S.expl = {});
+  if(!Array.isArray(E.found) || !E.found.length) E.found = ['shallows']; if(!E.runs) E.runs = {}; if(!E.xp) E.xp = {}; if(!E.pals) E.pals = {}; if(!Array.isArray(E.log)) E.log = []; return E; }
+const explFast = () => location.hash==='#tanken';
+function explLv(id){ const x = explOf().xp[id]||0; let lv=1; EXPL_LV.forEach((t,i)=>{ if(x>=t) lv=i+1; }); return lv; }
+function explNext(id){ const lv=explLv(id); return EXPL_LV[lv]!=null ? EXPL_LV[lv] : null; }
+function explTitle(lv){ return lv>=7 ? 'でんせつの たんけんか' : lv>=5 ? 'ベテラン' : lv>=3 ? 'たんけんか' : 'みならい'; }
+function explTeam(){ const E=explOf(); const ids = E.trip ? E.trip.members : areaB().members; return ids.map(id=>S.umimi.find(u=>u.id===id)).filter(Boolean); }
+function explHas(team,p){ return team.some(u=>u.pers===p); }
+function explDur(dk, team){ const h = DESTS[dk].hrs*(explHas(team,'genki')?.85:1); return explFast() ? h*5e3 : h*36e5; }
+function explAway(){ const E=explOf(); return E.trip && Date.now() < E.trip.end; }
+function explReady(){ const E=explOf(); return !!(E.trip && Date.now() >= E.trip.end); }
+function fmtLeft(ms){ ms=Math.max(0,ms); const m=Math.ceil(ms/6e4); return m>=60 ? `${Math.floor(m/60)}時間${m%60?` ${m%60}分`:''}` : `${m}分`; }
+function explStart(dk){
+  const E=explOf(), team = areaB().members.map(id=>S.umimi.find(u=>u.id===id)).filter(Boolean);
+  if(E.trip){ toast('いまは たんけん中だよ'); return; }
+  if(!team.length){ toast('おでかけ中の子が いないよ。下から えらんでね'); return; }
+  const now = Date.now(); E.trip = {dest:dk, start:now, end:now+explDur(dk,team), members:team.map(u=>u.id)};
+  bCopies.filter(c=>!c.leaving && E.trip.members.includes(c.id)).forEach(c=>{ c.leaving=true; c.tx=950; c.dir=1; });
+  team.forEach(u=>addMem(u, `「${DESTS[dk].name}」へ はじめて たんけんに 出かけた`, true));
+  sfx('invite'); toast(`${team.map(u=>u.name).join('と')}が「${DESTS[dk].name}」へ たんけんに 出かけたよ（${fmtLeft(E.trip.end-now)}くらい）`);
+  addDiary(`${team.map(u=>u.name).join('と')}が「${DESTS[dk].name}」へ たんけんに 出かけた`);
+  save(); $('explp').hidden=true; renderTray(); refreshAreaTabs();
+}
+function explCancel(){ const E=explOf(); if(!E.trip) return; E.trip=null; toast('たんけんを やめて、もどってきたよ'); save(); renderExpl(); renderTray(); refreshAreaTabs(); }
+function fill(t, names){ return t.replace(/\{A\}/g,names[0]).replace(/\{B\}/g,names[1]||names[0]).replace(/\{C\}/g,names[2]||names[0]); }
+function shuffled(a){ return a.slice().sort(()=>Math.random()-.5); }
+// かえってきた たんけんの けっかを つくる（うけとるまで E.trip に のこす）
+function explResult(){
+  const E=explOf(), T=E.trip; if(T.res) return T.res;
+  const D=DESTS[T.dest], team=T.members.map(id=>S.umimi.find(u=>u.id===id)).filter(Boolean);
+  const avgLv = team.length ? team.reduce((a,u)=>a+explLv(u.id),0)/team.length : 1;
+  const got = {}; let n = Math.round(rand(D.n[0],D.n[1])) + Math.floor((avgLv-1)*.8) + (explHas(team,'kuishinbo')?2:0) + Math.max(0,team.length-1);
+  for(let i=0;i<n;i++){ const k=pickMat(D.bias); got[k]=(got[k]||0)+1; }
+  let pc = D.pearl + .03*(avgLv-1) + (explHas(team,'nonbiri')?.1:0), pearls = 0;
+  if(pc>=1){ pearls = 1; pc -= 1; } if(Math.random()<pc+(T.dest==='deep'?.3:0)) pearls++;
+  if(pearls) got.pearl = pearls;
+  const runs = (E.runs[T.dest]||0)+1;
+  let find = null; const nx = D.next;
+  if(nx && !E.found.includes(nx) && (runs>=3 || Math.random() < .35+(explHas(team,'koukishin')?.25:0))) find = nx;
+  const cHint = T.dest==='deep' && !E.cHint;
+  const names = team.length ? shuffled(team.map(u=>u.name)) : ['みんな'];
+  const lines = [], evs = shuffled(EXPL_EV[T.dest]);
+  lines.push(fill(evs[0], names));
+  const pu = shuffled(team)[0]; if(pu && EXPL_PEV[pu.pers] && Math.random()<.75){ const others = names.filter(x=>x!==pu.name); lines.push(fill(EXPL_PEV[pu.pers], [pu.name, ...others])); }
+  else lines.push(fill(evs[1], shuffled(names)));
+  const pair = []; for(let i=0;i<team.length;i++) for(let j=i+1;j<team.length;j++) pair.push([team[i],team[j]]);
+  const close = pair.find(([a,b])=>(E.pals[[a.id,b.id].sort().join('-')]||0)>=3);
+  if(close) lines.push(`${close[0].name}と${close[1].name}は もう なれた たんけんなかま。いきぴったりだった`);
+  if(find) lines.push(EXPL_FIND[find]);
+  if(cHint) lines.push('谷の さらに おくに、ひかる 場所が 見えた…。いつか いけるかも しれない');
+  lines.push('みんな ぶじに かえってきたよ');
+  const xp = D.hrs + (explHas(team,'nebosuke')?1:0);
+  T.res = {got, find, cHint, lines, xp, runs}; save(); return T.res;
+}
+function explClaim(){
+  const E=explOf(), T=E.trip; if(!T || Date.now()<T.end) return;
+  const R=explResult(), D=DESTS[T.dest], team=T.members.map(id=>S.umimi.find(u=>u.id===id)).filter(Boolean);
+  Object.entries(R.got).forEach(([k,n])=>addMat(k,n));
+  E.runs[T.dest] = R.runs;
+  if(R.find) E.found.push(R.find);
+  if(R.cHint) E.cHint = 1;
+  const ups = [];
+  team.forEach(u=>{ const b=explLv(u.id); E.xp[u.id]=(E.xp[u.id]||0)+R.xp; const a=explLv(u.id); if(a>b){ ups.push(`${u.name}が たんけんLv${a}に なった${explTitle(a)!==explTitle(b)?`（${explTitle(a)}）`:''}`); addMem(u, `たんけんLv${a}に なった`, true); }
+    gainAff(u, explHas(team,'amaenbo')?2:1); addMem(u, `「${D.name}」を たんけんした`, true); });
+  for(let i=0;i<team.length;i++) for(let j=i+1;j<team.length;j++){ const k=[team[i].id,team[j].id].sort().join('-'); const before=E.pals[k]||0; E.pals[k]=before+(explHas(team,'amaenbo')?2:1);
+    if(before<3 && E.pals[k]>=3){ ups.push(`${team[i].name}と${team[j].name}が「たんけんなかま」に なった`); addMem(team[i], `${team[j].name}と たんけんなかまに なった`, true); addMem(team[j], `${team[i].name}と たんけんなかまに なった`, true); } }
+  E.log.unshift({t:Date.now(), dest:T.dest, who:team.map(u=>u.name), lines:R.lines, got:R.got, ups}); E.log = E.log.slice(0,20);
+  addDiary(`たんけん「${D.name}」から かえってきた。${R.lines[0]}`);
+  E.trip = null; E.last = {lines:R.lines, got:R.got, ups, dest:T.dest, who:team.map(u=>u.name)};
+  sfx('gift'); save(); explView='result'; renderExpl(); renderTray(); refreshAreaTabs();
+  bCopies.filter(c=>!c.leaving).forEach(c=>{ c.state='happy'; c.timer=2; bHearts(c,2); });
+}
+let explView = 'main';
+function openExpl(view){ const p=$('explp'); if(!p) return; hidePanels('explp'); closeCard(); p.hidden=false; explView = view||'main'; renderExpl(); }
+function gotHtml(got){ return Object.entries(got).map(([k,n])=>`<span>${MATS[k]?MATS[k].name:k}×${n}</span>`).join(''); }
+function renderExpl(){
+  const b=$('explBody'); if(!b) return; b.innerHTML=''; const E=explOf();
+  const tabs = document.createElement('div'); tabs.className='dmode';
+  tabs.innerHTML = `<button type="button" class="dm${explView!=='log'?' on':''}" id="exMain">たんけん</button><button type="button" class="dm${explView==='log'?' on':''}" id="exLog">たんけん日記</button>`;
+  b.append(tabs); $('exMain').addEventListener('click',()=>{ explView='main'; renderExpl(); }); $('exLog').addEventListener('click',()=>{ explView='log'; renderExpl(); });
+  if(explView==='log'){
+    if(!E.log.length){ b.insertAdjacentHTML('beforeend','<p class="dsub">まだ たんけんに 出かけていないよ。</p>'); }
+    E.log.forEach(L=>{ b.insertAdjacentHTML('beforeend', `<div class="exlog"><b>${fmtDate(L.t)}「${DESTS[L.dest].name}」</b><span class="exwho">${L.who.map(esc).join('・')}</span><p>${L.lines.map(esc).join('<br>')}</p><div class="exgot">${gotHtml(L.got)}</div></div>`); });
+    return;
+  }
+  if(explView==='result' && E.last){
+    const L=E.last;
+    b.insertAdjacentHTML('beforeend', `<div class="exres"><div class="lbig">🧭</div><b>「${DESTS[L.dest].name}」から かえってきた！</b><p>${L.lines.map(esc).join('<br>')}</p><div class="exgot">${gotHtml(L.got)}</div>${L.ups.length?`<p class="exup">${L.ups.map(esc).join('<br>')}</p>`:''}</div><div class="dbar"><button class="dbtn" type="button" id="exOk">やったね</button></div>`);
+    $('exOk').addEventListener('click',()=>{ explView='main'; renderExpl(); }); return;
+  }
+  const team = explTeam();
+  // チーム
+  const tm = document.createElement('div'); tm.className='exteam';
+  if(!team.length) tm.innerHTML = '<p class="dsub">おでかけ中の子が いないよ。サンゴの森の下の一覧から えらんでね（3びきまで）。</p>';
+  team.forEach(u=>{ const lv=explLv(u.id), x=explOf().xp[u.id]||0, nx=explNext(u.id), prev=EXPL_LV[lv-1];
+    const d=document.createElement('div'); d.className='exmem'; d.append(dThumb(u));
+    d.insertAdjacentHTML('beforeend', `<b>${esc(u.name)}</b><span>たんけんLv${lv}・${explTitle(lv)}</span><span class="tbar">${nx!=null?Array.from({length:5},(_,i)=>`<i class="${i < Math.round((x-prev)/(nx-prev)*5)?'on':''}"></i>`).join(''):'<i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i>'}</span><span class="exp">${(PERS[u.pers]||PERS.nonbiri).name}：${EXPL_PERS[u.pers]||''}</span>`);
+    tm.append(d); });
+  b.append(tm);
+  if(E.trip){
+    const D=DESTS[E.trip.dest], now=Date.now(), ready = now>=E.trip.end, p = clamp((now-E.trip.start)/(E.trip.end-E.trip.start),0,1);
+    b.insertAdjacentHTML('beforeend', `<div class="extrip"><b>「${D.name}」を たんけん中</b><div class="exbar"><i style="width:${Math.round(p*100)}%"></i></div><span id="exLeft">${ready?'かえってきたよ！':`のこり ${fmtLeft(E.trip.end-now)}（${new Date(E.trip.end).getHours()}:${String(new Date(E.trip.end).getMinutes()).padStart(2,'0')}ごろ）`}</span></div>
+      <div class="dbar">${ready?'<button class="dbtn" type="button" id="exClaim">おはなしを きく</button>':'<button class="dbtn sub" type="button" id="exCancel">よびもどす（なにも もらえない）</button>'}</div>`);
+    if(ready) $('exClaim').addEventListener('click', explClaim);
+    else $('exCancel').addEventListener('click', ()=>{ const bt=$('exCancel'); if(bt.dataset.c){ explCancel(); } else { bt.dataset.c='1'; bt.textContent='ほんとうに よびもどす'; bt.classList.remove('sub'); } });
+    return;
+  }
+  b.insertAdjacentHTML('beforeend', `<p class="dsub">いきさきを えらんでね。おでかけ中の子が いっしょに 出かけて、時間が たつと かえってくるよ（そのあいだも いつもの海には いるよ）。</p>`);
+  const g = document.createElement('div'); g.className='clist'; b.append(g);
+  DEST_KEYS.forEach(dk=>{ const D=DESTS[dk], open=E.found.includes(dk);
+    const row=document.createElement('div'); row.className='crow exdest'+(open?'':' lock');
+    row.innerHTML = open ? `<div class="ci"><b>${D.name}<small>（${fmtLeft(D.hrs*(explHas(team,'genki')?.85:1)*36e5)}${explHas(team,'genki')?'・げんきで はやめ':''}）</small></b><span>${D.desc}</span><span class="cown">いった回数 ${E.runs[dk]||0}</span></div>`
+      : `<div class="ci"><b>？？？<small>（${D.hrs}時間）</small></b><span>まだ 見つかっていない場所。たんけんを つづけると 見つかるかも</span></div>`;
+    if(open){ const bt=document.createElement('button'); bt.type='button'; bt.className='dbtn'; bt.textContent='しゅっぱつ'; bt.disabled=!team.length; bt.addEventListener('click',()=>explStart(dk)); row.append(bt); }
+    g.append(row); });
+}
+function buildExplPanel(){
+  if($('explp')) return;
+  const p = document.createElement('section'); p.className='derby'; p.id='explp'; p.hidden=true; p.setAttribute('aria-labelledby','explTitle');
+  p.innerHTML = `<button class="x" id="explClose" type="button" aria-label="とじる">×</button><h2 id="explTitle">たんけん</h2><div id="explBody" style="display:flex;flex-direction:column;gap:8px"></div>`;
+  stage.append(p); $('explClose').addEventListener('click', ()=>{ p.hidden=true; });
+}
+// 1秒ごと：かえってきたら お知らせ・のこり時間の表示
+let explT = 0;
+function explTick(dt){
+  explT -= dt; if(explT>0) return; explT = 1;
+  const E=explOf();
+  if(E.trip && Date.now()>=E.trip.end && !E.trip.told){ E.trip.told = 1; toast(S.area==='b' ? 'たんけんから かえってきたよ！ おはなしを きいてあげてね' : 'たんけんから かえってきたよ。サンゴの森で おはなしを きこう'); sfx('gift'); save(); refreshAreaTabs(); if(S.area==='b') renderTray(); }
+  const st=$('explStat'); if(st) st.textContent = explStatus();
+  if($('explp') && !$('explp').hidden && E.trip && explView==='main'){ const l=$('exLeft'); if(l && Date.now()<E.trip.end) l.textContent=`のこり ${fmtLeft(E.trip.end-Date.now())}`; else if(l && !$('exClaim')) renderExpl(); }
+}
+function explStatus(){ const E=explOf(); if(!E.trip) return 'でかける'; if(Date.now()>=E.trip.end) return 'かえってきた！'; return `のこり ${fmtLeft(E.trip.end-Date.now())}`; }
 
 let last = performance.now();
 function frame(now){ const dt=Math.min(.05,(now-last)/1000); last=now; T+=dt; update(dt); draw(); if(derby) updateDerby(dt); updateLesson(dt); updateRoom(dt); requestAnimationFrame(frame); }
