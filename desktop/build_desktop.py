@@ -105,7 +105,7 @@ R("if(!balloons.length) for(let i=0;i<7;i++)","if(!balloons.length) for(let i=0;
 R("r:rand(22,30)*SIZE,","r:rand(16,22)*SIZE,")
 # tray: no hints in desktop
 import re as _re
-m=_re.search(r"  if\(mode==='pet'\)\{ tr\.innerHTML = .*?\n  if\(mode==='food'\)\{ tr\.innerHTML = [^\n]*\n", s, _re.S)
+m=_re.search(r"  if\(mode==='pet'\)\{ tr\.innerHTML = .*?\n  if\(mode==='food'\)\{ .*?\n    return; \}\n", s, _re.S)
 assert m
 s = s[:m.start()] + "  if(mode==='pet' || mode==='food') return;\n" + s[m.end():]
 # storage key
