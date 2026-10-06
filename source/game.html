@@ -825,7 +825,10 @@ function face(c,u,t){
 }
 // ---------- sprite sheet (user-drawn Umimi) ----------
 const SPR = {ready:false, sheets:{}, CW:245, CH:222, cx:135, sc:0.6};
-const FR_GROUND = [194,194,194,194,194,208,208,194,194,194];
+const FR_GROUND = [194,194,194,194,194,208,208,194,194,194, 194,194,194,194,194,194,194,194,194,194, 194,194,194,194,194];
+// 10コマめから：ピッちゃん作の 表情コマ（source/sprites/build_sprites_ext.py）。ふつうの すがた（おきがえなし）のときだけ つかう
+const SPRX = {yawn:10, jump:11, eat:12, hatena:13, blush:14, idea:15, tear:16, shard:17, wave:18, moon:19, heart:20, sway:21, bubble:22, pumpkin:23, dango:24};
+function setPose(u,k,sec){ if(!u || SPRX[k]==null) return; u.poseF = SPRX[k]; u.poseEnd = T + sec; }
 const EYES = [[95,142],[56,139]], CRES = [70,113], MOUTH = [74,157];
 const RECOLOR = {cape:{h:234,s:.7,l:.66}, devil:{h:268,s:.5,l:.66}, strawberry:{h:352,s:.9,l:.98}, lemon:{h:50,s:.95,l:1.08}, choco:{h:22,s:.5,l:.62}, matcha:{h:90,s:.45,l:.9}, blueberry:{h:238,s:1.1,l:.8}, mango:{h:30,s:1,l:1.02}, lavender:null, sky:{h:203,s:1,l:1.02}, sakura:{h:343,s:.85,l:1.04}, mint:{h:158,s:.75,l:1.03}, lemon:{h:44,s:.9,l:1.06}, yozora:{h:236,s:1,l:.66}};
 function rgb2hsl(r,g,b){ r/=255; g/=255; b/=255; const mx=Math.max(r,g,b), mn=Math.min(r,g,b), l=(mx+mn)/2; if(mx===mn) return [0,0,l];
@@ -888,6 +891,15 @@ function cosSheetFor(cat,color){
 }
 function spriteFrame(u,t){
   const st=u.state, q=(p)=>Math.floor(t/p+u.ph*3);
+  const ext = (!u.outfit || u.outfit==='normal') && !PARTY;   // 表情コマは 頭に なにも のせていないときだけ
+  if(ext){
+    if(u.poseF!=null && T<u.poseEnd && st!=='held') return u.poseF;
+    if(st==='eat') return SPRX.eat;
+    if(st==='curious') return SPRX.hatena;
+    if(st==='surprise' || st==='held') return SPRX.jump;
+    if(st==='leaving') return SPRX.wave;
+    if(st==='happy'){ const v=Math.floor((t+u.ph*7)/5)%3; if(v===1) return SPRX.heart; if(v===2) return SPRX.sway; }
+  }
   if(st==='sleep') return 5+q(1.1)%2;
   if(st==='shine') return 4;
   if(st==='happy' || st==='trick') return [7,8,9][q(.32)%3];
@@ -918,7 +930,7 @@ function drawSpriteUmimi(c,u,x,gy,s,t,lift,opt){
   }
   if(u.outfit && u.outfit!=='normal') drawOutfit(c,u.outfit,ox,oy,t,'front');
   if(PARTY && !HEADWEAR.includes(u.outfit)) drawAcc(c,'party',ox,oy,t);
-  if(u.state==='eat'){
+  if(u.state==='eat' && f!==SPRX.eat){
     c.save(); c.translate(ox+MOUTH[0],oy+MOUTH[1]); c.rotate(-.3+Math.sin(t*9)*.18);
     c.beginPath(); c.ellipse(-9,0,14,8,0,0,TAU); c.fillStyle='#8fd092'; c.fill(); c.strokeStyle='#5ea86f'; c.lineWidth=1.8; c.stroke();
     c.beginPath(); c.moveTo(2,0); c.lineTo(-21,0); c.stroke(); c.restore();
@@ -927,7 +939,7 @@ function drawSpriteUmimi(c,u,x,gy,s,t,lift,opt){
   if(opt.glows) opt.glows.push({x:x+(CRES[0]-SPR.cx)*sc*(-u.dir), y:gy-lift+bob*s+(CRES[1]-gnd)*sc*breath, r:30*s, col:'255,222,140', a:.1+.7*night});
   if(opt.marks){
     const mx = x - u.dir*6*s, my = gy - lift - 112*s;
-    const m = u.state==='curious' ? '?' : (u.state==='surprise'||u.state==='held') ? '!!' : '';
+    const m = u.state==='curious' && f!==SPRX.hatena ? '?' : (u.state==='surprise'||u.state==='held') ? '!!' : '';
     if(m){ c.font = `600 ${Math.round(26*s)}px "Klee One", "Zen Maru Gothic", sans-serif`; c.textAlign='center'; c.lineWidth=4; c.strokeStyle='rgba(255,255,255,.85)'; c.strokeText(m,mx,my+Math.sin(t*4)*2); c.fillStyle= m==='?' ? '#7f8fe0' : '#e0a93a'; c.fillText(m,mx,my+Math.sin(t*4)*2); }
   }
 }
@@ -1453,7 +1465,7 @@ function moveTo(u,tx,td,speed,dt){
   return Math.abs(dx)<4 && Math.abs(dd)<.012;
 }
 function setWalk(u){ u.state='walk'; u.tx=clamp(u.x+rand(-320,320),60,940); u.td=clamp(u.d+rand(-.35,.35),.02,1); u.timer=14; }
-function setSleep(u,sec){ u.state='sleep'; u.timer=sec; u.zT=.5; }
+function setSleep(u,sec){ u.state='sleep'; u.timer=sec; u.zT=.5; if(Math.random()<.6) setPose(u,'yawn',1.6); }
 // ---- ベンチに すわる（てづくりの ベンチ）。いつもの海は S.decor、森は S.bDecor ----
 const SEAT_H = {cbench:42, cbench_f:42};   // すわったときの 高さ（かざりの大きさの単位）
 function freeSeats(list, who, others){ return list.filter(o=>SEAT_H[o.type] && o.on==null && !others.some(v=>v!==who && v.seatId===o.id)); }
@@ -1469,6 +1481,8 @@ function pickNext(u){
     if(P==='amaenbo'){ u.state='happy'; u.timer=1.6; hearts(u,1); return; }
   }
   if(!PARTY && Math.random()<.1 && trySeat(u)) return;
+  if(!PARTY && Math.random()<.1){ const op = [night>.6 ? 'moon' : 'bubble']; if(evOn('halloween')) op.push('pumpkin','pumpkin'); if(evOn('tsukimi')) op.push('dango','dango');
+    u.state='idle'; u.timer=rand(3.5,5); setPose(u, op[Math.floor(Math.random()*op.length)], u.timer); return; }
   if(PARTY && cake && r<.3){ u.state='walk'; u.tx=clamp(cake.x+(u.x<cake.x?-1:1)*rand(90,170),60,940); u.td=clamp(cake.d+rand(-.15,.25),.02,1); u.timer=12; return; }
   if(PARTY && r<.45){ u.state='happy'; u.timer=1.8; if(Math.random()<.5) hearts(u,1); return; }
   if(night > .6){
@@ -1547,7 +1561,7 @@ function giftShard(u,quiet){
   if(S.ground.length >= 6) return;
   const g = {x:clamp(u.x-u.dir*70*scaleD(u.d),40,960), d:clamp(u.d+rand(-.05,.05),0,1), pop:1};
   S.ground.push(g); sparks(g.x, floorY(g.d)-16, 8, 1); sfx('gift');
-  if(u.state!=='held'){ u.state='shine'; u.timer=1.3; }
+  if(u.state!=='held'){ u.state='shine'; u.timer=1.3; setPose(u,'shard',1.6); }
   if(!quiet) toast(`${u.name}が つきのかけらを おいていったよ`);
 }
 function pet(u){
@@ -1556,7 +1570,7 @@ function pet(u){
   u.petTimes = u.petTimes.filter(t=>T-t<1.4); u.petTimes.push(T);
   if(u.state==='sleep'){ u.state='happy'; u.timer=1.8; say(u,'むにゃ…'); hearts(u,1); sfx('pet'); return; }
   if(u.petTimes.length>=5){ u.state='surprise'; u.timer=1.3; u.petTimes=[]; sfx('boing'); return; }
-  u.state='happy'; u.timer=1.8; hearts(u,1); sfx('pet');
+  u.state='happy'; u.timer=1.8; hearts(u,1); sfx('pet'); if(Math.random()<.22) setPose(u,'blush',1.8);
   if(u.petCD<=0){ u.petCD=.9; gainAff(u,1); }
 }
 
@@ -1643,7 +1657,7 @@ function spawnVisitor(resumeKey){
 function updateVisitor(dt){
   const v = visitor; v.t += dt;
   const sp = v.V.key==='crab' ? 70 : v.V.key==='dolphin' ? 80 : v.V.key==='turtle' ? 28 : 45;
-  if(v.state==='come'){ const dx=v.tx-v.x; v.x += Math.sign(dx)*Math.min(Math.abs(dx),sp*dt); if(Math.abs(dx)<2){ v.state='stay'; say(v,v.V.hello); } }
+  if(v.state==='come'){ const dx=v.tx-v.x; v.x += Math.sign(dx)*Math.min(Math.abs(dx),sp*dt); if(Math.abs(dx)<2){ v.state='stay'; say(v,v.V.hello); const nu=S.umimi.filter(u=>['idle','walk','curious'].includes(u.state)).sort((a,b)=>Math.abs(a.x-v.x)-Math.abs(b.x-v.x))[0]; if(nu){ nu.dir = v.x>nu.x?1:-1; nu.state='idle'; nu.timer=2.6; setPose(nu,'wave',2.6); } } }
   if(v.state!=='leave' && (!S.curVisit || Date.now() > S.curVisit.until)){ v.state='leave'; v.dir = v.x<W/2?-1:1; say(v,'またね'); }
   else if(v.state==='stay'){ if(Math.random()<dt*.15){ v.tx=clamp(v.x+rand(-120,120),120,880); v.state='come'; } }
   else if(v.state==='leave'){ v.x += v.dir*sp*1.4*dt; if(v.floaty) v.lift += 30*dt; if(v.x<-100||v.x>W+100){ visitor=null; visitorTimer=30; } }
@@ -1902,7 +1916,7 @@ function renderBye(u, confirm){
 }
 function farewell(u){
   closeCard();
-  u.state='leaving'; u.timer=3; u.fade=1; u.target=null;
+  u.state='leaving'; u.timer=3; u.fade=1; u.target=null; S.umimi.forEach(o=>{ if(o!==u && o.state!=='sleep' && Math.random()<.6) setPose(o,'tear',3); });
   S.umimi.forEach(o=>{ if(o!==u && o.state!=='leaving'){ o.state='curious'; o.timer=2; o.dir = u.x>o.x?1:-1; } });
   say(u,'またね'); hearts(u,2); sfx('gift');
   addDiary(`${u.name}が 海のむこうへ たびだっていった。またね`);
@@ -3857,7 +3871,7 @@ function bHearts(c,n){ const s=scaleD(c.d); for(let i=0;i<n;i++) bAdd({type:'hea
 function bBubbles(x,y,n){ for(let i=0;i<n;i++) bAdd({type:'bubble',x:x+rand(-10,10),y,vx:0,vy:rand(-70,-40),r:rand(2,5),life:5,max:5,wob:rand(0,TAU)}); }
 const B_SEARCH_SAY = ['なにか あるかな','きらきら…','ふむふむ','これ なんだろ','いいもの みっけ？'];
 function bPick(c){
-  if(explReady() && explOf().trip.members.includes(c.id) && Math.random()<.35){ c.state='happy'; c.timer=1.6; bSay(c, ['おはなし きいて！','ただいま！','たのしかったよ'][Math.floor(Math.random()*3)]); return; }
+  if(explReady() && explOf().trip.members.includes(c.id) && Math.random()<.35){ c.state='idle'; c.timer=2.2; setPose(c,'wave',2.2); bSay(c, ['おはなし きいて！','ただいま！','たのしかったよ'][Math.floor(Math.random()*3)]); return; }
   if(Math.random()<.14 && trySeatB(c)) return;
   const r = Math.random();
   if(night > .6){
@@ -3891,7 +3905,7 @@ function updCopy(c,dt){
           else { c.seatId=null; c.state='idle'; c.timer=1; } }
         else if(c.goal){ c.dir = c.faceX>=c.x ? 1 : -1; c.state='curious'; c.timer=rand(2.2,3.2);
           if(c.goal==='bench'){ if(Math.random()<.5) bSay(c, Math.random()<.5 ? 'ここで なにか つくれそう' : 'さぎょうだい…？'); }
-          else if(Math.random()<.28 && bDropsOf().length<DROP_MAX){ const o=spawnDrop(pickMat(PERS_FIND[c.pers]), c.x+c.dir*55, c.d+rand(-.04,.04), true); if(o){ bSay(c,'みっけ！'); bBubbles(o.x, floorY(o.d)-8, 3); } }
+          else if(Math.random()<.28 && bDropsOf().length<DROP_MAX){ const o=spawnDrop(pickMat(PERS_FIND[c.pers]), c.x+c.dir*55, c.d+rand(-.04,.04), true); if(o){ bSay(c,'みっけ！'); setPose(c,'idea',1.8); bBubbles(o.x, floorY(o.d)-8, 3); } }
           else if(Math.random()<.45) bSay(c, B_SEARCH_SAY[Math.floor(Math.random()*B_SEARCH_SAY.length)]);
           c.goal=null; }
         else { c.state='idle'; c.timer=rand(1,3); } }
@@ -4478,7 +4492,7 @@ function explStart(dk){
   addDiary(`${team.map(u=>u.name).join('と')}が「${DESTS[dk].name}」へ たんけんに 出かけた`);
   save(); $('explp').hidden=true; renderTray(); refreshAreaTabs();
 }
-function explCancel(){ const E=explOf(); if(!E.trip) return; E.trip=null; toast('たんけんを やめて、もどってきたよ'); save(); renderExpl(); renderTray(); refreshAreaTabs(); }
+function explCancel(){ const E=explOf(); if(!E.trip) return; E.trip.members.forEach(id=>setPose(S.umimi.find(u=>u.id===id),'tear',3)); E.trip=null; toast('たんけんを やめて、もどってきたよ'); save(); renderExpl(); renderTray(); refreshAreaTabs(); }
 function fill(t, names){ return t.replace(/\{A\}/g,names[0]).replace(/\{B\}/g,names[1]||names[0]).replace(/\{C\}/g,names[2]||names[0]); }
 function shuffled(a){ return a.slice().sort(()=>Math.random()-.5); }
 // かえってきた たんけんの けっかを つくる（うけとるまで E.trip に のこす）
@@ -4655,7 +4669,7 @@ function boot(data){
   const mins = saved && saved.last ? (Date.now()-saved.last)/60000 : 0;
   if(rescued){ const w=new Date(rescued.t); setTimeout(()=>toast(`セーブが読めなかったので、${w.getMonth()+1}/${w.getDate()} ${w.getHours()}:${String(w.getMinutes()).padStart(2,'0')} の じどうバックアップから 戻したよ`),900); }
   else if(!S.welcomed && !isBirthday()){ S.welcomed=true; setTimeout(()=>toast(night>.5 ? 'ようこそ。夜なので、みんな少しねむそう' : 'ようこそ、ウミミの箱庭へ。タップでなでてあげてね'),600); }
-  else if(mins>=15){ const n=Math.min(5,Math.floor(mins/15)); S.shards+=n; refreshShards(true); setTimeout(()=>toast(`おかえり。つきのかけらが ${n} こ 落ちてたよ`),600); awayDiary(); awayDrops(mins); }
+  else if(mins>=15){ const n=Math.min(5,Math.floor(mins/15)); S.shards+=n; refreshShards(true); setTimeout(()=>toast(`おかえり。つきのかけらが ${n} こ 落ちてたよ`),600); setTimeout(()=>{ const w=S.umimi.filter(u=>u.state!=='sleep'&&u.state!=='leaving'); const u=w[Math.floor(Math.random()*w.length)]; if(u){ u.state='idle'; u.timer=2.6; setPose(u,'wave',2.6); say(u,'おかえり！'); } },900); awayDiary(); awayDrops(mins); }
   if(!Array.isArray(S.diary)) S.diary=[]; if(!Array.isArray(S.unlocked)) S.unlocked=[];
   if(!Array.isArray(S.closet)) S.closet=['normal']; if(!Array.isArray(S.metVisitors)) S.metVisitors=[];
   S.umimi.forEach(u=>{ if(u.outfit && !S.closet.includes(u.outfit)) S.closet.push(u.outfit); });

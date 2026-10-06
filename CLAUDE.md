@@ -50,7 +50,9 @@
   - **umimi-portal と同じサイト（kanata-games.github.io）**なので、ブラウザで開くと localStorage とオフライン用キャッシュの置き場所を共有する。ポータル側は `umimi-hakoniwa-*` のキーと `hakoniwa-*` のキャッシュ名を使わないこと。箱庭の sw.js は `hakoniwa-<版>` と `hakoniwa-fonts` を使い、掃除するのは自分の古い版（と前の名前の `umimi-<10桁>` / `umimi-fonts`）だけ。iPhone のホーム画面版どうしは置き場所が別なので、連動はコードやファイルで
   - ホーム画面版のデータは Safari 本体と別で、7日ルールで消されない。ただしアイコン削除・容量不足・機種変更では消えるので、ファイル保存のバックアップとセット
 - `source/game.html` … 本体。1ファイル（HTML と canvas、全体が IIFE）
-- `umimi-sprites.png` … ウミミ10コマ（セル 245x222、目の位置合わせ済み）。作り直すときは `source/sprites/build_sprites.py`（元画像は src.png）
+- `umimi-sprites.png` … ウミミ25コマ（5列×5行、セル 245x222）。0〜9コマめは `source/sprites/build_sprites.py`（元画像 src.png、目の位置合わせ済み。出力を base10.png として保存）。10〜24コマめは ピッちゃん作の表情（2026-10-06）で `source/sprites/build_sprites_ext.py`（ext1〜3.png から えらんで 体の下と まんなかを そろえる。256色）
+  - 表情コマ `SPRX`：yawn あくび（ねるとき）/ jump びっくり（surprise・つかまれた）/ eat ごはん / hatena はてな（curious。? の文字は描かない）/ blush てれ（なでたとき22%）/ idea ひらめき（森の みっけ）/ tear なみだ（なかまが おわかれ・たんけんを よびもどした）/ shard かけらを わたす（giftShard）/ wave てをふる（訪問者が来た・おかえり・たんけんから ただいま・おわかれ）/ moon つきあかり・bubble しゃぼんだま（ひまなとき10%）/ heart・sway（happy の バリエーション）/ pumpkin（ハロウィン中）・dango（お月見中）
+  - `setPose(u,k,秒)` で しばらく その コマ。おきがえ中・パーティー中は 使わない（頭の かざりが ずれるため）。つかわなかったコマ（うしろ向き・おばけと いっしょ 等）は ext*.png に のこっている
 - `c_<分類>.png` … おきがえ120枚を分類ごとに分けたシート（animal/food/season/work/fashion/relax/dream/adv=ぼうけん/princess=おひめさま、4列、セル 240x208、scale .8）。**使うときだけ読み込む**（`cosImgFor()`、色変えも分類×色ごと）。作り直すときは `source/costumes/build_all.py`（元画像は src/。新しい衣装は SRC と CAT の両方に足す）。出力された costumes.json の中身を、game.html の `const COS = {...}` に貼る（m[k].s が分類、i はシート内の番号）
   - おきがえコレクションの分類タブは `OCATS`。シートのない normal/cape/choco の分類は `OCAT_EXTRA`
   - 目が自動で見つからない衣装は `MANEYE`、大きさの補正は `SCALEFIX`
