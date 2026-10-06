@@ -93,7 +93,13 @@
   - しんじゅ（`MATS.pearl`、rare：森では出ない）：こうぼうで 1こ使うと かならず「きれいにできた」になる
   - 行き先の絵：ピッちゃん作 `ex_shallows.png` `ex_wreck.png` `ex_deep.png`（768x432、256色。元は source/furniture/src/ex_*_src.png）。行き先の一覧（`.exthumb`、まだ見つかっていない所は「？」）、たんけん中、帰ってきた おはなしの上（`.exban`）に出す。パネルを開いたときだけ読み込む
   - テスト用：`#tanken` を付けると 1時間＝5秒
-- 次の予定：⑤作った家具を森やおへやにも置く・ウミミがベンチに座る など → 畑 → C エリア
+- てづくり家具の置き場所（ステップ5、2026-10-06）：
+  - いつもの海：「かざる」→「てづくり」（前から）
+  - サンゴの森：トレイの「🪑もりに かざる」→ 編集モード（`bEdit`/`bSel`、`renderTrayBEdit()`、`bEditTap()`）。`S.bDecor`=[{id,type,x,d}]、さいだい `B_DECOR_MAX`=8。id は S.decorId を共用
+  - おへや：もようがえ →「てづくり」シリーズ（FURN の craft:true。のこりがある物だけ出る。モビールは かべ spot:'wall'）
+  - どこでも 置くと S.crafted が1へり、しまうと もどる
+- ベンチに すわる：`SEAT_H`（cbench/_f）。いつもの海は `trySeat(u)`（pickNext で10%）、森のコピーは `trySeatB(c)`（bPick で14%）、state 'sit' と u.seatId。1つのベンチに1匹。おへやは REST に cbench/_f
+- 次の予定：畑 → C エリア
 
 ## ゲームの中身（game.html の主な定数）
 - `OUTFITS` おきがえ123種、`HEADWEAR`、`PERS` 性格、`DECOR` 飾り、`RECOLOR`/`PALS` ウミミの色

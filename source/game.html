@@ -555,7 +555,7 @@ const DECOR = {
   goalflag:{name:'ゴールフラッグ',cost:1, r:26, h:70, gift:true},
   podium:{name:'ひょうしょうだい',cost:3, r:52, h:34, gift:true},
   // てづくり（サンゴの森の こうぼうで つくる。_f は きれいに できた版）
-  cbench:{name:'流木の 小さなベンチ',cost:0, r:55, h:58, craft:1}, cbench_f:{name:'きれいな 流木のベンチ',cost:0, r:55, h:52, craft:1},
+  cbench:{name:'流木の 小さなベンチ',cost:0, r:64, h:64, craft:1}, cbench_f:{name:'きれいな 流木のベンチ',cost:0, r:64, h:64, craft:1},
   cshelllamp:{name:'貝がらランプ',cost:0, r:31, h:62, craft:1}, cshelllamp_f:{name:'きれいな 貝がらランプ',cost:0, r:31, h:63, craft:1},
   ctable:{name:'流木の ミニテーブル',cost:0, r:46, h:65, craft:1}, ctable_f:{name:'きれいな 流木テーブル',cost:0, r:46, h:64, craft:1},
   ccoralpot:{name:'サンゴの うえきばち',cost:0, r:30, h:63, craft:1}, ccoralpot_f:{name:'きれいな サンゴのはち',cost:0, r:30, h:65, craft:1},
@@ -681,7 +681,7 @@ function serialize(){
     umimi:S.umimi.map(u=>({id:u.id,name:u.name,color:u.color,x:Math.round(u.x),d:+u.d.toFixed(3),aff:u.aff,outfit:u.outfit,lvSeen:u.lvSeen,pers:u.pers,born:u.born,pets:u.pets,feeds:u.feeds,worn:u.worn,mem:u.mem,ann:u.ann,wins:u.wins||0,druns:u.druns||0,dbest:u.dbest||0,tricks:u.tricks,learned:u.learned,lessonDay:u.lessonDay,room:u.room})),
     past:S.past,
     closet:S.closet, closetNew:S.closetNew, pets:S.pets, days:S.days, feeds:S.feeds, starsCaught:S.starsCaught, metVisitors:S.metVisitors,
-    diary:S.diary.slice(0,60), day:S.day, visitorDay:S.visitorDay, visitLog:S.visitLog, nextVisit:S.nextVisit, curVisit:S.curVisit, lastVisitor:S.lastVisitor, unlocked:S.unlocked, diaryNew:S.diaryNew, myBday:S.myBday, lastExport:S.lastExport||0, bkNagAt:S.bkNagAt||0, evSeen:S.evSeen, derby:S.derby, furn:S.furn, omikujiDay:S.omikujiDay, wishes:S.wishes, presentYear:S.presentYear, trickDay:S.trickDay, area:S.area==='b'?'b':'a', areaB:S.areaB, mats:S.mats, matFirst:S.matFirst, crafted:S.crafted, craftN:S.craftN, expl:S.expl, bDrops:(S.bDrops||[]).map(o=>({k:o.k,x:o.x,d:o.d})), profileOnTap:S.profileOnTap, bdayBlown:S.bdayBlown, bdayDiary:S.bdayDiary,
+    diary:S.diary.slice(0,60), day:S.day, visitorDay:S.visitorDay, visitLog:S.visitLog, nextVisit:S.nextVisit, curVisit:S.curVisit, lastVisitor:S.lastVisitor, unlocked:S.unlocked, diaryNew:S.diaryNew, myBday:S.myBday, lastExport:S.lastExport||0, bkNagAt:S.bkNagAt||0, evSeen:S.evSeen, derby:S.derby, furn:S.furn, omikujiDay:S.omikujiDay, wishes:S.wishes, presentYear:S.presentYear, trickDay:S.trickDay, area:S.area==='b'?'b':'a', areaB:S.areaB, mats:S.mats, matFirst:S.matFirst, crafted:S.crafted, craftN:S.craftN, expl:S.expl, bDrops:(S.bDrops||[]).map(o=>({k:o.k,x:o.x,d:o.d})), bDecor:(S.bDecor||[]).map(o=>({id:o.id,type:o.type,x:Math.round(o.x),d:+(+o.d).toFixed(3)})), profileOnTap:S.profileOnTap, bdayBlown:S.bdayBlown, bdayDiary:S.bdayDiary,
     decor:S.decor.map(o=>Object.assign({id:o.id,type:o.type,x:Math.round(o.x),d:+o.d.toFixed(3)}, o.on!=null?{on:o.on,dx:+(o.dx||0).toFixed(1)}:{})),
     ground:S.ground.map(g=>({x:Math.round(g.x),d:+g.d.toFixed(3)}))};
 }
@@ -854,7 +854,7 @@ sprImg.src = 'umimi-sprites.png';
 const COS_IMG = {};
 function cosImgFor(cat){ let im=COS_IMG[cat]; if(!im){ im=COS_IMG[cat]=new Image(); im.onload=()=>{ if(S){ renderTray(); if(!$('closet').hidden) renderCloset(); } }; im.src='c_'+cat+'.png'; } return (im.complete && im.naturalWidth) ? im : null; }
 const VIS_SPR = {"res":1.6,"m":{"jelly":{"w":172,"h":172,"a":"c","y":0},"star":{"w":145,"h":132,"a":"b","y":172},"seahorse":{"w":121,"h":180,"a":"c","y":304},"crab":{"w":180,"h":127,"a":"b","y":484},"dolphin":{"w":236,"h":144,"a":"c","y":611},"penguin":{"w":164,"h":147,"a":"b","y":755},"turtle":{"w":212,"h":145,"a":"b","y":902},"octopus":{"w":164,"h":156,"a":"b","y":1047},"puffer":{"w":161,"h":127,"a":"c","y":1203},"otter":{"w":204,"h":156,"a":"c","y":1330}}};
-const FIMG = {m:{"cbench":{"s":"craft","x":0,"y":0,"w":260,"h":130,"rw":130,"rh":65,"tw":110,"th":55},"cbench_f":{"s":"craft","x":0,"y":132,"w":260,"h":130,"rw":130,"rh":65,"tw":110,"th":55},"ctable":{"s":"craft","x":0,"y":264,"w":220,"h":184,"rw":110,"rh":92,"tw":92,"th":77},"ctable_f":{"s":"craft","x":0,"y":450,"w":220,"h":184,"rw":110,"rh":92,"tw":92,"th":77},"cshelllamp":{"s":"craft","x":0,"y":636,"w":140,"h":152,"rw":70,"rh":76,"tw":62,"th":67},"cshelllamp_f":{"s":"craft","x":0,"y":790,"w":140,"h":153,"rw":70,"rh":76,"tw":62,"th":67},"ccoralpot":{"s":"craft","x":0,"y":945,"w":144,"h":180,"rw":72,"rh":90,"tw":60,"th":75},"ccoralpot_f":{"s":"craft","x":0,"y":1127,"w":144,"h":179,"rw":72,"rh":90,"tw":60,"th":75},"cmobile":{"s":"craft","x":0,"y":1308,"w":160,"h":161,"rw":80,"rh":80,"tw":72,"th":72},"cmobile_f":{"s":"craft","x":0,"y":1471,"w":160,"h":164,"rw":80,"rh":82,"tw":72,"th":74},"bwork":{"s":"craft","x":0,"y":1637,"w":350,"h":336,"rw":175,"rh":168,"tw":175,"th":168},"bsign":{"s":"craft","x":352,"y":0,"w":224,"h":242,"rw":112,"rh":121,"tw":112,"th":121},"bkiln":{"s":"craft","x":352,"y":244,"w":320,"h":250,"rw":160,"rh":125,"tw":160,"th":125},"rug":{"s":"base","x":0,"y":0,"w":340,"h":190,"rw":170,"rh":95,"tw":0,"th":0},"bed":{"s":"base","x":0,"y":192,"w":300,"h":283,"rw":150,"rh":142,"tw":0,"th":0},"lamp":{"s":"base","x":0,"y":477,"w":132,"h":234,"rw":66,"rh":117,"tw":0,"th":0},"cushion":{"s":"base","x":0,"y":713,"w":160,"h":113,"rw":80,"rh":56,"tw":0,"th":0},"plant":{"s":"base","x":0,"y":828,"w":124,"h":153,"rw":62,"rh":76,"tw":0,"th":0},"shelf":{"s":"base","x":0,"y":983,"w":210,"h":332,"rw":105,"rh":166,"tw":0,"th":0},"window":{"s":"base","x":0,"y":1317,"w":270,"h":232,"rw":135,"rh":116,"tw":0,"th":0},"windowday":{"s":"base","x":0,"y":1551,"w":270,"h":232,"rw":135,"rh":116,"tw":0,"th":0},"frame":{"s":"base","x":0,"y":1785,"w":144,"h":148,"rw":72,"rh":74,"tw":0,"th":0},"table":{"s":"base","x":342,"y":0,"w":230,"h":187,"rw":115,"rh":94,"tw":0,"th":0},"shellbed":{"s":"pearl","x":0,"y":0,"w":350,"h":326,"rw":175,"rh":163,"tw":110,"th":102},"shelltable":{"s":"pearl","x":0,"y":328,"w":250,"h":160,"rw":125,"rh":80,"tw":82,"th":52},"shellchair":{"s":"pearl","x":0,"y":490,"w":210,"h":198,"rw":105,"rh":99,"tw":72,"th":68},"bottle":{"s":"pearl","x":0,"y":690,"w":116,"h":136,"rw":58,"rh":68,"tw":42,"th":49},"crystal2":{"s":"pearl","x":0,"y":828,"w":180,"h":164,"rw":90,"rh":82,"tw":62,"th":56},"shellcake":{"s":"pearl","x":0,"y":994,"w":156,"h":161,"rw":78,"rh":80,"tw":54,"th":55},"lanternstand":{"s":"autumn","x":0,"y":0,"w":200,"h":266,"rw":100,"rh":133,"tw":95,"th":126},"stall":{"s":"autumn","x":0,"y":268,"w":400,"h":313,"rw":200,"rh":156,"tw":180,"th":140},"kingyo":{"s":"autumn","x":0,"y":583,"w":380,"h":295,"rw":190,"rh":148,"tw":160,"th":125},"mcushion":{"s":"autumn","x":0,"y":880,"w":230,"h":142,"rw":115,"rh":71,"tw":90,"th":56},"garland":{"s":"autumn","x":0,"y":1024,"w":600,"h":198,"rw":300,"rh":99,"tw":200,"th":66},"chochin":{"s":"autumn","x":0,"y":1224,"w":160,"h":329,"rw":80,"rh":164,"tw":80,"th":164},"omen":{"s":"autumn","x":0,"y":1555,"w":400,"h":349,"rw":200,"rh":174,"tw":180,"th":157},"acorn":{"s":"autumn","x":602,"y":0,"w":120,"h":103,"rw":60,"rh":52,"tw":42,"th":36},"yakiimo":{"s":"autumn","x":602,"y":105,"w":140,"h":90,"rw":70,"rh":45,"tw":48,"th":31},"bridge":{"s":"autumn","x":602,"y":197,"w":460,"h":206,"rw":230,"rh":103,"tw":200,"th":90},"pumpkinstand":{"s":"halloween","x":0,"y":0,"w":170,"h":344,"rw":85,"rh":172,"tw":80,"th":162},"hrug":{"s":"halloween","x":0,"y":346,"w":340,"h":200,"rw":170,"rh":100,"tw":120,"th":71},"ghostcushion":{"s":"halloween","x":0,"y":548,"w":170,"h":149,"rw":85,"rh":74,"tw":72,"th":63},"hframe":{"s":"halloween","x":0,"y":699,"w":160,"h":187,"rw":80,"rh":94,"tw":0,"th":0},"candytable":{"s":"halloween","x":0,"y":888,"w":210,"h":244,"rw":105,"rh":122,"tw":82,"th":95},"hshelf":{"s":"halloween","x":0,"y":1134,"w":230,"h":309,"rw":115,"rh":154,"tw":100,"th":134},"jbox_0":{"s":"halloween","x":0,"y":1445,"w":170,"h":170,"rw":85,"rh":85,"tw":74,"th":74},"jbox_1":{"s":"halloween","x":0,"y":1617,"w":170,"h":170,"rw":85,"rh":85,"tw":74,"th":74},"jbox_2":{"s":"halloween","x":0,"y":1789,"w":170,"h":170,"rw":85,"rh":85,"tw":74,"th":74},"jbox_3":{"s":"halloween","x":342,"y":0,"w":170,"h":170,"rw":85,"rh":85,"tw":74,"th":74},"chandelier_0":{"s":"halloween","x":342,"y":172,"w":260,"h":375,"rw":130,"rh":188,"tw":0,"th":0},"chandelier_1":{"s":"halloween","x":342,"y":549,"w":260,"h":375,"rw":130,"rh":188,"tw":0,"th":0},"chandelier_2":{"s":"halloween","x":342,"y":926,"w":260,"h":375,"rw":130,"rh":188,"tw":0,"th":0},"jbox":{"s":"halloween","x":0,"y":1445,"w":170,"h":170,"rw":85,"rh":85,"tw":74,"th":74},"chandelier":{"s":"halloween","x":342,"y":172,"w":260,"h":375,"rw":130,"rh":188,"tw":0,"th":0},"pdresser":{"s":"pearl","x":0,"y":1157,"w":250,"h":279,"rw":125,"rh":140,"tw":84,"th":94},"pdresser2":{"s":"pearl","x":0,"y":1438,"w":240,"h":312,"rw":120,"rh":156,"tw":82,"th":107},"pnight":{"s":"pearl","x":0,"y":1752,"w":156,"h":203,"rw":78,"rh":102,"tw":56,"th":73},"psofa":{"s":"pearl","x":352,"y":0,"w":370,"h":241,"rw":185,"rh":120,"tw":124,"th":80},"pbox":{"s":"pearl","x":352,"y":243,"w":100,"h":83,"rw":50,"rh":42,"tw":36,"th":30},"bcoral":{"s":"craft","x":352,"y":496,"w":260,"h":236,"rw":130,"rh":118,"tw":130,"th":118},"frock1":{"s":"forest","x":0,"y":0,"w":400,"h":255,"rw":200,"rh":128,"tw":200,"th":128},"frock2":{"s":"forest","x":0,"y":257,"w":340,"h":290,"rw":170,"rh":145,"tw":170,"th":145},"frock3":{"s":"forest","x":0,"y":549,"w":300,"h":162,"rw":150,"rh":81,"tw":150,"th":81},"frock4":{"s":"forest","x":0,"y":713,"w":360,"h":181,"rw":180,"rh":90,"tw":180,"th":90},"frock5":{"s":"forest","x":0,"y":896,"w":320,"h":249,"rw":160,"rh":124,"tw":160,"th":124},"frock6":{"s":"forest","x":0,"y":1147,"w":400,"h":190,"rw":200,"rh":95,"tw":200,"th":95},"fkelp1":{"s":"forest","x":0,"y":1339,"w":160,"h":234,"rw":80,"rh":117,"tw":80,"th":117},"fkelp2":{"s":"forest","x":0,"y":1575,"w":172,"h":254,"rw":86,"rh":127,"tw":86,"th":127},"m_wood":{"s":"forest","x":0,"y":1831,"w":128,"h":120,"rw":64,"rh":60,"tw":34,"th":32},"m_shell":{"s":"forest","x":402,"y":0,"w":112,"h":96,"rw":56,"rh":48,"tw":25,"th":21},"m_coral":{"s":"forest","x":402,"y":98,"w":96,"h":116,"rw":48,"rh":58,"tw":20,"th":24},"m_glass":{"s":"forest","x":402,"y":216,"w":96,"h":94,"rw":48,"rh":47,"tw":22,"th":22},"m_sand":{"s":"forest","x":402,"y":312,"w":128,"h":76,"rw":64,"rh":38,"tw":30,"th":18},"m_pearl":{"s":"forest","x":402,"y":390,"w":80,"h":78,"rw":40,"rh":39,"tw":18,"th":18},"bbasket":{"s":"forest","x":402,"y":470,"w":280,"h":286,"rw":140,"rh":143,"tw":70,"th":72}}};
+const FIMG = {m:{"cbench":{"s":"craft","x":0,"y":0,"w":260,"h":130,"rw":130,"rh":65,"tw":128,"th":64},"cbench_f":{"s":"craft","x":0,"y":132,"w":260,"h":130,"rw":130,"rh":65,"tw":128,"th":64},"ctable":{"s":"craft","x":0,"y":264,"w":220,"h":184,"rw":110,"rh":92,"tw":92,"th":77},"ctable_f":{"s":"craft","x":0,"y":450,"w":220,"h":184,"rw":110,"rh":92,"tw":92,"th":77},"cshelllamp":{"s":"craft","x":0,"y":636,"w":140,"h":152,"rw":70,"rh":76,"tw":62,"th":67},"cshelllamp_f":{"s":"craft","x":0,"y":790,"w":140,"h":153,"rw":70,"rh":76,"tw":62,"th":67},"ccoralpot":{"s":"craft","x":0,"y":945,"w":144,"h":180,"rw":72,"rh":90,"tw":60,"th":75},"ccoralpot_f":{"s":"craft","x":0,"y":1127,"w":144,"h":179,"rw":72,"rh":90,"tw":60,"th":75},"cmobile":{"s":"craft","x":0,"y":1308,"w":160,"h":161,"rw":80,"rh":80,"tw":72,"th":72},"cmobile_f":{"s":"craft","x":0,"y":1471,"w":160,"h":164,"rw":80,"rh":82,"tw":72,"th":74},"bwork":{"s":"craft","x":0,"y":1637,"w":350,"h":336,"rw":175,"rh":168,"tw":175,"th":168},"bsign":{"s":"craft","x":352,"y":0,"w":224,"h":242,"rw":112,"rh":121,"tw":112,"th":121},"bkiln":{"s":"craft","x":352,"y":244,"w":320,"h":250,"rw":160,"rh":125,"tw":160,"th":125},"rug":{"s":"base","x":0,"y":0,"w":340,"h":190,"rw":170,"rh":95,"tw":0,"th":0},"bed":{"s":"base","x":0,"y":192,"w":300,"h":283,"rw":150,"rh":142,"tw":0,"th":0},"lamp":{"s":"base","x":0,"y":477,"w":132,"h":234,"rw":66,"rh":117,"tw":0,"th":0},"cushion":{"s":"base","x":0,"y":713,"w":160,"h":113,"rw":80,"rh":56,"tw":0,"th":0},"plant":{"s":"base","x":0,"y":828,"w":124,"h":153,"rw":62,"rh":76,"tw":0,"th":0},"shelf":{"s":"base","x":0,"y":983,"w":210,"h":332,"rw":105,"rh":166,"tw":0,"th":0},"window":{"s":"base","x":0,"y":1317,"w":270,"h":232,"rw":135,"rh":116,"tw":0,"th":0},"windowday":{"s":"base","x":0,"y":1551,"w":270,"h":232,"rw":135,"rh":116,"tw":0,"th":0},"frame":{"s":"base","x":0,"y":1785,"w":144,"h":148,"rw":72,"rh":74,"tw":0,"th":0},"table":{"s":"base","x":342,"y":0,"w":230,"h":187,"rw":115,"rh":94,"tw":0,"th":0},"shellbed":{"s":"pearl","x":0,"y":0,"w":350,"h":326,"rw":175,"rh":163,"tw":110,"th":102},"shelltable":{"s":"pearl","x":0,"y":328,"w":250,"h":160,"rw":125,"rh":80,"tw":82,"th":52},"shellchair":{"s":"pearl","x":0,"y":490,"w":210,"h":198,"rw":105,"rh":99,"tw":72,"th":68},"bottle":{"s":"pearl","x":0,"y":690,"w":116,"h":136,"rw":58,"rh":68,"tw":42,"th":49},"crystal2":{"s":"pearl","x":0,"y":828,"w":180,"h":164,"rw":90,"rh":82,"tw":62,"th":56},"shellcake":{"s":"pearl","x":0,"y":994,"w":156,"h":161,"rw":78,"rh":80,"tw":54,"th":55},"lanternstand":{"s":"autumn","x":0,"y":0,"w":200,"h":266,"rw":100,"rh":133,"tw":95,"th":126},"stall":{"s":"autumn","x":0,"y":268,"w":400,"h":313,"rw":200,"rh":156,"tw":180,"th":140},"kingyo":{"s":"autumn","x":0,"y":583,"w":380,"h":295,"rw":190,"rh":148,"tw":160,"th":125},"mcushion":{"s":"autumn","x":0,"y":880,"w":230,"h":142,"rw":115,"rh":71,"tw":90,"th":56},"garland":{"s":"autumn","x":0,"y":1024,"w":600,"h":198,"rw":300,"rh":99,"tw":200,"th":66},"chochin":{"s":"autumn","x":0,"y":1224,"w":160,"h":329,"rw":80,"rh":164,"tw":80,"th":164},"omen":{"s":"autumn","x":0,"y":1555,"w":400,"h":349,"rw":200,"rh":174,"tw":180,"th":157},"acorn":{"s":"autumn","x":602,"y":0,"w":120,"h":103,"rw":60,"rh":52,"tw":42,"th":36},"yakiimo":{"s":"autumn","x":602,"y":105,"w":140,"h":90,"rw":70,"rh":45,"tw":48,"th":31},"bridge":{"s":"autumn","x":602,"y":197,"w":460,"h":206,"rw":230,"rh":103,"tw":200,"th":90},"pumpkinstand":{"s":"halloween","x":0,"y":0,"w":170,"h":344,"rw":85,"rh":172,"tw":80,"th":162},"hrug":{"s":"halloween","x":0,"y":346,"w":340,"h":200,"rw":170,"rh":100,"tw":120,"th":71},"ghostcushion":{"s":"halloween","x":0,"y":548,"w":170,"h":149,"rw":85,"rh":74,"tw":72,"th":63},"hframe":{"s":"halloween","x":0,"y":699,"w":160,"h":187,"rw":80,"rh":94,"tw":0,"th":0},"candytable":{"s":"halloween","x":0,"y":888,"w":210,"h":244,"rw":105,"rh":122,"tw":82,"th":95},"hshelf":{"s":"halloween","x":0,"y":1134,"w":230,"h":309,"rw":115,"rh":154,"tw":100,"th":134},"jbox_0":{"s":"halloween","x":0,"y":1445,"w":170,"h":170,"rw":85,"rh":85,"tw":74,"th":74},"jbox_1":{"s":"halloween","x":0,"y":1617,"w":170,"h":170,"rw":85,"rh":85,"tw":74,"th":74},"jbox_2":{"s":"halloween","x":0,"y":1789,"w":170,"h":170,"rw":85,"rh":85,"tw":74,"th":74},"jbox_3":{"s":"halloween","x":342,"y":0,"w":170,"h":170,"rw":85,"rh":85,"tw":74,"th":74},"chandelier_0":{"s":"halloween","x":342,"y":172,"w":260,"h":375,"rw":130,"rh":188,"tw":0,"th":0},"chandelier_1":{"s":"halloween","x":342,"y":549,"w":260,"h":375,"rw":130,"rh":188,"tw":0,"th":0},"chandelier_2":{"s":"halloween","x":342,"y":926,"w":260,"h":375,"rw":130,"rh":188,"tw":0,"th":0},"jbox":{"s":"halloween","x":0,"y":1445,"w":170,"h":170,"rw":85,"rh":85,"tw":74,"th":74},"chandelier":{"s":"halloween","x":342,"y":172,"w":260,"h":375,"rw":130,"rh":188,"tw":0,"th":0},"pdresser":{"s":"pearl","x":0,"y":1157,"w":250,"h":279,"rw":125,"rh":140,"tw":84,"th":94},"pdresser2":{"s":"pearl","x":0,"y":1438,"w":240,"h":312,"rw":120,"rh":156,"tw":82,"th":107},"pnight":{"s":"pearl","x":0,"y":1752,"w":156,"h":203,"rw":78,"rh":102,"tw":56,"th":73},"psofa":{"s":"pearl","x":352,"y":0,"w":370,"h":241,"rw":185,"rh":120,"tw":124,"th":80},"pbox":{"s":"pearl","x":352,"y":243,"w":100,"h":83,"rw":50,"rh":42,"tw":36,"th":30},"bcoral":{"s":"craft","x":352,"y":496,"w":260,"h":236,"rw":130,"rh":118,"tw":130,"th":118},"frock1":{"s":"forest","x":0,"y":0,"w":400,"h":255,"rw":200,"rh":128,"tw":200,"th":128},"frock2":{"s":"forest","x":0,"y":257,"w":340,"h":290,"rw":170,"rh":145,"tw":170,"th":145},"frock3":{"s":"forest","x":0,"y":549,"w":300,"h":162,"rw":150,"rh":81,"tw":150,"th":81},"frock4":{"s":"forest","x":0,"y":713,"w":360,"h":181,"rw":180,"rh":90,"tw":180,"th":90},"frock5":{"s":"forest","x":0,"y":896,"w":320,"h":249,"rw":160,"rh":124,"tw":160,"th":124},"frock6":{"s":"forest","x":0,"y":1147,"w":400,"h":190,"rw":200,"rh":95,"tw":200,"th":95},"fkelp1":{"s":"forest","x":0,"y":1339,"w":160,"h":234,"rw":80,"rh":117,"tw":80,"th":117},"fkelp2":{"s":"forest","x":0,"y":1575,"w":172,"h":254,"rw":86,"rh":127,"tw":86,"th":127},"m_wood":{"s":"forest","x":0,"y":1831,"w":128,"h":120,"rw":64,"rh":60,"tw":34,"th":32},"m_shell":{"s":"forest","x":402,"y":0,"w":112,"h":96,"rw":56,"rh":48,"tw":25,"th":21},"m_coral":{"s":"forest","x":402,"y":98,"w":96,"h":116,"rw":48,"rh":58,"tw":20,"th":24},"m_glass":{"s":"forest","x":402,"y":216,"w":96,"h":94,"rw":48,"rh":47,"tw":22,"th":22},"m_sand":{"s":"forest","x":402,"y":312,"w":128,"h":76,"rw":64,"rh":38,"tw":30,"th":18},"m_pearl":{"s":"forest","x":402,"y":390,"w":80,"h":78,"rw":40,"rh":39,"tw":18,"th":18},"bbasket":{"s":"forest","x":402,"y":470,"w":280,"h":286,"rw":140,"rh":143,"tw":70,"th":72}}};
 const FSHEETS = {};
 function fsheet(n){ let im=FSHEETS[n]; if(!im){ im=FSHEETS[n]=new Image(); im.onload=()=>{ if(S && mode==='decor') renderTray(); if(typeof asobiView!=='undefined' && asobiView==='room' && room && room.edit) renderAsobi(); }; im.src='f_'+n+'.png'; } return (im.complete && im.naturalWidth) ? im : null; }
 function animKey(k,seed){
@@ -1454,6 +1454,12 @@ function moveTo(u,tx,td,speed,dt){
 }
 function setWalk(u){ u.state='walk'; u.tx=clamp(u.x+rand(-320,320),60,940); u.td=clamp(u.d+rand(-.35,.35),.02,1); u.timer=14; }
 function setSleep(u,sec){ u.state='sleep'; u.timer=sec; u.zT=.5; }
+// ---- ベンチに すわる（てづくりの ベンチ）。いつもの海は S.decor、森は S.bDecor ----
+const SEAT_H = {cbench:42, cbench_f:42};   // すわったときの 高さ（かざりの大きさの単位）
+function freeSeats(list, who, others){ return list.filter(o=>SEAT_H[o.type] && o.on==null && !others.some(v=>v!==who && v.seatId===o.id)); }
+function trySeat(u){ const fs = freeSeats(S.decor, u, S.umimi); if(!fs.length) return false; const o = fs[Math.floor(Math.random()*fs.length)];
+  u.state='walk'; u.tx=o.x; u.td=Math.min(1,o.d+.012); u.seatId=o.id; u.timer=16; return true; }
+const SIT_SAY = ['ふぅ…','いい ベンチ','すわりごこち いいね','ひとやすみ','♪'];
 function pickNext(u){
   const r = Math.random();
   if(!PARTY && Math.random()<.3){ const P=u.pers;
@@ -1462,6 +1468,7 @@ function pickNext(u){
     if(P==='koukishin'){ u.state='curious'; u.timer=2; if(Math.random()<.4) say(u,'なんだろ？'); return; }
     if(P==='amaenbo'){ u.state='happy'; u.timer=1.6; hearts(u,1); return; }
   }
+  if(!PARTY && Math.random()<.1 && trySeat(u)) return;
   if(PARTY && cake && r<.3){ u.state='walk'; u.tx=clamp(cake.x+(u.x<cake.x?-1:1)*rand(90,170),60,940); u.td=clamp(cake.d+rand(-.15,.25),.02,1); u.timer=12; return; }
   if(PARTY && r<.45){ u.state='happy'; u.timer=1.8; if(Math.random()<.5) hearts(u,1); return; }
   if(night > .6){
@@ -1483,13 +1490,19 @@ function updateU(u,dt){
   if(u.state==='leaving'){ u.timer-=dt; u.lift += 45*dt; u.fade = Math.min(1,u.timer/2); u.expr='happy';
     if(Math.random()<dt*8){ const s=scaleD(u.d); addP({type:'spark',x:u.x+rand(-40,40)*s,y:floorY(u.d)-u.lift-rand(0,60)*s,vx:0,vy:-20,r:rand(3,5)*s,life:.9,max:.9}); }
     if(u.timer<=0){ S.umimi = S.umimi.filter(o=>o!==u); if(mode==='friends') renderTray(); save(); } return; }
+  if(u.seatId!=null && u.state!=='sit' && u.state!=='walk') u.seatId=null;
   if(u.state==='swim'){ u.lift += (u.swimH-u.lift)*Math.min(1,dt*.7); }
+  else if(u.state==='sit'){ const o=S.decor.find(x=>x.id===u.seatId); if(o){ u.x=o.x; u.d=Math.min(1,o.d+.012); u.lift += (SEAT_H[o.type]*scaleD(o.d)-u.lift)*Math.min(1,dt*8); } else { u.state='idle'; u.timer=1; u.seatId=null; } }
   else if(u.lift>0){ u.lift = Math.max(0, u.lift-(20+u.lift*.45)*dt); }
   if(['idle','walk','swim','curious'].includes(u.state) && foods.length){ const f=findFood(u); if(f){ f.claim=u.id; u.target=f; u.state='seek'; } }
   switch(u.state){
     case 'trick': { u.timer-=dt; const s=scaleD(u.d); const fx=updTrickFx(u,dt,u.x,floorY(u.d)-u.lift,s); if(fx) addP(Object.assign(fx,{r:(fx.type==='heart'?9:4)*s,life:1.2,max:1.2})); if(u.timer<=0){ u.state='idle'; u.timer=rand(1,2.5); u.trickK=null; u.trickDone=0; } break; }
     case 'idle': u.timer-=dt; if(u.timer<=0){ const L=learnedOf(u); if(L.length && night<.6 && Math.random()<.13){ startTrick(u, L[Math.floor(Math.random()*L.length)]); if(Math.random()<.4) say(u,'♪'); } else pickNext(u); } break;
-    case 'walk': u.timer-=dt; if(moveTo(u,u.tx,u.td,38,dt) || u.timer<=0){ u.state='idle'; u.timer=rand(1,3); } break;
+    case 'walk': { u.timer-=dt; const ar=moveTo(u,u.tx,u.td,38,dt); if(ar || u.timer<=0){
+      if(ar && u.seatId!=null && S.decor.some(x=>x.id===u.seatId)){ u.state='sit'; u.timer=night>.6 ? rand(14,24) : rand(9,18); u.dir=Math.random()<.5?1:-1; if(Math.random()<.35) say(u, SIT_SAY[Math.floor(Math.random()*SIT_SAY.length)]); }
+      else { u.seatId=null; u.state='idle'; u.timer=rand(1,3); } } break; }
+    case 'sit': u.timer-=dt; if(Math.random()<dt*.08){ u.dir=-u.dir; } if(Math.random()<dt*.05) hearts(u,1);
+      if(u.timer<=0){ u.state='idle'; u.timer=rand(1,2); u.seatId=null; } break;
     case 'swim': u.timer-=dt; moveTo(u,u.tx,u.td,50,dt); if(u.timer<=0){ u.state='idle'; u.timer=2; } break;
     case 'seek': {
       const f = u.target;
@@ -3598,6 +3611,12 @@ const FURN = {
   garland:{name:'あきの ガーランド', spot:'wall', w:300, h:99, price:3, img:true},
   pumpkinstand:{name:'かぼちゃランタン', spot:'floor', w:85, h:172, price:3, img:true},
   hrug:{name:'まほうのラグ', spot:'floor', w:170, h:100, price:2, img:true, flat:true},
+  // てづくり家具（サンゴの森の こうぼうで つくる。置くと もちもの S.crafted が へる）
+  cbench:{name:'流木の 小さなベンチ', spot:'floor', w:130, h:65, price:0, img:true, craft:true}, cbench_f:{name:'きれいな 流木のベンチ', spot:'floor', w:130, h:65, price:0, img:true, craft:true},
+  ctable:{name:'流木の ミニテーブル', spot:'floor', w:110, h:92, price:0, img:true, craft:true}, ctable_f:{name:'きれいな ミニテーブル', spot:'floor', w:110, h:92, price:0, img:true, craft:true},
+  cshelllamp:{name:'貝がらランプ', spot:'floor', w:70, h:76, price:0, img:true, craft:true}, cshelllamp_f:{name:'きれいな 貝がらランプ', spot:'floor', w:70, h:76, price:0, img:true, craft:true},
+  ccoralpot:{name:'サンゴの うえきばち', spot:'floor', w:72, h:90, price:0, img:true, craft:true}, ccoralpot_f:{name:'きれいな うえきばち', spot:'floor', w:72, h:90, price:0, img:true, craft:true},
+  cmobile:{name:'海ガラスの モビール', spot:'wall', w:80, h:80, price:0, img:true, craft:true}, cmobile_f:{name:'きれいな モビール', spot:'wall', w:80, h:82, price:0, img:true, craft:true},
   ghostcushion:{name:'おばけクッション', spot:'floor', w:85, h:74, price:2, img:true},
   candytable:{name:'おかしのテーブル', spot:'floor', w:105, h:122, price:4, img:true},
   hshelf:{name:'まほうのほんだな', spot:'floor', w:115, h:154, price:4, img:true},
@@ -3612,10 +3631,11 @@ function riId(it){ if(!it.id) it.id = Date.now().toString(36)+(roomItemId++); re
 function roomPos(R,it){ if(it.on){ const t=R.items.find(x=>x.id===it.on); if(t && SURF[t.k]){ return {x:t.x+(it.dx||0), y:t.y-SURF[t.k]*FURN[t.k].h, sort:t.y+.5}; } it.on=null; } return {x:it.x, y:it.y, sort:it.y}; }
 function roomSnap(R,it,px,py){ if(!SMALLS.has(it.k)) return false; for(const t of R.items){ if(t===it || !SURF[t.k]) continue; const F=FURN[t.k], top=t.y-SURF[t.k]*F.h; if(Math.abs(px-t.x)<F.w*.42 && Math.abs(py-top)<24){ riId(t); it.on=t.id; it.dx=px-t.x; return true; } } it.on=null; return false; }
 function roomOf(u){ if(!u.room) u.room = {wall:'pastel', floor:'sand', items:[{k:'rug',x:320,y:340},{k:'bed',x:150,y:330},{k:'lamp',x:520,y:320}]}; return u.room; }
-function furnOwned(k){ return FURN[k].price===0 || (S.furn||[]).includes(k); }
+function furnOwned(k){ if(FURN[k].craft) return (craftedOf()[k]||0)>0; return FURN[k].price===0 || (S.furn||[]).includes(k); }
 function drawFurn(c,k,x,y,t){
   c.save(); c.translate(x,y); c.lineJoin='round'; c.lineCap='round';
   if(FURN[k] && FURN[k].img){ if(FURN[k].spot==='wall' || FURN[k].flat) c.translate(0,FURN[k].h/2);
+    if(k==='cshelllamp'||k==='cshelllamp_f'){ c.fillStyle=`rgba(255,226,170,${.14+.22*night})`; c.beginPath(); c.arc(0,-FURN[k].h*.42,30+Math.sin(t*2)*2,0,TAU); c.fill(); }
     if(k==='lamp'){ c.fillStyle=`rgba(255,236,170,${.18+.25*night})`; c.beginPath(); c.arc(-FURN[k].w*.12,-FURN[k].h*.68,38+Math.sin(t*2)*2,0,TAU); c.fill(); }
     drawFImg(c, k==='window' && night<.5 ? 'windowday' : k, FURN[k].w, FURN[k].h, x*.013); c.restore(); return; }
   const O='#5a5480';
@@ -3682,14 +3702,15 @@ function renderRoomView(b){
     ed.innerHTML = `<div class="rrow"><span class="lbl">かべ</span>${Object.entries(WALLS).map(([k,v])=>`<button type="button" class="dm${R.wall===k?' on':''}" data-w="${k}">${v.name}</button>`).join('')}</div>
       <div class="rrow"><span class="lbl">ゆか</span>${Object.entries(FLOORS).map(([k,v])=>`<button type="button" class="dm${R.floor===k?' on':''}" data-f="${k}">${v.name}</button>`).join('')}</div>
       <div class="rrow"><span class="lbl">シリーズ</span>${DSERIES.filter(([k])=>Object.keys(FURN).some(x=>furnSeries(x)===k)).map(([k,n])=>`<button type="button" class="dm${room.cat===k?' on':''}" data-rc="${k}">${n}</button>`).join('')}</div>
-      <div class="rrow"><span class="lbl">かぐ</span>${Object.entries(FURN).filter(([k])=>furnSeries(k)===room.cat).map(([k,v])=>{ const own=furnOwned(k); return `<button type="button" class="dm fb${own?'':' lock'}" data-k="${k}">${v.name}${own?'':` 🌙${v.price}`}</button>`; }).join('')}</div>
+      <div class="rrow"><span class="lbl">かぐ</span>${Object.entries(FURN).filter(([k,v])=>furnSeries(k)===room.cat && (!v.craft || furnOwned(k))).map(([k,v])=>{ const own=furnOwned(k); return `<button type="button" class="dm fb${own?'':' lock'}" data-k="${k}">${v.name}${v.craft?` <small>のこり${craftedOf()[k]}</small>`:own?'':` 🌙${v.price}`}</button>`; }).join('')}${room.cat==='craft' && !Object.keys(FURN).some(k=>FURN[k].craft && furnOwned(k)) ? '<span class="dsub">おける てづくりの かぐが ないよ（サンゴの森の さぎょうだいで つくれるよ）</span>' : ''}</div>
       <p class="dsub">かぐを タップすると おへやに おけるよ（🌙は つきのかけらで かう）。おへやの かぐは ドラッグで うごかせます。${room.sel!=null?'':''}</p>`;
     b.appendChild(ed);
     ed.querySelectorAll('[data-rc]').forEach(x=>x.addEventListener('click',()=>{ room.cat=x.dataset.rc; renderAsobi(); }));
     ed.querySelectorAll('[data-w]').forEach(x=>x.addEventListener('click',()=>{ R.wall=x.dataset.w; save(); renderAsobi(); }));
     ed.querySelectorAll('[data-f]').forEach(x=>x.addEventListener('click',()=>{ R.floor=x.dataset.f; save(); renderAsobi(); }));
     ed.querySelectorAll('[data-k]').forEach(x=>x.addEventListener('click',()=>{ const k=x.dataset.k, F=FURN[k];
-      if(!furnOwned(k)){ if(S.shards < F.price){ toast(`つきのかけらが たりないよ（${F.price}こ ひつよう）`); return; } S.shards-=F.price; refreshShards(true); S.furn=(S.furn||[]).concat(k); sfx('shard'); toast(`「${F.name}」を かったよ`); }
+      if(F.craft){ if(!furnOwned(k)){ toast('もう のこっていないよ'); renderAsobi(); return; } if(R.items.length>=14){ toast('おへやが いっぱい。なにか しまってね'); return; } craftedOf()[k]--; }
+      else if(!furnOwned(k)){ if(S.shards < F.price){ toast(`つきのかけらが たりないよ（${F.price}こ ひつよう）`); return; } S.shards-=F.price; refreshShards(true); S.furn=(S.furn||[]).concat(k); sfx('shard'); toast(`「${F.name}」を かったよ`); }
       if(R.items.length>=14){ toast('おへやが いっぱい。なにか しまってね'); renderAsobi(); return; }
       let bx=320, bd=-1; for(let t2=0;t2<12;t2++){ const cx=rand(F.w/2+8, RW-F.w/2-8); const dmin=Math.min(999,...R.items.filter(it=>FURN[it.k].spot===F.spot && !FURN[it.k].flat).map(it=>Math.abs(it.x-cx)-(FURN[it.k].w+F.w)/2)); if(dmin>bd){ bd=dmin; bx=cx; } }
       const ni={k, x:bx, y: F.spot==='wall' ? 110 : rand(300,345)}; riId(ni);
@@ -3703,7 +3724,7 @@ function renderRoomView(b){
   b.appendChild(bar);
   if(room.edit){
     $('rDone').addEventListener('click', ()=>{ room.edit=false; room.sel=null; save(); renderAsobi(); });
-    if($('rDel')) $('rDel').addEventListener('click', ()=>{ const gone=R.items[room.sel]; R.items.forEach(x=>{ if(gone && x.on && x.on===gone.id){ x.x=gone.x+(x.dx||0); x.y=gone.y+4; x.on=null; } }); R.items.splice(room.sel,1); room.sel=null; save(); renderAsobi(); });
+    if($('rDel')) $('rDel').addEventListener('click', ()=>{ const gone=R.items[room.sel]; if(gone && FURN[gone.k] && FURN[gone.k].craft) craftedOf()[gone.k]=(craftedOf()[gone.k]||0)+1; R.items.forEach(x=>{ if(gone && x.on && x.on===gone.id){ x.x=gone.x+(x.dx||0); x.y=gone.y+4; x.on=null; } }); R.items.splice(room.sel,1); room.sel=null; save(); renderAsobi(); });
   } else {
     $('rBack').addEventListener('click', ()=>{ asobiView='roompick'; renderAsobi(); });
     $('rEdit').addEventListener('click', ()=>{ room.edit=true; renderAsobi(); });
@@ -3725,13 +3746,13 @@ function renderRoomView(b){
 function renderRoomBar(){ // refresh only the "しまう" button without rebuilding the canvas
   const bar = document.querySelector('#asobiBody .dbar'); if(!bar || !room.edit) return; const u=S.umimi.find(o=>o.id===room.uid); const R=roomOf(u);
   const del = $('rDel'); if(del) del.remove();
-  if(room.sel!=null && R.items[room.sel]){ const bt=document.createElement('button'); bt.className='dbtn sub'; bt.type='button'; bt.id='rDel'; bt.textContent=`「${FURN[R.items[room.sel].k].name}」を しまう`; bt.addEventListener('click', ()=>{ const gone=R.items[room.sel]; R.items.forEach(x=>{ if(gone && x.on && x.on===gone.id){ x.x=gone.x+(x.dx||0); x.y=gone.y+4; x.on=null; } }); R.items.splice(room.sel,1); room.sel=null; save(); renderAsobi(); }); bar.prepend(bt); }
+  if(room.sel!=null && R.items[room.sel]){ const bt=document.createElement('button'); bt.className='dbtn sub'; bt.type='button'; bt.id='rDel'; bt.textContent=`「${FURN[R.items[room.sel].k].name}」を しまう`; bt.addEventListener('click', ()=>{ const gone=R.items[room.sel]; if(gone && FURN[gone.k] && FURN[gone.k].craft) craftedOf()[gone.k]=(craftedOf()[gone.k]||0)+1; R.items.forEach(x=>{ if(gone && x.on && x.on===gone.id){ x.x=gone.x+(x.dx||0); x.y=gone.y+4; x.on=null; } }); R.items.splice(room.sel,1); room.sel=null; save(); renderAsobi(); }); bar.prepend(bt); }
 }
 function updateRoom(dt){
   if(asobiView!=='room' || $('asobi').hidden || !room || !room.fig) return;
   const cv2 = $('roomCv'); if(!cv2) return; const u = S.umimi.find(o=>o.id===room.uid); if(!u) return; const R = roomOf(u), f = room.fig;
   f.t += dt; f.moving=false;
-  const REST = {psofa:{lift:22,st:'idle',dx:0,dy:-12}, ghostcushion:{lift:18,st:'idle',dx:4,dy:-12}, mcushion:{lift:16,st:'idle',dx:0,dy:-14}, cushion:{lift:20,st:'idle',dx:0,dy:-10}, shellbed:{lift:30,st:'sleep',dx:0,dy:-22}, bed:{lift:48,st:'sleep',dx:0,dy:-30}, shellchair:{lift:26,st:'idle',dx:0,dy:-14}};
+  const REST = {psofa:{lift:22,st:'idle',dx:0,dy:-12}, ghostcushion:{lift:18,st:'idle',dx:4,dy:-12}, mcushion:{lift:16,st:'idle',dx:0,dy:-14}, cushion:{lift:20,st:'idle',dx:0,dy:-10}, shellbed:{lift:30,st:'sleep',dx:0,dy:-22}, bed:{lift:48,st:'sleep',dx:0,dy:-30}, shellchair:{lift:26,st:'idle',dx:0,dy:-14}, cbench:{lift:30,st:'idle',dx:0,dy:-6}, cbench_f:{lift:30,st:'idle',dx:0,dy:-6}};
   const spots = R.items.filter(it=>REST[it.k]); const bed = room.spot;
   if(f.state==='trick'){ f.timer-=dt; if(f.timer<=0){ f.state='idle'; f.timer=1.5; } }
   else if(f.state==='walk'){ const dx=room.tx-f.x, dy=room.ty-f.y, d=Math.hypot(dx,dy); if(d<3){ f.state = room.next||'idle'; f.timer = f.state==='sleep' ? rand(6,10) : f.state==='sit' ? rand(5,9) : rand(1.5,3.5); room.next=null; } else { const sp=45*dt; f.x+=dx/d*Math.min(sp,d); f.y+=dy/d*Math.min(sp,d); f.dir = dx>0?1:-1; f.moving=true; } }
@@ -3837,6 +3858,7 @@ function bBubbles(x,y,n){ for(let i=0;i<n;i++) bAdd({type:'bubble',x:x+rand(-10,
 const B_SEARCH_SAY = ['なにか あるかな','きらきら…','ふむふむ','これ なんだろ','いいもの みっけ？'];
 function bPick(c){
   if(explReady() && explOf().trip.members.includes(c.id) && Math.random()<.35){ c.state='happy'; c.timer=1.6; bSay(c, ['おはなし きいて！','ただいま！','たのしかったよ'][Math.floor(Math.random()*3)]); return; }
+  if(Math.random()<.14 && trySeatB(c)) return;
   const r = Math.random();
   if(night > .6){
     if(r<.5){ c.state='sleep'; c.timer=rand(14,28); c.zT=.5; }
@@ -3857,18 +3879,25 @@ function updCopy(c,dt){
   c.petCD = Math.max(0,c.petCD-dt); c.moving = false;
   if(c.leaving){ c.fade = (c.fade==null?1:c.fade) - dt*.9; c.state='walk'; moveTo(c,c.tx,c.d,60,dt); c.expr='normal'; return; }
   if(c.fade!=null){ c.fade = Math.min(1,c.fade+dt*1.2); if(c.fade>=1) c.fade = null; }
-  if(c.lift>0) c.lift = Math.max(0, c.lift-(20+c.lift*.45)*dt);
+  if(c.seatId!=null && c.state!=='sit' && c.state!=='walk') c.seatId=null;
+  if(c.state==='sit'){ const o=bDecorOf().find(x=>x.id===c.seatId); if(o){ c.x=o.x; c.d=Math.min(1,o.d+.012); c.lift += (SEAT_H[o.type]*scaleD(o.d)-c.lift)*Math.min(1,dt*8); } else { c.state='idle'; c.timer=1; c.seatId=null; } }
+  else if(c.lift>0) c.lift = Math.max(0, c.lift-(20+c.lift*.45)*dt);
   switch(c.state){
     case 'idle': c.timer-=dt; if(c.timer<=0) bPick(c); break;
-    case 'walk': c.timer-=dt;
-      if(moveTo(c,c.tx,c.td,36,dt) || c.timer<=0){
-        if(c.goal){ c.dir = c.faceX>=c.x ? 1 : -1; c.state='curious'; c.timer=rand(2.2,3.2);
+    case 'walk': { c.timer-=dt; const ar = moveTo(c,c.tx,c.td,36,dt);
+      if(ar || c.timer<=0){
+        if(c.goal==='seat'){ c.goal=null;
+          if(ar && bDecorOf().some(o=>o.id===c.seatId)){ c.state='sit'; c.timer = night>.6 ? rand(14,24) : rand(10,20); c.dir = Math.random()<.5?1:-1; if(Math.random()<.4) bSay(c, SIT_SAY[Math.floor(Math.random()*SIT_SAY.length)]); }
+          else { c.seatId=null; c.state='idle'; c.timer=1; } }
+        else if(c.goal){ c.dir = c.faceX>=c.x ? 1 : -1; c.state='curious'; c.timer=rand(2.2,3.2);
           if(c.goal==='bench'){ if(Math.random()<.5) bSay(c, Math.random()<.5 ? 'ここで なにか つくれそう' : 'さぎょうだい…？'); }
           else if(Math.random()<.28 && bDropsOf().length<DROP_MAX){ const o=spawnDrop(pickMat(PERS_FIND[c.pers]), c.x+c.dir*55, c.d+rand(-.04,.04), true); if(o){ bSay(c,'みっけ！'); bBubbles(o.x, floorY(o.d)-8, 3); } }
           else if(Math.random()<.45) bSay(c, B_SEARCH_SAY[Math.floor(Math.random()*B_SEARCH_SAY.length)]);
           c.goal=null; }
         else { c.state='idle'; c.timer=rand(1,3); } }
-      break;
+      break; }
+    case 'sit': c.timer-=dt; if(Math.random()<dt*.08) c.dir=-c.dir; if(Math.random()<dt*.05) bHearts(c,1);
+      if(c.timer<=0){ c.state='idle'; c.timer=rand(1,2); c.seatId=null; } break;
     case 'curious': c.timer-=dt; if(Math.random()<dt*1.5){ const s=scaleD(c.d); bBubbles(c.x+c.dir*44*s, floorY(c.d)-20*s, 1); }
       if(c.timer<=0){ c.state = Math.random()<.4 ? 'happy' : 'idle'; c.timer = c.state==='happy' ? 1.6 : rand(1,2.5); } break;
     case 'sleep': c.timer-=dt; c.zT-=dt; if(c.zT<=0){ c.zT=1.7; const s=scaleD(c.d); bAdd({type:'z',x:c.x+c.dir*30*s,y:floorY(c.d)-c.lift-70*s,vx:rand(6,14)*-c.dir,vy:-16,r:rand(14,20)*s,life:2.2,max:2.2}); }
@@ -3995,6 +4024,7 @@ function hitProp(p,o,rx,ry){ const s=scaleD(o.d), gy=floorY(o.d); return Math.ab
 const B_PET_SAY = ['えへへ','もりたのしい','サンゴ きれい','♪','おさんぽちゅう'];
 function bTap(p){
   ensureAudio();
+  if(bEdit){ bEditTap(p); return; }
   const dr = hitDrop(p); if(dr){ pickDrop(dr); return; }
   if(hitProp(p,B_BASKET,40,92)){ takeBag(); return; }
   const u = hitCopy(p);
@@ -4022,6 +4052,7 @@ function drawAreaB(){
   items.push({y:floorY(B_BENCH.d)-.01, f:() => drawBench(c)});
   items.push({y:floorY(B_KILN.d)-.01, f:() => drawKiln(c)});
   items.push({y:floorY(B_BASKET.d)-.005, f:() => drawBasket(c)});
+  bDecorOf().forEach(o => items.push({y:floorY(o.d)-.01, f:() => drawBDecor(c,o)}));
   bDropsOf().forEach(o => items.push({y:floorY(o.d)+.005, f:() => drawDrop(c,o)}));
   bCopies.forEach(u => items.push({y:floorY(u.d)+.02, f:() => drawUmimiAt(c,u,u.x,floorY(u.d),scaleD(u.d),T,u.lift,{glows,marks:true})}));
   items.sort((a,b)=>a.y-b.y).forEach(it=>it.f());
@@ -4065,7 +4096,7 @@ function refreshAreaTabs(){
 function setArea(a){
   if(a!=='b') a='a';
   if(a===S.area) return;
-  S.area = a; closeCard(); drag = null; pB = [];
+  S.area = a; closeCard(); drag = null; pB = []; bEdit = false; bSel = null;
   if(a==='b'){ const B = areaB();
     if(!B.visited){ B.visited = true; const pick = liveUmi().slice(0,2); B.members = pick.map(u=>u.id); B.bag = []; B.gT = Date.now(); for(let i=0;i<3;i++) spawnDrop();
       pick.forEach(u => addMem(u,'はじめて サンゴの森に おでかけした',true));
@@ -4083,10 +4114,12 @@ function toggleOuting(u){
 }
 function renderTrayB(){
   const tr = $('tray'); tr.innerHTML = ''; $('decorCats').hidden = true;
+  if(bEdit){ renderTrayBEdit(tr); return; }
   const B = areaB();
   tr.insertAdjacentHTML('beforeend', `<div class="hintwrap bhint"><p class="hint"><b>サンゴの森</b>に おでかけする子を えらんでね（いつもの海にも いるよ）。砂の上の <b>そざい</b>は タップで ひろえて、おでかけ中の子は <b>かご</b>に ひろってきてくれるよ。<b>さぎょうだい</b>を タップすると こうぼう。</p><span class="count" style="align-self:flex-start">おでかけ ${B.members.length}/${B_MAX}</span><div class="mats" id="matRow"></div></div>`);
   const mr = $('matRow'), mm = matsOf(); MAT_KEYS.filter(k=>!MATS[k].rare || mm[k]).forEach(k=>{ const sp=document.createElement('span'); sp.title=MATS[k].name; sp.append(matIcon(k,22)); sp.insertAdjacentHTML('beforeend', `${MATS[k].name} <b>${mm[k]||0}</b>`); mr.append(sp); });
   { const E=explOf(), eb=document.createElement('button'); eb.type='button'; eb.className='item explbtn'+(explReady()?' ready':''); eb.innerHTML=`<span class="ai">🧭</span><span>たんけん</span><span class="bst" id="explStat">${explStatus()}</span>`; eb.addEventListener('click',()=>openExpl()); tr.append(eb); }
+  if(craftOwnedAny() || bDecorOf().length){ const db=document.createElement('button'); db.type='button'; db.className='item explbtn'; db.innerHTML=`<span class="ai">🪑</span><span>もりに かざる</span><span class="bst">${bDecorOf().length}/${B_DECOR_MAX}</span>`; db.addEventListener('click',()=>{ bEdit=true; bSel=null; renderTrayB(); }); tr.append(db); }
   liveUmi().forEach(u => {
     const on = B.members.includes(u.id), tk = explOf().trip && explOf().trip.members.includes(u.id);
     const b = document.createElement('button'); b.type='button'; b.className='item'; b.setAttribute('aria-pressed', on);
@@ -4096,6 +4129,48 @@ function renderTrayB(){
     b.addEventListener('click', () => toggleOuting(u)); tr.append(b);
   });
 }
+
+// ---- 森に かざる（てづくり家具）。S.bDecor = [{id,type,x,d}]。置くと もちもの（S.crafted）が へり、しまうと もどる ----
+const B_DECOR_MAX = 8;
+let bEdit = false, bSel = null;
+function bDecorOf(){ if(!Array.isArray(S.bDecor)) S.bDecor = []; S.bDecor = S.bDecor.filter(o=>o && DECOR[o.type] && DECOR[o.type].craft); return S.bDecor; }
+function craftThumb(key){ const [cv2,x]=thumbCanvas(64,52); const b=craftBase(key); const sc = b==='cmobile' ? .36 : b==='cshelllamp' ? .62 : b==='ccoralpot' ? .56 : b==='ctable' ? .52 : .5;
+  x.save(); x.translate(32, b==='cmobile' ? 50 : 49); x.scale(sc,sc); drawDecor(x,key,0,0); x.restore();
+  const fm=FIMG.m[key]; if(fm && !fsheet(fm.s)) FSHEETS[fm.s].addEventListener('load', ()=>{ x.clearRect(0,0,64,52); x.save(); x.translate(32,49); x.scale(sc,sc); drawDecor(x,key,0,0); x.restore(); }, {once:true});
+  return cv2; }
+function renderTrayBEdit(tr){
+  const cc = craftedOf(), keys = Object.keys(DECOR).filter(k=>DECOR[k].craft && cc[k]>0);
+  tr.insertAdjacentHTML('beforeend', `<div class="hintwrap bhint"><p class="hint"><b>もりに かざる</b>：てづくりの かぐを えらんで、砂の上を タップすると おけるよ（${bDecorOf().length}/${B_DECOR_MAX}）。ベンチを おくと おでかけ中の子が すわりにくるよ。</p></div>`);
+  if(!keys.length) tr.insertAdjacentHTML('beforeend','<p class="hint">おける てづくりの かぐが ないよ。<b>さぎょうだい</b>で つくってね（いつもの海に おいてある物は、そっちで しまうと つかえるよ）。</p>');
+  keys.forEach(key => { const b=document.createElement('button'); b.type='button'; b.className='item'; b.setAttribute('aria-pressed', bSel===key);
+    b.append(craftThumb(key)); b.insertAdjacentHTML('beforeend', `<span>${DECOR[key].name}</span><span class="cost" style="color:#6c6a94">のこり ${cc[key]}</span>`);
+    b.addEventListener('click', ()=>{ bSel = bSel===key ? null : key; renderTrayB(); if(bSel) toast(`おきたい 砂の上を タップしてね（${DECOR[key].name}）`); }); tr.append(b); });
+  const r=document.createElement('button'); r.type='button'; r.className='item put'; r.setAttribute('aria-pressed', bSel==='remove');
+  r.innerHTML = '<svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M4 9h16l-2 11H6z" fill="#c9cdea"/><path d="M3 7h18M9 7V4h6v3" stroke="#6c6a94" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg><span>しまう</span><span class="cost" style="color:#6c6a94">もちものに もどる</span>';
+  r.addEventListener('click', ()=>{ bSel = bSel==='remove' ? null : 'remove'; renderTrayB(); if(bSel) toast('しまいたい かぐを タップしてね'); }); tr.append(r);
+  const d=document.createElement('button'); d.type='button'; d.className='item put'; d.innerHTML='<span class="ai">✔</span><span>できた</span>';
+  d.addEventListener('click', ()=>{ bEdit=false; bSel=null; renderTrayB(); }); tr.append(d);
+}
+function hitBDecor(p){ return bDecorOf().slice().sort((a,b)=>b.d-a.d).find(o=>{ const s=scaleD(o.d), gy=floorY(o.d), D=DECOR[o.type]; return Math.abs(p.x-o.x) < D.r*s && p.y < gy+10*s && p.y > gy-D.h*s*1.6; }); }
+function bEditTap(p){
+  if(bSel==='remove'){ const o=hitBDecor(p); if(!o) return; S.bDecor = bDecorOf().filter(x=>x!==o); const cc=craftedOf(); cc[o.type]=(cc[o.type]||0)+1;
+    bCopies.forEach(c=>{ if(c.seatId===o.id){ c.seatId=null; if(c.state==='sit'){ c.state='idle'; c.timer=1; } } });
+    for(let i=0;i<6;i++){ const a=rand(0,TAU); bAdd({type:'spark',x:o.x,y:floorY(o.d)-20,vx:Math.cos(a)*50,vy:Math.sin(a)*50,r:4,life:.6,max:.6}); }
+    sfx('place'); renderTrayB(); save(); return; }
+  if(!bSel) { toast('したの いちらんから かぐを えらんでね'); return; }
+  const cc=craftedOf(); if(!(cc[bSel]>0)){ bSel=null; renderTrayB(); return; }
+  if(bDecorOf().length >= B_DECOR_MAX){ toast('もりには これいじょう おけないよ。しまうで かたづけてね'); return; }
+  if(p.y < floorTop-6){ toast('砂の 上を タップしてね'); return; }
+  const o = {id:S.decorId++, type:bSel, x:clamp(p.x,40,960), d:clamp(invFloor(p.y),0,1)};
+  cc[bSel]--; S.bDecor.push(o); bBubbles(o.x, floorY(o.d)-10, 4); sfx('place');
+  if(!(cc[bSel]>0)) bSel=null; renderTrayB(); save();
+}
+function drawBDecor(c,o){ const s=scaleD(o.d), gy=floorY(o.d), D=DECOR[o.type];
+  c.fillStyle='rgba(110,110,180,.14)'; c.beginPath(); c.ellipse(o.x,gy,D.r*s*.9,7*s,0,0,TAU); c.fill();
+  c.save(); c.translate(o.x,gy); c.scale(s,s); drawDecor(c,o.type,T,o.id); c.restore(); craftGlow(o,o.x,gy,s);
+  if(bEdit && bSel==='remove'){ const cx=o.x+D.r*s*.7, cy=gy-D.h*s*1.6, q=4*s; c.fillStyle='rgba(233,120,150,.9)'; c.beginPath(); c.arc(cx,cy,9*s,0,TAU); c.fill(); c.strokeStyle='#fff'; c.lineWidth=2.2; c.beginPath(); c.moveTo(cx-q,cy-q); c.lineTo(cx+q,cy+q); c.moveTo(cx+q,cy-q); c.lineTo(cx-q,cy+q); c.stroke(); } }
+function trySeatB(c){ const fs = freeSeats(bDecorOf(), c, bCopies); if(!fs.length) return false; const o = fs[Math.floor(Math.random()*fs.length)];
+  c.state='walk'; c.goal='seat'; c.seatId=o.id; c.tx=o.x; c.td=Math.min(1,o.d+.012); c.faceX=o.x; c.timer=20; return true; }
 
 // ---- そざい（サンゴの森） ----
 // S.mats = {wood:n,…}：もっている そざい。S.bDrops = [{k,x,d}]：森の砂に 流れ着いた そざい（タップで ひろう）
