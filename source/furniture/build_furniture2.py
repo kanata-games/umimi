@@ -11,6 +11,7 @@ SERIES = {
  'autumn':  {'lanternstand':(100,95),'stall':(200,180),'kingyo':(190,160),'mcushion':(115,90),'garland':(300,200),'chochin':(80,80),'omen':(200,180),'acorn':(60,42),'yakiimo':(70,48),'bridge':(230,200)},
  'craft':   {'cbench':(130,128),'cbench_f':(130,128),'ctable':(110,92),'ctable_f':(110,92),'cshelllamp':(70,62),'cshelllamp_f':(70,62),'ccoralpot':(72,60),'ccoralpot_f':(72,60),'cmobile':(80,72),'cmobile_f':(80,72),'bwork':(175,175),'bsign':(112,112),'bkiln':(160,160),'bcoral':(130,130)},
  'forest':  {'frock1':(200,200),'frock2':(170,170),'frock3':(150,150),'frock4':(180,180),'frock5':(160,160),'frock6':(200,200),'fkelp1':(80,80),'fkelp2':(86,86),'m_wood':(64,34),'m_shell':(56,25),'m_coral':(48,20),'m_glass':(48,22),'m_sand':(64,30),'m_pearl':(40,18),'bbasket':(140,70)},
+ 'farm':    {'fplot':(112,112),'p_lettuce_1':(34,34),'p_lettuce_2':(54,54),'p_lettuce_3':(78,78),'p_berry_1':(48,48),'p_berry_2':(57,57),'p_berry_3':(74,74),'p_mush_1':(24,24),'p_mush_2':(43,43),'p_mush_3':(82,82),'p_moonfruit_1':(27,27),'p_moonfruit_2':(44,44),'p_moonfruit_3':(58,58),'m_lettuce':(60,26),'m_berry':(56,22),'m_mush':(56,24),'m_moonfruit':(56,22),'m_bento':(64,30)},
  'halloween':{'pumpkinstand':(85,80),'hrug':(170,120),'ghostcushion':(85,72),'hframe':(80,0),'candytable':(105,82),'hshelf':(115,100),'jbox':(85,74,4,'b'),'chandelier':(130,0,3,'t')},
 }
 NOSPILL={'fkelp1','fkelp2','frock1'}  # 緑っぽい 海藻は 緑の にじみ消しを しない

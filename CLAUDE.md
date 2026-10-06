@@ -11,7 +11,7 @@
 ## ★新しい会話で続けるとき（最初に読む）
 - 作業場所：このリポジトリを clone（例 /home/claude/umimi-repo）。本体は `source/game.html`、画像は直下の png
 - **本番・開発版のリンクは絶対に変えない**。Artifact を公開するときは必ず `url` に下の既存URLを渡す（url なしで公開すると別リンクが新しくできてしまう）。別の会話から更新する前に、いったん `action: "read"` でその URL を読む
-- 公開するとき、画像は `files` に**絶対パス**で全部渡す：`c_animal.png` `c_food.png` `c_season.png` `c_work.png` `c_fashion.png` `c_relax.png` `c_dream.png` `c_adv.png` `c_princess.png`、2コマ目の `c_<分類>2.png`（9枚）、`umimi-sprites.png` `visitors.png` `roomtex.png` `f_base.png` `f_pearl.png` `f_autumn.png` `f_halloween.png` `f_craft.png` `f_forest.png` `bg_forest.png` `bg_forest_n.png` `ex_shallows.png` `ex_wreck.png` `ex_deep.png`。capability は `downloads`（前のバージョンから引き継がれる）
+- 公開するとき、画像は `files` に**絶対パス**で全部渡す：`c_animal.png` `c_food.png` `c_season.png` `c_work.png` `c_fashion.png` `c_relax.png` `c_dream.png` `c_adv.png` `c_princess.png`、2コマ目の `c_<分類>2.png`（9枚）、`umimi-sprites.png` `visitors.png` `roomtex.png` `f_base.png` `f_pearl.png` `f_autumn.png` `f_halloween.png` `f_craft.png` `f_forest.png` `f_farm.png` `bg_forest.png` `bg_forest_n.png` `ex_shallows.png` `ex_wreck.png` `ex_deep.png`。capability は `downloads`（前のバージョンから引き継がれる）
 - 開発版は `<title>ウミミの箱庭</title>` を `<title>ウミミの箱庭 開発版</title>` に置き換えたものを公開する
 - 確認用：ローカルで `python3 -m http.server` を立て、`<!doctype html><meta charset=utf-8>` を先頭に付けた試験用コピーを Playwright（/opt/pw-browsers）で開く。本体は IIFE なので、試すときは試験用コピーにだけ window.__xxx のフックを足す
 - 公開するときは「開発版か本番か」を必ずユーザーに伝える。本番は OK が出てから
@@ -104,10 +104,10 @@
 - はたけ（ステップ6、2026-10-07）：森の手前に 4マス（`FARM_PLOTS`）。`S.farm.plots`=[{c,t0,end,w,told}]、`CROPS` 4種
   - うみレタス1時間（ほしのすな1）／しんじゅいちご3時間（貝がら1＋ほしのすな1）／ほしくらげだけ5時間（サンゴのかけら1＋海ガラス1、よる光る）／つきのみ8時間（しんじゅ1、たべると かけらを くれる）
   - からのマスを タップ → トレイが たねえらび（`farmPick`、`renderTrayFarm()`）。そだつ あいだに タップ＝水やり（30分に1回、のこりが全体の10%へる）。おでかけ中の子も `tryWaterB()` で 水やり。みのると タブに ピンクの点（`farmReady()`）
-  - とれた さくもつは そざいと同じ `S.mats`（MATS の crop:1・rare）。絵は いまは コード（`drawMat()` と `drawPlot()`）→ ピッちゃんに たのむ予定
+  - とれた さくもつは そざいと同じ `S.mats`（MATS の crop:1・rare）。絵は ピッちゃん作の `f_farm.png`（マス fplot、そだつようす p_<さくもつ>_1〜3＝芽/そだちかけ/みのった、アイコン m_<さくもつ>・m_bento。マゼンタ背景で届いた）。そだつようすは 1枚に3つ ならんで届くので `source/furniture/split_farm.py` で 3まいに わけてから build。読み込み前は コードの絵（`drawMat()`／`drawPlot()`）
   - つかいみち：いつもの海の「ごはん」で おやつに えらべる（`foodSel`、food.k。なかよし＋、表情、つきのみは かけら）／こうぼうの「りょうり」（`COOK`）で おべんとう（うみレタス2＋いちご1）→ たんけんに もっていくと そざい+3・しんじゅ+30%（trip.bento）
   - テスト用：`#hatake` で 1時間＝6秒
-- 次の予定：C エリア／はたけの絵（ピッちゃん）／さくもつを つかう 家具レシピ
+- 次の予定：C エリア／さくもつを つかう 家具レシピ
 
 ## ゲームの中身（game.html の主な定数）
 - `OUTFITS` おきがえ123種、`HEADWEAR`、`PERS` 性格、`DECOR` 飾り、`RECOLOR`/`PALS` ウミミの色
