@@ -681,7 +681,7 @@ function serialize(){
     umimi:S.umimi.map(u=>({id:u.id,name:u.name,color:u.color,x:Math.round(u.x),d:+u.d.toFixed(3),aff:u.aff,outfit:u.outfit,lvSeen:u.lvSeen,pers:u.pers,born:u.born,pets:u.pets,feeds:u.feeds,worn:u.worn,mem:u.mem,ann:u.ann,wins:u.wins||0,druns:u.druns||0,dbest:u.dbest||0,tricks:u.tricks,learned:u.learned,lessonDay:u.lessonDay,room:u.room})),
     past:S.past,
     closet:S.closet, closetNew:S.closetNew, pets:S.pets, days:S.days, feeds:S.feeds, starsCaught:S.starsCaught, metVisitors:S.metVisitors,
-    diary:S.diary.slice(0,60), day:S.day, visitorDay:S.visitorDay, visitLog:S.visitLog, nextVisit:S.nextVisit, curVisit:S.curVisit, lastVisitor:S.lastVisitor, unlocked:S.unlocked, diaryNew:S.diaryNew, myBday:S.myBday, lastExport:S.lastExport||0, bkNagAt:S.bkNagAt||0, evSeen:S.evSeen, derby:S.derby, furn:S.furn, omikujiDay:S.omikujiDay, wishes:S.wishes, presentYear:S.presentYear, trickDay:S.trickDay, area:S.area==='b'?'b':'a', areaB:S.areaB, mats:S.mats, matFirst:S.matFirst, crafted:S.crafted, craftN:S.craftN, expl:S.expl, bDrops:(S.bDrops||[]).map(o=>({k:o.k,x:o.x,d:o.d})), bDecor:(S.bDecor||[]).map(o=>({id:o.id,type:o.type,x:Math.round(o.x),d:+(+o.d).toFixed(3)})), profileOnTap:S.profileOnTap, bdayBlown:S.bdayBlown, bdayDiary:S.bdayDiary,
+    diary:S.diary.slice(0,60), day:S.day, visitorDay:S.visitorDay, visitLog:S.visitLog, nextVisit:S.nextVisit, curVisit:S.curVisit, lastVisitor:S.lastVisitor, unlocked:S.unlocked, diaryNew:S.diaryNew, myBday:S.myBday, lastExport:S.lastExport||0, bkNagAt:S.bkNagAt||0, evSeen:S.evSeen, derby:S.derby, furn:S.furn, omikujiDay:S.omikujiDay, wishes:S.wishes, presentYear:S.presentYear, trickDay:S.trickDay, area:S.area==='b'?'b':'a', areaB:S.areaB, mats:S.mats, matFirst:S.matFirst, crafted:S.crafted, craftN:S.craftN, expl:S.expl, bDrops:(S.bDrops||[]).map(o=>({k:o.k,x:o.x,d:o.d})), farm:S.farm, bDecor:(S.bDecor||[]).map(o=>({id:o.id,type:o.type,x:Math.round(o.x),d:+(+o.d).toFixed(3)})), profileOnTap:S.profileOnTap, bdayBlown:S.bdayBlown, bdayDiary:S.bdayDiary,
     decor:S.decor.map(o=>Object.assign({id:o.id,type:o.type,x:Math.round(o.x),d:+o.d.toFixed(3)}, o.on!=null?{on:o.on,dx:+(o.dx||0).toFixed(1)}:{})),
     ground:S.ground.map(g=>({x:Math.round(g.x),d:+g.d.toFixed(3)}))};
 }
@@ -1371,6 +1371,7 @@ function drawShard(c,g){
 }
 function drawFood(c,f){
   const s = scaleD(f.d)*.9;
+  if(f.k){ c.save(); c.translate(f.x,f.y+6*s); c.rotate(f.landed ? f.rot*.3 : Math.sin(T*3+f.ph)*.3); drawMat(c,f.k,0,0,s*1.15,T); c.restore(); return; }
   c.save(); c.translate(f.x,f.y); c.scale(s,s); c.rotate(f.landed ? f.rot : f.rot + Math.sin(T*3+f.ph)*.5);
   c.beginPath(); c.moveTo(-12,0); c.bezierCurveTo(-8,-9,8,-10,13,-2); c.bezierCurveTo(9,6,-6,8,-12,0); c.closePath();
   if(evOn('valentine')){ c.restore(); c.save(); c.translate(f.x,f.y); c.scale(s,s); heartPath(c,0,-2,11); c.fillStyle='#7a4a34'; c.fill(); c.strokeStyle='#f39ab4'; c.lineWidth=1.6; c.stroke(); c.restore(); return; }
@@ -1544,6 +1545,8 @@ function finishEat(u){
   const f = u.target; foods = foods.filter(x=>x!==f); u.target=null;
   u.state='happy'; u.timer=1.4; hearts(u,1);
   S.feeds = (S.feeds||0) + 1; u.feeds=(u.feeds||0)+1; gainAff(u,1); checkUnlocks();
+  if(f && f.k && CROPS[f.k]){ const C=CROPS[f.k]; gainAff(u,C.aff-1); hearts(u,2); setPose(u,C.pose,2.2); say(u,C.say); if(f.k==='moonfruit') setTimeout(()=>giftShard(u,true),900);
+    u.treats=(u.treats||0)+1; if(u.treats===1) addMem(u,`はじめて ${MATS[f.k].name}を たべた`,true); }
   if(u.feeds===1) addMem(u,'はじめて ごはんを 食べた',true);
   if([10,50,100,300].includes(u.feeds)) addMem(u,`ごはん ${u.feeds}回め`,true);
   if(u.pers==='kuishinbo' && Math.random()<.4) say(u,'おいしい！');
@@ -2598,12 +2601,14 @@ function tapEmpty(p){
   }
   if(mode==='pet'||mode==='friends') closeCard();
 }
+let foodSel = null;   // はたけの おやつを えらんでいるとき（null＝アオサ）
 function dropFood(p){
   if(foods.length>=8){ toast('アオサがいっぱい。みんなが食べるのを待ってね'); return; }
+  let fk = null; if(foodSel){ const m=matsOf(); if(m[foodSel]>0){ m[foodSel]--; fk=foodSel; if(!(m[foodSel]>0)){ foodSel=null; } renderTray(); } else { foodSel=null; renderTray(); } }
   const onFloor = p.y > floorTop+10;
   const d = onFloor ? invFloor(p.y) : rand(.05,.95);
   const gy = floorY(d);
-  foods.push({x:clamp(p.x,30,970), y:Math.min(p.y-(onFloor?70:0), gy-4), d, landed:false, ph:rand(0,TAU), rot:rand(-.6,.6), claim:null});
+  foods.push({x:clamp(p.x,30,970), y:Math.min(p.y-(onFloor?70:0), gy-4), d, landed:false, ph:rand(0,TAU), rot:rand(-.6,.6), claim:null, k:fk});
   sfx('food');
 }
 function placeDecor(p){
@@ -2668,7 +2673,13 @@ function renderTray(){
   if(mode==='pet'){ tr.innerHTML = '<div class="hintwrap"><p class="hint"><b>タップ</b>でなでなで、<b>ドラッグ</b>でだっこして運べます。砂の上で光る<b>つきのかけら</b>はタップで拾えます。</p><label class="opt" for="optProfile"><input type="checkbox" id="optProfile"> タップしたら プロフィールを出す<span>（オフのときは ダブルタップで出せます）</span></label></div>';
     const cb=$('optProfile'); cb.checked=profileOn(); cb.addEventListener('change',()=>{ S.profileOnTap=cb.checked; if(!cb.checked) closeCard(); save(); toast(cb.checked?'タップで プロフィールを出すよ':'プロフィールは ダブルタップで出るよ'); });
     return; }
-  if(mode==='food'){ tr.innerHTML = '<p class="hint">水の中をタップすると、<b>アオサ</b>がふわっと沈みます。ウミミたちが気づいて食べにきます。</p>'; return; }
+  if(mode==='food'){ const m=matsOf(), owned=Object.keys(CROPS).filter(k=>m[k]>0); if(foodSel && !(m[foodSel]>0)) foodSel=null;
+    tr.innerHTML = `<p class="hint">水の中をタップすると、<b>${foodSel?MATS[foodSel].name:'アオサ'}</b>がふわっと沈みます。ウミミたちが気づいて食べにきます。${owned.length?'はたけの おやつを あげると、とくべつに よろこぶよ。':''}</p>`;
+    if(owned.length){ ['',...owned].forEach(k=>{ const b=document.createElement('button'); b.type='button'; b.className='item'; b.setAttribute('aria-pressed', (foodSel||'')===k);
+      const [cv2,x]=thumbCanvas(64,52); if(k) drawMat(x,k,32,46,1.5,0); else { x.save(); x.translate(32,30); x.scale(1.6,1.6); x.beginPath(); x.moveTo(-12,0); x.bezierCurveTo(-8,-9,8,-10,13,-2); x.bezierCurveTo(9,6,-6,8,-12,0); x.closePath(); x.fillStyle='#95d496'; x.fill(); x.strokeStyle='#5ea86f'; x.lineWidth=1.3; x.stroke(); x.restore(); }
+      b.append(cv2); b.insertAdjacentHTML('beforeend', `<span>${k?MATS[k].name:'アオサ'}</span><span class="cost" style="color:#6c6a94">${k?`のこり ${m[k]}`:'いくらでも'}</span>`);
+      b.addEventListener('click',()=>{ foodSel = k||null; renderTray(); }); tr.append(b); }); }
+    return; }
   if(mode==='decor'){
     if(decorCat==='craft' && !Object.keys(DECOR).some(k=>DECOR[k].craft && craftedOf()[k]>0)) tr.insertAdjacentHTML('beforeend','<p class="hint">てづくりの かざりは ぜんぶ おいてあるよ。サンゴの森の <b>さぎょうだい</b>で つくれます。</p>');
     Object.entries(DECOR).filter(([key])=>decorSeries(key)===decorCat && (!DECOR[key].craft || craftedOf()[key]>0)).forEach(([key,D]) => {
@@ -3872,6 +3883,7 @@ function bBubbles(x,y,n){ for(let i=0;i<n;i++) bAdd({type:'bubble',x:x+rand(-10,
 const B_SEARCH_SAY = ['なにか あるかな','きらきら…','ふむふむ','これ なんだろ','いいもの みっけ？'];
 function bPick(c){
   if(explReady() && explOf().trip.members.includes(c.id) && Math.random()<.35){ c.state='idle'; c.timer=2.2; setPose(c,'wave',2.2); bSay(c, ['おはなし きいて！','ただいま！','たのしかったよ'][Math.floor(Math.random()*3)]); return; }
+  if(Math.random()<.12 && tryWaterB(c)) return;
   if(Math.random()<.14 && trySeatB(c)) return;
   const r = Math.random();
   if(night > .6){
@@ -3903,6 +3915,7 @@ function updCopy(c,dt){
         if(c.goal==='seat'){ c.goal=null;
           if(ar && bDecorOf().some(o=>o.id===c.seatId)){ c.state='sit'; c.timer = night>.6 ? rand(14,24) : rand(10,20); c.dir = Math.random()<.5?1:-1; if(Math.random()<.4) bSay(c, SIT_SAY[Math.floor(Math.random()*SIT_SAY.length)]); }
           else { c.seatId=null; c.state='idle'; c.timer=1; } }
+        else if(c.goal==='water'){ c.goal=null; c.dir = c.faceX>=c.x ? 1 : -1; if(ar && waterPlot(c.plotI, c)){ c.state='curious'; c.timer=2.4; bSay(c, Math.random()<.5?'おみず あげるね':'おおきく なあれ'); } else { c.state='idle'; c.timer=1; } }
         else if(c.goal){ c.dir = c.faceX>=c.x ? 1 : -1; c.state='curious'; c.timer=rand(2.2,3.2);
           if(c.goal==='bench'){ if(Math.random()<.5) bSay(c, Math.random()<.5 ? 'ここで なにか つくれそう' : 'さぎょうだい…？'); }
           else if(Math.random()<.28 && bDropsOf().length<DROP_MAX){ const o=spawnDrop(pickMat(PERS_FIND[c.pers]), c.x+c.dir*55, c.d+rand(-.04,.04), true); if(o){ bSay(c,'みっけ！'); setPose(c,'idea',1.8); bBubbles(o.x, floorY(o.d)-8, 3); } }
@@ -4041,6 +4054,7 @@ function bTap(p){
   if(bEdit){ bEditTap(p); return; }
   const dr = hitDrop(p); if(dr){ pickDrop(dr); return; }
   if(hitProp(p,B_BASKET,40,92)){ takeBag(); return; }
+  { const pi=hitPlot(p); if(pi>=0){ farmTap(pi); return; } }
   const u = hitCopy(p);
   if(u && explReady() && explOf().trip.members.includes(u.id)){ openExpl(); return; }
   if(u){ if(u.petCD<=0){ u.state='happy'; u.timer=1.6; u.petCD=.6; bHearts(u,2); sfx('pet'); if(Math.random()<.5) bSay(u, B_PET_SAY[Math.floor(Math.random()*B_PET_SAY.length)]); } return; }
@@ -4066,6 +4080,7 @@ function drawAreaB(){
   items.push({y:floorY(B_BENCH.d)-.01, f:() => drawBench(c)});
   items.push({y:floorY(B_KILN.d)-.01, f:() => drawKiln(c)});
   items.push({y:floorY(B_BASKET.d)-.005, f:() => drawBasket(c)});
+  { const now=Date.now(); FARM_PLOTS.forEach((P,i) => items.push({y:floorY(P.d)-.02, f:() => drawPlot(c,i,now)})); }
   bDecorOf().forEach(o => items.push({y:floorY(o.d)-.01, f:() => drawBDecor(c,o)}));
   bDropsOf().forEach(o => items.push({y:floorY(o.d)+.005, f:() => drawDrop(c,o)}));
   bCopies.forEach(u => items.push({y:floorY(u.d)+.02, f:() => drawUmimiAt(c,u,u.x,floorY(u.d),scaleD(u.d),T,u.lift,{glows,marks:true})}));
@@ -4105,12 +4120,12 @@ function refreshAreaTabs(){
   if(!areaUI()) S.area = 'a';
   document.querySelectorAll('#areaTabs [data-area]').forEach(b => b.setAttribute('aria-pressed', b.dataset.area===S.area));
   document.body.classList.toggle('areaB', S.area==='b');
-  const tb=document.querySelector('#areaTabs [data-area=b]'); if(tb) tb.classList.toggle('ready', !!(S.areaB && S.areaB.visited && explReady()));
+  const tb=document.querySelector('#areaTabs [data-area=b]'); if(tb) tb.classList.toggle('ready', !!(S.areaB && S.areaB.visited && (explReady() || farmReady())));
 }
 function setArea(a){
   if(a!=='b') a='a';
   if(a===S.area) return;
-  S.area = a; closeCard(); drag = null; pB = []; bEdit = false; bSel = null;
+  S.area = a; closeCard(); drag = null; pB = []; bEdit = false; bSel = null; farmPick = null;
   if(a==='b'){ const B = areaB();
     if(!B.visited){ B.visited = true; const pick = liveUmi().slice(0,2); B.members = pick.map(u=>u.id); B.bag = []; B.gT = Date.now(); for(let i=0;i<3;i++) spawnDrop();
       pick.forEach(u => addMem(u,'はじめて サンゴの森に おでかけした',true));
@@ -4129,11 +4144,12 @@ function toggleOuting(u){
 function renderTrayB(){
   const tr = $('tray'); tr.innerHTML = ''; $('decorCats').hidden = true;
   if(bEdit){ renderTrayBEdit(tr); return; }
+  if(farmPick!=null){ renderTrayFarm(tr); return; }
   const B = areaB();
   tr.insertAdjacentHTML('beforeend', `<div class="hintwrap bhint"><p class="hint"><b>サンゴの森</b>に おでかけする子を えらんでね（いつもの海にも いるよ）。砂の上の <b>そざい</b>は タップで ひろえて、おでかけ中の子は <b>かご</b>に ひろってきてくれるよ。<b>さぎょうだい</b>を タップすると こうぼう。</p><span class="count" style="align-self:flex-start">おでかけ ${B.members.length}/${B_MAX}</span><div class="mats" id="matRow"></div></div>`);
   const mr = $('matRow'), mm = matsOf(); MAT_KEYS.filter(k=>!MATS[k].rare || mm[k]).forEach(k=>{ const sp=document.createElement('span'); sp.title=MATS[k].name; sp.append(matIcon(k,22)); sp.insertAdjacentHTML('beforeend', `${MATS[k].name} <b>${mm[k]||0}</b>`); mr.append(sp); });
   { const E=explOf(), eb=document.createElement('button'); eb.type='button'; eb.className='item explbtn'+(explReady()?' ready':''); eb.innerHTML=`<span class="ai">🧭</span><span>たんけん</span><span class="bst" id="explStat">${explStatus()}</span>`; eb.addEventListener('click',()=>openExpl()); tr.append(eb); }
-  if(craftOwnedAny() || bDecorOf().length){ const db=document.createElement('button'); db.type='button'; db.className='item explbtn'; db.innerHTML=`<span class="ai">🪑</span><span>もりに かざる</span><span class="bst">${bDecorOf().length}/${B_DECOR_MAX}</span>`; db.addEventListener('click',()=>{ bEdit=true; bSel=null; renderTrayB(); }); tr.append(db); }
+  if(craftOwnedAny() || bDecorOf().length){ const db=document.createElement('button'); db.type='button'; db.className='item explbtn'; db.innerHTML=`<span class="ai">🪑</span><span>もりに かざる</span><span class="bst">${bDecorOf().length}/${B_DECOR_MAX}</span>`; db.addEventListener('click',()=>{ bEdit=true; bSel=null; farmPick=null; renderTrayB(); }); tr.append(db); }
   liveUmi().forEach(u => {
     const on = B.members.includes(u.id), tk = explOf().trip && explOf().trip.members.includes(u.id);
     const b = document.createElement('button'); b.type='button'; b.className='item'; b.setAttribute('aria-pressed', on);
@@ -4186,6 +4202,88 @@ function drawBDecor(c,o){ const s=scaleD(o.d), gy=floorY(o.d), D=DECOR[o.type];
 function trySeatB(c){ const fs = freeSeats(bDecorOf(), c, bCopies); if(!fs.length) return false; const o = fs[Math.floor(Math.random()*fs.length)];
   c.state='walk'; c.goal='seat'; c.seatId=o.id; c.tx=o.x; c.td=Math.min(1,o.d+.012); c.faceX=o.x; c.timer=20; return true; }
 
+// ---- はたけ（サンゴの森）。S.farm.plots = [{c:作物キー|null, t0, end, w:さいごに 水をあげた時刻}] ----
+const CROPS = {
+  lettuce:  {hrs:1, seed:{sand:1},         yield:[2,3], aff:2, pose:'heart', say:'しゃきしゃき！', desc:'すぐ そだつ 海の やさい'},
+  berry:    {hrs:3, seed:{shell:1,sand:1}, yield:[2,3], aff:3, pose:'blush', say:'あまーい！',     desc:'しんじゅみたいに つやつやの いちご'},
+  mush:     {hrs:5, seed:{coral:1,glass:1},yield:[2,2], aff:2, pose:'sway',  say:'ふわふわ〜',     desc:'よるに ほんのり ひかる きのこ'},
+  moonfruit:{hrs:8, seed:{pearl:1},        yield:[2,2], aff:3, pose:'shard', say:'おつきさまの あじ！', desc:'しんじゅから そだつ ふしぎな み。たべると かけらを くれる'},
+};
+const FARM_PLOTS = [{x:350,d:.83},{x:460,d:.89},{x:570,d:.83},{x:680,d:.89}];
+const FARM_WATER_MS = 30*60*1000;   // 水やりは 30分に1回（のこり時間が 全体の 10% へる）
+let farmPick = null, farmT = 0;
+function farmFast(){ return /hatake/.test(location.hash); }   // テスト用：1時間＝6秒
+function farmOf(){ if(!S.farm || typeof S.farm!=='object') S.farm = {}; const F=S.farm; if(!Array.isArray(F.plots)) F.plots = [];
+  while(F.plots.length < FARM_PLOTS.length) F.plots.push({c:null}); F.plots.forEach(p=>{ if(p.c && !CROPS[p.c]) p.c=null; }); return F; }
+function plotStage(p, now){ if(!p.c) return -1; const pr = (now - p.t0) / Math.max(1, p.end - p.t0); return pr>=1 ? 3 : pr>=.55 ? 2 : pr>=.15 ? 1 : 0; }
+function farmReady(){ const now=Date.now(); return !!(S.farm && farmOf().plots.some(p=>plotStage(p,now)===3)); }
+function canWater(p, now){ return p.c && plotStage(p,now)<3 && now-(p.w||0) > FARM_WATER_MS*(farmFast()?.002:1); }
+function waterPlot(i, who){ const F=farmOf(), p=F.plots[i], now=Date.now(); if(!canWater(p,now)) return false;
+  p.w = now; p.end = Math.max(now, p.end - (p.end-p.t0)*.1); const P=FARM_PLOTS[i], s=scaleD(P.d);
+  for(let k=0;k<6;k++) bAdd({type:'bubble',x:P.x+rand(-30,30)*s,y:floorY(P.d)-rand(4,20)*s,vx:0,vy:rand(-50,-30),r:rand(2,4),life:2,max:2,wob:rand(0,TAU)});
+  if(!who) toast('おみずを あげたよ（すこし はやく そだつよ）'); save(); return true; }
+function plantSeed(i,k){ const C=CROPS[k], m=matsOf(); if(!Object.entries(C.seed).every(([q,n])=>(m[q]||0)>=n)){ toast('そざいが たりないよ'); return; }
+  Object.entries(C.seed).forEach(([q,n])=>{ m[q]-=n; }); const now=Date.now(), p=farmOf().plots[i];
+  p.c=k; p.t0=now; p.end=now + C.hrs*(farmFast()?6e3:36e5); p.w=0; p.told=0; farmPick=null;
+  const P=FARM_PLOTS[i]; bBubbles(P.x, floorY(P.d)-6, 4); sfx('place'); toast(`${MATS[k].name}の たねを まいたよ（${fmtLeft(p.end-now)}くらいで みのるよ）`);
+  if(!S.farm.first){ S.farm.first=1; addDiary('サンゴの森の はたけに はじめて たねを まいた'); }
+  renderTrayB(); save(); }
+function harvest(i){ const p=farmOf().plots[i], C=CROPS[p.c], k=p.c, n=Math.round(rand(C.yield[0],C.yield[1]));
+  addMat(k,n); p.c=null; const P=FARM_PLOTS[i], s=scaleD(P.d), y=floorY(P.d)-20*s;
+  for(let j=0;j<12;j++){ const a=rand(0,TAU), v=rand(40,90); bAdd({type:'spark',x:P.x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,r:rand(3,5)*s,life:.8,max:.8}); }
+  bAdd({type:'say',text:`${MATS[k].name} +${n}`,x:P.x,y:y-30*s,vx:0,vy:-14,r:15*s,life:1.6,max:1.6});
+  bCopies.filter(o=>!o.leaving && o.state!=='sit').forEach(o=>{ o.state='happy'; o.timer=1.8; o.dir = P.x>o.x?1:-1; bHearts(o,1); });
+  sfx('gift'); S.farm.harvests=(S.farm.harvests||0)+1; if(S.farm.harvests===1) addDiary(`はたけで はじめて ${MATS[k].name}を しゅうかくした`);
+  refreshAreaTabs(); renderTrayB(); save(); }
+function hitPlot(p){ for(let i=FARM_PLOTS.length-1;i>=0;i--){ const P=FARM_PLOTS[i], s=scaleD(P.d), gy=floorY(P.d); if(Math.abs(p.x-P.x)<52*s && p.y>gy-70*s && p.y<gy+18*s) return i; } return -1; }
+function farmTap(i){ const p=farmOf().plots[i], now=Date.now(), st=plotStage(p,now);
+  if(st<0){ farmPick=i; bEdit=false; renderTrayB(); toast('したの いちらんから たねを えらんでね'); return; }
+  if(st===3){ harvest(i); return; }
+  if(!waterPlot(i)) toast(`${MATS[p.c].name}：あと ${fmtLeft(p.end-now)}（おみずは すこし あとで）`); }
+function farmTick(dt){ farmT -= dt; if(farmT>0) return; farmT = 1; if(!S.farm) return; const now=Date.now(); let ch=false;
+  farmOf().plots.forEach(p=>{ if(plotStage(p,now)===3 && !p.told){ p.told=1; ch=true; if(S.area==='b') toast(`はたけの ${MATS[p.c].name}が みのったよ！ タップで しゅうかく`); } });
+  if(ch){ refreshAreaTabs(); save(); } }
+function renderTrayFarm(tr){
+  const m = matsOf();
+  tr.insertAdjacentHTML('beforeend', `<div class="hintwrap bhint"><p class="hint"><b>はたけ</b>：まく たねを えらんでね。そだったら タップで しゅうかく。そだつ あいだに タップすると おみずを あげられるよ（30分に1回・すこし はやく なる）。おでかけ中の子も ときどき おみずを あげてくれるよ。</p></div>`);
+  Object.entries(CROPS).forEach(([k,C])=>{ const ok = Object.entries(C.seed).every(([q,n])=>(m[q]||0)>=n);
+    const b=document.createElement('button'); b.type='button'; b.className='item'; b.disabled=!ok;
+    const [cv2,x]=thumbCanvas(64,52); drawMat(x,k,32,48,1.5,0); b.append(cv2);
+    b.insertAdjacentHTML('beforeend', `<span>${MATS[k].name}</span><span class="cost" style="color:#6c6a94">${C.hrs}時間・${Object.entries(C.seed).map(([q,n])=>`${MATS[q].name}${n}`).join('＋')}</span>`);
+    b.addEventListener('click', ()=>plantSeed(farmPick,k)); tr.append(b); });
+  const d=document.createElement('button'); d.type='button'; d.className='item put'; d.innerHTML='<span class="ai">✕</span><span>やめる</span>';
+  d.addEventListener('click', ()=>{ farmPick=null; renderTrayB(); }); tr.append(d);
+}
+// はたけの え（ピッちゃんの絵が とどくまで コードで描く）
+function drawPlot(c,i,now){
+  const P=FARM_PLOTS[i], p=farmOf().plots[i], s=scaleD(P.d), gy=floorY(P.d), st=plotStage(p,now);
+  c.save(); c.translate(P.x,gy); c.scale(s,s);
+  c.fillStyle='rgba(90,90,160,.16)'; c.beginPath(); c.ellipse(0,4,54,12,0,0,TAU); c.fill();
+  c.fillStyle='#8f84bf'; c.strokeStyle='#3a3a86'; c.lineWidth=2; c.beginPath(); c.ellipse(0,-2,48,13,0,0,TAU); c.fill(); c.stroke();
+  c.fillStyle='#a79cd2'; c.beginPath(); c.ellipse(0,-5,42,8.5,0,0,TAU); c.fill();
+  c.strokeStyle='rgba(58,58,134,.35)'; c.lineWidth=1.5; [-20,0,20].forEach(x=>{ c.beginPath(); c.moveTo(x-10,-3); c.quadraticCurveTo(x,-7,x+10,-3); c.stroke(); });
+  c.fillStyle='#e9e3f7'; [[-46,2],[-30,9],[30,9],[46,2],[0,11]].forEach(([x,y],j)=>{ c.beginPath(); c.ellipse(x,y,4+(j%2),2.6,0,0,TAU); c.fill(); c.strokeStyle='#3a3a86'; c.lineWidth=1; c.stroke(); });
+  if(st>=0){ const k=p.c, sw=Math.sin(T*1.6+i)*.06; c.translate(0,-5); c.rotate(sw); c.scale(1.45,1.45);
+    const leaf=(x,y,w,h,r,col)=>{ c.save(); c.translate(x,y); c.rotate(r); c.fillStyle=col; c.strokeStyle='#3a3a86'; c.lineWidth=1.4; c.beginPath(); c.moveTo(0,0); c.bezierCurveTo(-w,-h*.3,-w*.6,-h,0,-h); c.bezierCurveTo(w*.6,-h,w,-h*.3,0,0); c.fill(); c.stroke(); c.restore(); };
+    const lc = k==='lettuce' ? '#9be0b8' : k==='mush' ? '#c9c0ee' : k==='moonfruit' ? '#a8d9c0' : '#8fd3b8';
+    if(st===0){ c.fillStyle='#6f63a8'; [[-8,-1],[6,0],[0,-3]].forEach(([x,y])=>{ c.beginPath(); c.ellipse(x,y,2.6,1.6,0,0,TAU); c.fill(); }); }
+    else if(st===1){ leaf(-2,0,6,12,-.5,lc); leaf(2,0,6,12,.5,lc); }
+    else if(st===2){ if(k==='mush'){ [-12,0,12].forEach((x,j)=>{ c.save(); c.translate(x,0); c.scale(.6,.6); drawMat(c,'mush',0,0,1,T+j); c.restore(); }); }
+      else { leaf(-6,0,9,22,-.5,lc); leaf(6,0,9,22,.5,lc); leaf(0,0,8,26,0,lc); if(k==='moonfruit'){ c.strokeStyle='#7fbf9f'; c.lineWidth=2; c.beginPath(); c.moveTo(0,0); c.quadraticCurveTo(16,-24,6,-38); c.stroke(); } } }
+    else { const bob=Math.sin(T*2.4+i)*1.5;
+      if(k==='lettuce'){ [[-16,-.6],[16,.6],[-8,-.25],[8,.25],[0,0]].forEach(([x,r],j)=>leaf(x*.8,0,12,30-Math.abs(x)*.5,r,j%2?'#86d8ac':'#a9ecc4')); }
+      else if(k==='berry'){ leaf(-10,0,9,24,-.6,lc); leaf(10,0,9,24,.6,lc); leaf(0,0,8,28,0,lc); [[-14,-14],[12,-18],[0,-26]].forEach(([x,y])=>{ c.save(); c.translate(x,y+bob); c.scale(.75,.75); drawMat(c,'berry',0,8,1,T); c.restore(); }); }
+      else if(k==='mush'){ [[-15,0,.8],[14,0,.75],[0,-2,1.05]].forEach(([x,y,sc],j)=>{ c.save(); c.translate(x,y); c.scale(sc,sc); drawMat(c,'mush',0,0,1,T+j); c.restore(); }); }
+      else { c.strokeStyle='#7fbf9f'; c.lineWidth=2.4; c.beginPath(); c.moveTo(0,0); c.quadraticCurveTo(18,-26,4,-44); c.stroke(); leaf(-6,0,8,20,-.6,lc); leaf(6,-20,7,16,.9,lc);
+        [[-10,-26],[12,-40]].forEach(([x,y])=>{ c.save(); c.translate(x,y+bob); c.scale(.8,.8); drawMat(c,'moonfruit',0,9,1,T); c.restore(); }); }
+      c.fillStyle='#fffbe6'; c.globalAlpha=.5+.5*Math.sin(T*4+i); sparkle(c,22,-34+bob,4); c.globalAlpha=1; } }
+  c.restore();
+  if(st===3){ glows.push({x:P.x, y:gy-24*s, r:46*s, col:p.c==='mush'?'190,220,255':p.c==='moonfruit'?'255,236,160':'255,230,200', a:.12+(p.c==='mush'||p.c==='moonfruit'?.45:.2)*night}); }
+  else if(st===2 && p.c==='mush') glows.push({x:P.x, y:gy-14*s, r:30*s, col:'190,220,255', a:.25*night});
+}
+function tryWaterB(c){ const now=Date.now(), F=farmOf(); const cand = F.plots.map((p,i)=>i).filter(i=>canWater(F.plots[i],now) && !bCopies.some(o=>o!==c && o.goal==='water' && o.plotI===i)); if(!cand.length) return false;
+  const i=cand[Math.floor(Math.random()*cand.length)], P=FARM_PLOTS[i]; c.state='walk'; c.goal='water'; c.plotI=i; c.tx=clamp(P.x+(c.x<P.x?-62:62),190,700); c.td=clamp(P.d+.02,.25,1); c.faceX=P.x; c.timer=16; return true; }
+
 // ---- そざい（サンゴの森） ----
 // S.mats = {wood:n,…}：もっている そざい。S.bDrops = [{k,x,d}]：森の砂に 流れ着いた そざい（タップで ひろう）
 // S.areaB.bag = [k,…]：おでかけ中の子が ひろって かごに入れた そざい（かごを タップで うけとる）。S.areaB.gT：さいごに かごを 数えた時刻
@@ -4195,7 +4293,13 @@ const MATS = {
   coral:{name:'サンゴのかけら', w:20},
   glass:{name:'海ガラス',      w:15},
   sand: {name:'ほしのすな',    w:10},
-  pearl:{name:'しんじゅ',      w:0, rare:1},   // たんけんで みつかる。こうぼうで きれいに しあげるのに つかう
+  pearl:{name:'しんじゅ',      w:0, rare:1},
+  // 畑で とれる（森では 流れ着かない）。おやつにも こうぼうの ざいりょうにも なる
+  lettuce:{name:'うみレタス',     w:0, rare:1, crop:1},
+  berry:  {name:'しんじゅいちご', w:0, rare:1, crop:1},
+  mush:   {name:'ほしくらげだけ', w:0, rare:1, crop:1},
+  moonfruit:{name:'つきのみ',     w:0, rare:1, crop:1},
+  bento:  {name:'おべんとう',     w:0, rare:1},   // こうぼうの「りょうり」で つくる。たんけんに もっていく   // たんけんで みつかる。こうぼうで きれいに しあげるのに つかう
 };
 const MAT_KEYS = Object.keys(MATS);
 const DROP_MAX = 6, DROP_GAP = [70,130], BAG_MAX = 12, GATHER_MS = 20*60e3;
@@ -4226,7 +4330,7 @@ function bWorld(dt){
   dropT -= dt; if(dropT<=0){ dropT = rand(DROP_GAP[0],DROP_GAP[1]); const o=spawnDrop(null,null,null,S.area==='b'); if(o && S.area==='b'){ const s=scaleD(o.d); bBubbles(o.x, floorY(o.d)-8*s, 4); } }
   gatherT -= dt; if(gatherT<=0){ gatherT = 30; gatherTick(); }
   bDropsOf().forEach(o=>{ if(o.pop) o.pop = Math.max(0,o.pop-dt*2); });
-  explTick(dt);
+  explTick(dt); farmTick(dt);
 }
 // るすのあいだに 流れ着いた ぶん（30分に1こ、さいだい DROP_MAX まで）
 function awayDrops(mins){ if(!S.areaB || !S.areaB.visited) return; const n = Math.min(DROP_MAX, Math.floor(mins/30)); for(let i=0;i<n;i++) spawnDrop(); }
@@ -4240,6 +4344,20 @@ function drawMat(c,k,x,y,s,t){
   else if(k==='coral'){ c.strokeStyle='#f49aa6'; c.lineWidth=4.5; c.beginPath(); c.moveTo(0,0); c.lineTo(0,-10); c.lineTo(-6,-17); c.moveTo(0,-10); c.lineTo(6,-18); c.moveTo(0,-5); c.lineTo(7,-9); c.stroke(); c.fillStyle='#fcd2da'; [[-6,-17],[6,-18],[7,-9]].forEach(([a,b])=>{ c.beginPath(); c.arc(a,b,2.4,0,TAU); c.fill(); }); }
   else if(k==='glass'){ c.fillStyle='rgba(140,214,205,.92)'; c.strokeStyle='#6fb5ad'; c.lineWidth=1.2; c.beginPath(); c.moveTo(-9,-2); c.lineTo(-3,-12); c.lineTo(9,-9); c.lineTo(8,-1); c.lineTo(-5,1); c.closePath(); c.fill(); c.stroke(); c.fillStyle='rgba(255,255,255,.8)'; c.beginPath(); c.ellipse(-1,-8,2.6,1.3,-.5,0,TAU); c.fill(); }
   else if(k==='pearl'){ const g=c.createRadialGradient(-3,-9,1,0,-6,8); g.addColorStop(0,'#ffffff'); g.addColorStop(.6,'#f6eefc'); g.addColorStop(1,'#d9c8ee'); c.fillStyle=g; c.strokeStyle='#b9a6d8'; c.lineWidth=1.2; c.beginPath(); c.arc(0,-6,7,0,TAU); c.fill(); c.stroke(); c.fillStyle='rgba(255,255,255,.9)'; c.beginPath(); c.ellipse(-2.5,-8.5,2,1.3,-.5,0,TAU); c.fill(); }
+  else if(k==='lettuce'){ c.strokeStyle='#3a3a86'; c.lineWidth=1.4; [[-7,-6,-.5,'#7fd0a8'],[7,-6,.5,'#7fd0a8'],[0,-9,0,'#a6e6c0']].forEach(([x,y,r,col])=>{ c.save(); c.translate(x,y); c.rotate(r); c.fillStyle=col; c.beginPath(); c.moveTo(0,6); c.bezierCurveTo(-9,2,-8,-10,0,-12); c.bezierCurveTo(8,-10,9,2,0,6); c.fill(); c.stroke(); c.restore(); });
+    c.strokeStyle='rgba(58,58,134,.5)'; c.beginPath(); c.moveTo(0,-2); c.lineTo(0,-16); c.stroke(); }
+  else if(k==='berry'){ c.fillStyle='#8fd3b8'; c.strokeStyle='#3a3a86'; c.lineWidth=1.3; c.beginPath(); c.ellipse(-3,-17,5,2.6,-.5,0,TAU); c.fill(); c.stroke(); c.beginPath(); c.ellipse(3,-17,5,2.6,.5,0,TAU); c.fill(); c.stroke();
+    const g=c.createRadialGradient(-3,-11,1,0,-8,9); g.addColorStop(0,'#fff4fa'); g.addColorStop(.55,'#f7b6d2'); g.addColorStop(1,'#e58ab6'); c.fillStyle=g; c.beginPath(); c.arc(0,-8,8,0,TAU); c.fill(); c.lineWidth=1.5; c.stroke();
+    c.fillStyle='rgba(255,255,255,.9)'; c.beginPath(); c.ellipse(-3,-11,2.4,1.5,-.5,0,TAU); c.fill(); c.fillStyle='#fff'; [[3,-6],[-1,-4],[4,-11]].forEach(([x,y])=>{ c.beginPath(); c.arc(x,y,.9,0,TAU); c.fill(); }); }
+  else if(k==='mush'){ c.fillStyle='#f4f0fb'; c.strokeStyle='#3a3a86'; c.lineWidth=1.3; c.beginPath(); c.roundRect(-3,-11,6,11,2); c.fill(); c.stroke();
+    c.strokeStyle='rgba(160,200,240,.9)'; c.lineWidth=1.2; for(let i=-1;i<=1;i++){ c.beginPath(); c.moveTo(i*4,-11); c.quadraticCurveTo(i*5+Math.sin((t||0)*3+i)*1.5,-6,i*4,-3); c.stroke(); }
+    const g=c.createLinearGradient(0,-22,0,-10); g.addColorStop(0,'#c9e9ff'); g.addColorStop(1,'#b9a6f0'); c.fillStyle=g; c.strokeStyle='#3a3a86'; c.lineWidth=1.4; c.beginPath(); c.moveTo(-11,-10); c.quadraticCurveTo(-11,-23,0,-23); c.quadraticCurveTo(11,-23,11,-10); c.quadraticCurveTo(0,-13,-11,-10); c.closePath(); c.fill(); c.stroke();
+    c.fillStyle='rgba(255,255,255,.85)'; [[-5,-18,1.6],[2,-20,1.3],[5,-15,1.1]].forEach(([x,y,r])=>{ c.beginPath(); c.arc(x,y,r,0,TAU); c.fill(); }); }
+  else if(k==='moonfruit'){ c.fillStyle='#a8d9c0'; c.strokeStyle='#3a3a86'; c.lineWidth=1.3; c.beginPath(); c.ellipse(4,-18,5,2.4,.6,0,TAU); c.fill(); c.stroke();
+    const g=c.createRadialGradient(-3,-12,1,0,-9,10); g.addColorStop(0,'#fffbe0'); g.addColorStop(.6,'#f8dd86'); g.addColorStop(1,'#e8b95a'); c.fillStyle=g; c.beginPath(); c.arc(0,-9,9,0,TAU); c.fill(); c.lineWidth=1.5; c.stroke();
+    c.fillStyle='#fff7d6'; c.beginPath(); c.arc(-1,-10,4.5,0,TAU); c.fill(); c.fillStyle='#f3cc6a'; c.beginPath(); c.arc(1,-11,4,0,TAU); c.fill(); }
+  else if(k==='bento'){ c.fillStyle='#d9cdf0'; c.strokeStyle='#3a3a86'; c.lineWidth=1.4; c.beginPath(); c.roundRect(-13,-14,26,14,4); c.fill(); c.stroke(); c.fillStyle='#f7c6d8'; c.fillRect(-2,-14,4,14); c.beginPath(); c.roundRect(-13,-14,26,4,3); c.fillStyle='#ece4fa'; c.fill(); c.stroke();
+    c.fillStyle='#f7c6d8'; c.beginPath(); c.ellipse(-4,-16,4,2.5,-.4,0,TAU); c.ellipse(4,-16,4,2.5,.4,0,TAU); c.fill(); c.strokeStyle='#3a3a86'; c.lineWidth=1; c.stroke(); }
   else if(k==='sand'){ c.fillStyle='#f6e4b8'; c.strokeStyle='#d9bf86'; c.lineWidth=1.2; c.beginPath(); c.ellipse(0,-4,12,5,0,0,TAU); c.fill(); c.stroke(); c.fillStyle='#f4d27a'; [[-5,-5],[3,-6],[6,-3],[-1,-3]].forEach(([a,b],i)=>sparkle(c,a,b,1.6+(i%2)*.6)); }
   c.restore();
 }
@@ -4311,6 +4429,10 @@ let craftPearl = false;
 function canCraft(r){ const m=matsOf(); return Object.entries(r.need).every(([k,n])=>(m[k]||0)>=n); }
 function placedCount(k){ return S.decor.filter(o=>o.type===k).length; }
 function craftOwnedAny(){ const c=craftedOf(); return Object.values(c).some(n=>n>0) || S.decor.some(o=>DECOR[o.type] && DECOR[o.type].craft); }
+const COOK = [{k:'bento', need:{lettuce:2, berry:1}, desc:'たんけんに もっていくと、そざいが ふえて しんじゅも 見つかりやすい'}];
+function doCook(r){ if(!canCraft(r)){ toast('ざいりょうが たりないよ'); return; } const m=matsOf(); Object.entries(r.need).forEach(([k,n])=>{ m[k]-=n; }); addMat(r.k,1);
+  const s=scaleD(B_BENCH.d), y=floorY(B_BENCH.d)-80*s; for(let i=0;i<12;i++){ const a=rand(0,TAU), v=rand(40,80); bAdd({type:'spark',x:B_BENCH.x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,r:rand(3,5)*s,life:.8,max:.8}); }
+  bAdd({type:'say',text:`${MATS[r.k].name} できた！`, x:B_BENCH.x, y:y-30*s, vx:0, vy:-12, r:16*s, life:1.8, max:1.8}); sfx('gift'); toast(`${MATS[r.k].name}が できたよ`); save(); renderCraft(); renderTrayB(); }
 function doCraft(r){
   if(!canCraft(r)){ toast('そざいが たりないよ'); return; }
   const m=matsOf(); Object.entries(r.need).forEach(([k,n])=>{ m[k]-=n; });
@@ -4356,6 +4478,13 @@ function renderCraft(justFine){
     bt.addEventListener('click', ()=>doCraft(r));
     row.append(bt); g.append(row);
   });
+  if(Object.keys(CROPS).some(k=>m[k]>0) || (m.bento||0)>0){   // りょうり（はたけの さくもつを つかう）
+    b.insertAdjacentHTML('beforeend', `<p class="dsub"><b>りょうり</b>：はたけで とれた ものを つかって つくるよ。</p>`); const g2=document.createElement('div'); g2.className='clist'; b.append(g2);
+    COOK.forEach(r=>{ const ok=canCraft(r), row=document.createElement('div'); row.className='crow'; const [cv2,x]=thumbCanvas(72,64); drawMat(x,r.k,36,56,2,0); row.append(cv2);
+      const info=document.createElement('div'); info.className='ci'; info.innerHTML=`<b>${MATS[r.k].name}</b><span>${r.desc}</span>`; const need=document.createElement('div'); need.className='cneed';
+      Object.entries(r.need).forEach(([k,n])=>{ const sp=document.createElement('span'); if((m[k]||0)<n) sp.className='short'; sp.append(matIcon(k,18)); sp.insertAdjacentHTML('beforeend', `${MATS[k].name}×${n}<small>（${m[k]||0}）</small>`); need.append(sp); });
+      info.append(need); if(m[r.k]) info.insertAdjacentHTML('beforeend', `<span class="cown">もちもの ${m[r.k]}</span>`); row.append(info);
+      const bt=document.createElement('button'); bt.type='button'; bt.className='dbtn'; bt.textContent='つくる'; bt.disabled=!ok; bt.addEventListener('click',()=>doCook(r)); row.append(bt); g2.append(row); }); }
   b.insertAdjacentHTML('beforeend', `<div class="dbar"><button class="dbtn sub" type="button" id="craftBack">とじる</button></div>`);
   $('craftBack').addEventListener('click', ()=>{ $('craftp').hidden=true; });
   $('craftp').scrollTop = sp0;
@@ -4481,11 +4610,13 @@ function explDur(dk, team){ const h = DESTS[dk].hrs*(explHas(team,'genki')?.85:1
 function explAway(){ const E=explOf(); return E.trip && Date.now() < E.trip.end; }
 function explReady(){ const E=explOf(); return !!(E.trip && Date.now() >= E.trip.end); }
 function fmtLeft(ms){ ms=Math.max(0,ms); const m=Math.ceil(ms/6e4); return m>=60 ? `${Math.floor(m/60)}時間${m%60?` ${m%60}分`:''}` : `${m}分`; }
+let explBento = true;
 function explStart(dk){
   const E=explOf(), team = areaB().members.map(id=>S.umimi.find(u=>u.id===id)).filter(Boolean);
   if(E.trip){ toast('いまは たんけん中だよ'); return; }
   if(!team.length){ toast('おでかけ中の子が いないよ。下から えらんでね'); return; }
   const now = Date.now(); E.trip = {dest:dk, start:now, end:now+explDur(dk,team), members:team.map(u=>u.id)};
+  if(explBento && (matsOf().bento||0)>0){ matsOf().bento--; E.trip.bento = 1; }
   bCopies.filter(c=>!c.leaving && E.trip.members.includes(c.id)).forEach(c=>{ c.leaving=true; c.tx=950; c.dir=1; });
   team.forEach(u=>addMem(u, `「${DESTS[dk].name}」へ はじめて たんけんに 出かけた`, true));
   sfx('invite'); toast(`${team.map(u=>u.name).join('と')}が「${DESTS[dk].name}」へ たんけんに 出かけたよ（${fmtLeft(E.trip.end-now)}くらい）`);
@@ -4504,6 +4635,7 @@ function explResult(){
   for(let i=0;i<n;i++){ const k=pickMat(D.bias); got[k]=(got[k]||0)+1; }
   let pc = D.pearl + .03*(avgLv-1) + (explHas(team,'nonbiri')?.1:0), pearls = 0;
   if(pc>=1){ pearls = 1; pc -= 1; } if(Math.random()<pc+(T.dest==='deep'?.3:0)) pearls++;
+  if(T.bento){ for(let i=0;i<3;i++){ const k=pickMat(D.bias); got[k]=(got[k]||0)+1; } if(Math.random()<.3) pearls++; }
   if(pearls) got.pearl = pearls;
   const runs = (E.runs[T.dest]||0)+1;
   let find = null; const nx = D.next;
@@ -4519,6 +4651,7 @@ function explResult(){
   if(close) lines.push(`${close[0].name}と${close[1].name}は もう なれた たんけんなかま。いきぴったりだった`);
   if(find) lines.push(EXPL_FIND[find]);
   if(cHint) lines.push('谷の さらに おくに、ひかる 場所が 見えた…。いつか いけるかも しれない');
+  if(T.bento) lines.push('おひるに おべんとうを みんなで たべた。おいしかった！');
   lines.push('みんな ぶじに かえってきたよ');
   const xp = D.hrs + (explHas(team,'nebosuke')?1:0);
   T.res = {got, find, cHint, lines, xp, runs}; save(); return T.res;
@@ -4577,6 +4710,7 @@ function renderExpl(){
     return;
   }
   b.insertAdjacentHTML('beforeend', `<p class="dsub">いきさきを えらんでね。おでかけ中の子が いっしょに 出かけて、時間が たつと かえってくるよ（そのあいだも いつもの海には いるよ）。</p>`);
+  if((matsOf().bento||0)>0){ b.insertAdjacentHTML('beforeend', `<label class="opt"><input type="checkbox" id="exBento"${explBento?' checked':''}> おべんとうを もっていく<span>（のこり ${matsOf().bento}こ・そざいが ふえて しんじゅも 見つかりやすい）</span></label>`); $('exBento').addEventListener('change',e=>{ explBento=e.target.checked; }); }
   const g = document.createElement('div'); g.className='clist'; b.append(g);
   DEST_KEYS.forEach(dk=>{ const D=DESTS[dk], open=E.found.includes(dk);
     const row=document.createElement('div'); row.className='crow exdest'+(open?'':' lock');
