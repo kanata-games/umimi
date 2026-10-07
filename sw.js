@@ -1,11 +1,13 @@
 // ウミミの箱庭 オフライン用（build_pages.py が作る。直接書きかえない）
-const VERSION = '4720a5898e';
+const VERSION = 'b238251bd8';
 const CACHE = 'hakoniwa-' + VERSION;   // 同じサイトの umimi-portal と かぶらない名前
 const FONTS = 'hakoniwa-fonts';
 const ASSETS = [
   './',
   'index.html',
   'manifest.json',
+  'bg_forest.png',
+  'bg_forest_n.png',
   'c_adv.png',
   'c_adv2.png',
   'c_animal.png',
@@ -24,8 +26,14 @@ const ASSETS = [
   'c_season2.png',
   'c_work.png',
   'c_work2.png',
+  'ex_deep.png',
+  'ex_shallows.png',
+  'ex_wreck.png',
   'f_autumn.png',
   'f_base.png',
+  'f_craft.png',
+  'f_farm.png',
+  'f_forest.png',
   'f_halloween.png',
   'f_pearl.png',
   'icon-180.png',
