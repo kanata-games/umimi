@@ -107,7 +107,11 @@
   - とれた さくもつは そざいと同じ `S.mats`（MATS の crop:1・rare）。絵は ピッちゃん作の `f_farm.png`（マス fplot、そだつようす p_<さくもつ>_1〜3＝芽/そだちかけ/みのった、アイコン m_<さくもつ>・m_bento。マゼンタ背景で届いた）。そだつようすは 1枚に3つ ならんで届くので `source/furniture/split_farm.py` で 3まいに わけてから build。読み込み前は コードの絵（`drawMat()`／`drawPlot()`）
   - つかいみち：いつもの海の「ごはん」で おやつに えらべる（`foodSel`、food.k。なかよし＋、表情、つきのみは かけら）／こうぼうの「りょうり」（`COOK`）で おべんとう（うみレタス2＋いちご1）→ たんけんに もっていくと そざい+3・しんじゅ+30%（trip.bento）
   - テスト用：`#hatake` で 1時間＝6秒
-- 次の予定：C エリア／さくもつを つかう 家具レシピ
+- えさばこ（2026-10-07、ピッちゃんの絵 f_farm.png の tbox_0〜2・abox_1〜2、元は src/feeder_*_src.png を `split_feeder.py` で切り分け）：こうぼうの RECIPES に `cfeeder`（アオサの えさばこ、流木3＋貝がら1）と `ctreat`（おやつばこ、流木2＋サンゴ1＋しんじゅいちご1）。nofine（きれい版なし）。DECOR の feeder:'aosa'|'treat'
+  - いつもの海の「ごはん」モードで 箱を タップ＝補充（`fillFeeder()`。アオサは +3、さいだい `FEED_MAX`=9／おやつは えらんだ さくもつを1こ、さいだい `TREAT_MAX`=6）。中身は o.food／o.treats（セーブに入る）。絵は のこりで から/はんぶん/いっぱい（`feederLevel()`）
+  - ウミミは pickNext で 9% `tryFeeder()` → 箱の よこで eat → `feederEat()`（なかよし+1、おやつは CROPS の aff・表情）。るすのあいだは 40分に1回 たべる（`feederAway()`、日記に のこる）。森に おいた箱は 飾りだけ
+  - しずむ アオサの絵も ピッちゃん作（aosa1／aosa2 を ランダム）
+- 次の予定：C エリア
 
 ## ゲームの中身（game.html の主な定数）
 - `OUTFITS` おきがえ123種、`HEADWEAR`、`PERS` 性格、`DECOR` 飾り、`RECOLOR`/`PALS` ウミミの色
