@@ -3867,7 +3867,7 @@ function buildSceneB(){
   sc.pebbles = []; for(let i=0;i<10;i++) sc.pebbles.push({x:120+R()*780, d:R(), r:2+R()*3});
   bScn = sc;
 }
-// 作業台と 貝殻窯（まだ使えない。タップすると「もうすぐ」）
+// 作業台と 貝殻窯（かまは まだ かざり。タップすると ひとこと）
 const B_BENCH = {x:745, d:.2}, B_KILN = {x:905, d:.08}, B_SIGN = {x:545, d:.0};
 function syncB(){
   const away = explAway() ? explOf().trip.members : [], back = explOf().trip ? explOf().trip.members : [];
@@ -4066,7 +4066,7 @@ function bTap(p){
   if(u && explReady() && explOf().trip.members.includes(u.id)){ openExpl(); return; }
   if(u){ if(u.petCD<=0){ u.state='happy'; u.timer=1.6; u.petCD=.6; bHearts(u,2); sfx('pet'); if(Math.random()<.5) bSay(u, B_PET_SAY[Math.floor(Math.random()*B_PET_SAY.length)]); } return; }
   if(hitProp(p,B_BENCH,100,175)){ sfx('place'); openCraft(); return; }
-  if(hitProp(p,B_KILN,80,155)){ sfx('pop'); toast('かいがらがま：もうすぐ 使えるように なるよ'); return; }
+  if(hitProp(p,B_KILN,80,155)){ sfx('pop'); const KS=['かいがらがま：ほんのり あったかい…','かいがらがま：おくで ちいさな ひが ゆれている','かいがらがま：いつか なにかを やけるかも？']; toast(KS[Math.floor(Math.random()*KS.length)]); return; }
   if(hitProp(p,B_SIGN,75,110)){ toast('サンゴの森の こうぼう。おでかけした子が のんびり すごしているよ'); return; }
   bAdd({type:'ring',x:p.x,y:p.y,vx:0,vy:0,r:6,life:.6,max:.6}); bBubbles(p.x,p.y,3); sfx('pop');
 }
