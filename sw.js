@@ -1,5 +1,5 @@
 // ウミミの箱庭 オフライン用（build_pages.py が作る。直接書きかえない）
-const VERSION = 'b238251bd8';
+const VERSION = '2962679f8e';
 const CACHE = 'hakoniwa-' + VERSION;   // 同じサイトの umimi-portal と かぶらない名前
 const FONTS = 'hakoniwa-fonts';
 const ASSETS = [
