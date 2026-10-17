@@ -682,7 +682,7 @@ function serialize(){
     umimi:S.umimi.map(u=>({id:u.id,name:u.name,color:u.color,x:Math.round(u.x),d:+u.d.toFixed(3),aff:u.aff,outfit:u.outfit,lvSeen:u.lvSeen,pers:u.pers,born:u.born,pets:u.pets,feeds:u.feeds,worn:u.worn,mem:u.mem,ann:u.ann,wins:u.wins||0,druns:u.druns||0,dbest:u.dbest||0,tricks:u.tricks,learned:u.learned,lessonDay:u.lessonDay,room:u.room})),
     past:S.past,
     closet:S.closet, closetNew:S.closetNew, pets:S.pets, days:S.days, feeds:S.feeds, starsCaught:S.starsCaught, metVisitors:S.metVisitors,
-    diary:S.diary.slice(0,60), day:S.day, visitorDay:S.visitorDay, visitLog:S.visitLog, nextVisit:S.nextVisit, curVisit:S.curVisit, lastVisitor:S.lastVisitor, unlocked:S.unlocked, diaryNew:S.diaryNew, myBday:S.myBday, lastExport:S.lastExport||0, bkNagAt:S.bkNagAt||0, evSeen:S.evSeen, derby:S.derby, furn:S.furn, omikujiDay:S.omikujiDay, wishes:S.wishes, presentYear:S.presentYear, trickDay:S.trickDay, area:S.area==='b'?'b':'a', areaB:S.areaB, mats:S.mats, matFirst:S.matFirst, crafted:S.crafted, craftN:S.craftN, expl:S.expl, bDrops:(S.bDrops||[]).map(o=>({k:o.k,x:o.x,d:o.d})), farm:S.farm, bDecor:(S.bDecor||[]).map(o=>Object.assign({id:o.id,type:o.type,x:Math.round(o.x),d:+(+o.d).toFixed(3)}, o.food?{food:o.food}:{}, (o.treats&&o.treats.length)?{treats:o.treats}:{})), profileOnTap:S.profileOnTap, bdayBlown:S.bdayBlown, bdayDiary:S.bdayDiary,
+    diary:S.diary.slice(0,60), day:S.day, visitorDay:S.visitorDay, visitLog:S.visitLog, nextVisit:S.nextVisit, curVisit:S.curVisit, lastVisitor:S.lastVisitor, unlocked:S.unlocked, diaryNew:S.diaryNew, myBday:S.myBday, lastExport:S.lastExport||0, bkNagAt:S.bkNagAt||0, evSeen:S.evSeen, derby:S.derby, furn:S.furn, omikujiDay:S.omikujiDay, wishes:S.wishes, presentYear:S.presentYear, trickDay:S.trickDay, area:S.area==='b'?'b':'a', areaB:S.areaB, mats:S.mats, matFirst:S.matFirst, crafted:S.crafted, craftN:S.craftN, expl:S.expl, bDrops:(S.bDrops||[]).map(o=>({k:o.k,x:o.x,d:o.d})), farm:S.farm, bDecor:(S.bDecor||[]).map(o=>Object.assign({id:o.id,type:o.type,x:Math.round(o.x),d:+(+o.d).toFixed(3)}, o.food?{food:o.food}:{}, (o.treats&&o.treats.length)?{treats:o.treats}:{})), profileOnTap:S.profileOnTap, bdayBlown:S.bdayBlown, bdayDiary:S.bdayDiary, diaryLive:S.diaryLive,
     decor:S.decor.map(o=>Object.assign({id:o.id,type:o.type,x:Math.round(o.x),d:+o.d.toFixed(3)}, o.on!=null?{on:o.on,dx:+(o.dx||0).toFixed(1)}:{}, o.food?{food:o.food}:{}, (o.treats&&o.treats.length)?{treats:o.treats}:{})),
     ground:S.ground.map(g=>({x:Math.round(g.x),d:+g.d.toFixed(3)}))};
 }
@@ -4791,13 +4791,106 @@ function explStatus(){ const E=explOf(); if(!E.trip) return 'でかける'; if(D
 
 let last = performance.now();
 function frame(now){ const dt=Math.min(.05,(now-last)/1000); last=now; T+=dt; update(dt); draw(); if(derby) updateDerby(dt); updateLesson(dt); updateRoom(dt); requestAnimationFrame(frame); }
-function awayDiary(){
-  const us = S.umimi, n = us[Math.floor(Math.random()*us.length)].name, others = us.filter(u=>u.name!==n), m = others.length ? others[Math.floor(Math.random()*others.length)].name : '';
-  const hasLamp = S.decor.some(o=>o.type==='lamp'||o.type==='jellylamp');
-  const lines = [`るすのあいだ、${n}は すなの上で ながいおひるねをしていたみたい`, `るすのあいだ、${n}が アオサのにおいを さがしてうろうろしていた`, `るすのあいだ、しずかな海で みんな ふわふわ ただよっていた`];
-  if(m) lines.push(`るすのあいだ、${n}と${m}が よりそって ねていた`, `るすのあいだ、${n}と${m}が おいかけっこをしていた`);
-  if(hasLamp) lines.push(`るすのあいだ、${n}は ランプのあかりを ずっと ながめていた`);
-  addDiary(lines[Math.floor(Math.random()*lines.length)]);
+// ---- ウミミの にっき（「〜していた」の ひとこと）。{n}=その子 {m}=もう1匹 {k}=3匹め ----
+const DIA = {
+  any:[
+    '{n}は すなの上で ながい おひるねを していた', '{n}が アオサの においを さがして うろうろしていた', '{n}は あわを ひとつずつ かぞえていた',
+    '{n}が じぶんの しっぽを おいかけて くるくる まわっていた', '{n}は 水そうの すみっこで ちいさく まるくなっていた', '{n}が すなに なにかの もようを かいていた',
+    '{n}は ふわっと うかんで、しばらく 天井を ながめていた', '{n}が ちいさな こえで うたを うたっていた', '{n}は すなを ほって、なにかを うめていた',
+    '{n}が ガラスに うつった じぶんに あいさつしていた', '{n}は ゆらゆら ゆれる ひかりを じっと みていた', '{n}が しょっかくを ぴこぴこ うごかして ごきげんだった',
+    '{n}は 大きな あくびを ひとつ していた', '{n}が すなの上を ころころ ころがっていた', '{n}は おでこの 三日月を みがくように なでていた',
+    '{n}が ちいさな まきがいを ひろって、だいじそうに していた', '{n}は ぷかぷか うかびながら うとうとしていた', '{n}が すなに ねころんで 上を みていた',
+    '{n}は きょうの ごはんの ことを かんがえているみたいだった', '{n}が ゆっくり 水そうを ひとまわり さんぽしていた', '{n}は あわの なかに はいろうとして、はじけて びっくりしていた',
+    '{n}が すなの ちいさな でこぼこを ならしていた', '{n}は 目を とじて、波の おとを きいていた', '{n}が しずむ ひかりの つぶを つかまえようとしていた',
+    '{n}は なにかを おもいだしたように ふふっと わらっていた', '{n}が ガラスの むこうを ふしぎそうに のぞいていた', '{n}は ゆっくり のびを していた',
+    '{n}が ちいさな 石を ならべて あそんでいた', '{n}は すなに うもれた たからものを さがしていた', '{n}が みずの ながれに のって すいーっと すべっていた',
+  ],
+  pers:{
+    nonbiri:['{n}は いちにちじゅう ほとんど うごかずに ぼーっとしていた', '{n}が ゆっくり ゆっくり すなの上を あるいていた', '{n}は うみくさに もたれて のんびりしていた', '{n}が おひるねの ばしょを 3かい かえていた', '{n}は ながれる あわを 見おくっていた'],
+    kuishinbo:['{n}は ごはんの じかんを まちきれずに そわそわしていた', '{n}が すなの なかに おやつが ないか さがしていた', '{n}は おなかが ぐうっと なって、てれていた', '{n}が アオサの ゆめを みているみたいだった', '{n}は ほかの子の ごはんを じーっと みていた'],
+    amaenbo:['{n}は だれかが なでてくれるのを まっていた', '{n}が ガラスの まえで こちらを まっていた', '{n}は ひとりに なると、すこし さみしそうだった', '{n}が だれかの そばに ぴったり くっついていた', '{n}は かえってくるのを ずっと たのしみに していた'],
+    genki:['{n}は 水そうの はしから はしまで なんども およいでいた', '{n}が ぴょんぴょん はねて あそんでいた', '{n}は ひとりで かけっこの れんしゅうを していた', '{n}が いきおいよく あわに とびこんでいた', '{n}は ぜんぜん つかれないみたいだった'],
+    nebosuke:['{n}は ほとんど ずっと ねていた', '{n}が ねぼけて すなに ころんでいた', '{n}は おきたと おもったら また ねていた', '{n}が ねごとで なにか むにゃむにゃ いっていた', '{n}は ひるねの あとに また ひるねを していた'],
+    koukishin:['{n}は 水そうの すみずみまで しらべていた', '{n}が ひかる なにかを みつけて ずっと のぞきこんでいた', '{n}は かざりの うらがわを のぞいていた', '{n}が はじめて みる あわの かたちに おどろいていた', '{n}は すなを ほって なにか しらべていた'],
+  },
+  pair:[
+    '{n}と{m}が よりそって ねていた', '{n}と{m}が おいかけっこを していた', '{n}と{m}が ならんで あわを ながめていた', '{n}が{m}の しょっかくを ちょんと つついていた',
+    '{n}と{m}が ないしょばなしを しているみたいだった', '{n}が{m}に ちいさな 貝を プレゼントしていた', '{n}と{m}が せなかあわせで すわっていた', '{n}と{m}が おなじ ほうこうを むいて ぷかぷか していた',
+    '{n}が ねている{m}の そばで みはりを していた', '{n}と{m}が かくれんぼを していた。{m}は すぐ みつかった', '{n}と{m}が すなで おしろを つくっていた', '{n}が{m}の まねを して あそんでいた',
+    '{n}と{m}が いっしょに うたを うたっていた', '{n}と{m}が ちょっとだけ けんかして、すぐ なかなおりしていた', '{n}が{m}に おひるねの ばしょを ゆずっていた', '{n}と{m}が ならんで 天井の ひかりを みていた',
+  ],
+  trio:['{n}と{m}と{k}が ならんで ねていた', '{n}と{m}と{k}で わになって くるくる まわっていた', '{n}と{m}と{k}が ひとつの あわを おいかけていた', '{n}、{m}、{k}の じゅんに ならんで さんぽしていた', 'みんなで かたまって、ぽかぽか あたたまっていた'],
+  night:['{n}は よるの 水そうで ほしのような ひかりを みていた', '{n}が ねむそうに 目を こすっていた', '{n}は つきあかりの なかで しずかに ゆれていた', '{n}が よなかに ひとりで おきて、またねていた', 'しずかな よる、みんな すやすや ねむっていた'],
+  day:['{n}は ひかりの すじの なかで ひなたぼっこを していた', '{n}が あさの ひかりで きらきら していた', '{n}は ひるの あかるい 水の中で げんきに すごしていた'],
+  decor:{
+    lamp:['{n}は ランプの あかりを ずっと ながめていた', '{n}が ランプの そばで ほっこりしていた'],
+    jellylamp:['{n}は クラゲのランプの ひかりに あわせて ゆらゆら していた'],
+    shellbed:['{n}が シェルベッドで ぐっすり ねていた', '{n}は シェルベッドの うえで ころころ していた'],
+    psofa:['{n}が シェルソファで くつろいでいた'], shellchair:['{n}は シェルチェアに すわって ひとやすみしていた'],
+    treasure:['{n}は たからばこを あけようとして、ふたが おもくて あきらめていた', '{n}が たからばこの まわりを みはっていた'],
+    bottle:['{n}は メッセージボトルの なかの てがみを よもうとしていた'], crystal:['{n}が ほしのいしに じぶんの かおを うつしていた'], crystal2:['{n}は パールクリスタルの きらきらに うっとりしていた'],
+    coral:['{n}は さんごの かげに かくれていた'], anemone:['{n}が いそぎんちゃくに ちょんと さわって、びっくりしていた'], rock:['{n}は 大きな岩の うえに のぼって じまんげだった'],
+    pdresser:['{n}が ドレッサーの まえで おめかしを していた'], pdresser2:['{n}は パールのドレッサーの かがみを のぞいていた'],
+    octopot:['{n}は タコつぼの なかに はいって、でられなくなりかけていた'], lantern:['{n}が フグちょうちんを つついて ふくらませようとしていた'],
+    chochin:['{n}は ちょうちんの あかりの したで おまつり きぶんだった'], stall:['{n}が やたいの まえで おみせやさんごっこを していた'], kingyo:['{n}は クラゲすくいを じーっと みていた'],
+    bridge:['{n}が もみじの はしを いったり きたり していた'], acorn:['{n}は どんぐりを ひとつ だいじに かかえていた'], yakiimo:['{n}が やきいもの においに うっとりしていた'],
+    trophy:['{n}は トロフィーを ぴかぴかに みがいていた'], podium:['{n}が ひょうしょうだいの 1ばんうえに のぼっていた'],
+    cbench:['{n}は 流木の ベンチで ひとやすみしていた'], cbench_f:['{n}は 流木の ベンチで ひとやすみしていた'], cfeeder:['{n}が えさばこの なかを のぞいていた'], ctreat:['{n}は おやつばこの まえで まちぶせしていた'],
+    cshelllamp:['{n}が 貝がらランプの あかりで ほっとしていた'], cmobile:['{n}は 海ガラスの モビールが まわるのを みていた'], pumpkinstand:['{n}が かぼちゃランタンに むかって ばあっと おどかしていた'],
+    ghostcushion:['{n}は おばけクッションに うもれて ねていた'], mcushion:['{n}が もみじクッションで まるくなっていた'],
+  },
+  ev:{
+    tsukimi:['{n}は まんまるの おつきさまを ながめていた', '{n}が おだんごを ひとつ つまみぐいしていた'],
+    halloween:['{n}は おばけの まねを して みんなを おどかしていた', '{n}が「トリック オア トリート」の れんしゅうを していた'],
+    xmas:['{n}は ツリーの かざりを かぞえていた', '{n}が サンタさんを まって、よふかししようとしていた'],
+    newyear:['{n}は おしょうがつの かどまつを ふしぎそうに みていた'], valentine:['{n}が だれかに わたす チョコを こっそり かくしていた'],
+    hina:['{n}は おひなさまの まえで おすましを していた'], hanami:['{n}が まいおちる さくらの はなびらを つかまえていた'],
+    kodomo:['{n}は こいのぼりの さかなと いっしょに およいでいた'], tanabata:['{n}が たんざくに ねがいごとを かこうとしていた'],
+    matsuri:['{n}は はなびの おとに びっくりして、それから わらっていた'],
+  },
+  weather:{ snow:['{n}は しずかに ふる マリンスノーを ながめていた', '{n}が マリンスノーを しょっかくで うけとめていた'], drops:['{n}は ひかりの しずくを ひとつ つかまえていた'], calm:['{n}は おだやかな 水の中で ゆったりしていた'] },
+};
+function diaryLines(){
+  const us = S.umimi.filter(u=>u.state!=='leaving'); if(!us.length) return [];
+  const sh = us.slice().sort(()=>Math.random()-.5), u = sh[0], m = sh[1], k = sh[2];
+  const out = [], add = (arr,w=1) => (arr||[]).forEach(t=>out.push({t,w}));
+  add(DIA.any, 1); add(DIA.pers[u.pers], 2.5);
+  if(m) add(DIA.pair, 2); if(k) add(DIA.trio, 1.5);
+  const hr = new Date().getHours(); add(hr>=19||hr<5 ? DIA.night : hr>=7&&hr<17 ? DIA.day : [], 1.5);
+  const dk = new Set([...(S.decor||[]), ...(S.bDecor||[])].map(o=>o.type)); dk.forEach(t=>add(DIA.decor[t], 2));
+  (typeof EVON!=='undefined' ? EVON : []).forEach(e=>add(DIA.ev[e], 3));
+  if(weather && DIA.weather[weather.key]) add(DIA.weather[weather.key], 1.5);
+  if(u.outfit && u.outfit!=='normal' && OUTFITS[u.outfit]) add([`{n}は「${OUTFITS[u.outfit].name}」を きて ごきげんだった`, `{n}が「${OUTFITS[u.outfit].name}」の すがたを ガラスに うつして みていた`], 1.5);
+  const L = learnedOf(u); if(L.length && TRICKS[L[0]]){ const tn = TRICKS[L[Math.floor(Math.random()*L.length)]].name; add([`{n}が ひとりで「${tn}」の れんしゅうを していた`, `{n}は「${tn}」を みんなに みせて じまんしていた`], 2); }
+  if(lvOf(u)>=4) add(['{n}は ずっと かえりを まっていたみたい', '{n}が ガラスに おでこを くっつけて まっていた'], 1.5);
+  const AB = S.areaB, E = S.expl;
+  if(AB && Array.isArray(AB.members) && AB.members.includes(u.id) && !(E && E.trip)) add(['{n}は サンゴの森で そざいを さがしていた', '{n}が サンゴの森の 海藻の あいだを さんぽしていた', '{n}は 森の さぎょうだいを ふしぎそうに みていた'], 2);
+  if(S.farm && Array.isArray(S.farm.plots) && S.farm.plots.some(p=>p && p.c)) add(['{n}は はたけの めが でるのを たのしみに していた', '{n}が はたけの まえで「おおきく なあれ」と いっていた'], 1.5);
+  if(E && E.trip && Array.isArray(E.trip.members) && E.trip.members.length){ const tr = S.umimi.find(x=>x.id===E.trip.members[0]); if(tr && tr!==u) add([`{n}は たんけんに いった ${tr.name}の ことを しんぱいしていた`], 2); }
+  const fill = t => t.replace(/\{n\}/g,u.name).replace(/\{m\}/g,m?m.name:'').replace(/\{k\}/g,k?k.name:'');
+  return out.map(o=>({t:fill(o.t), w:o.w}));
+}
+function pickDiary(n){
+  const recent = new Set((S.diary||[]).slice(0,30).map(e=>e.text.replace(/^るすのあいだ、/,''))), got = [];
+  for(let i=0;i<n;i++){
+    const c = diaryLines().filter(o=>!recent.has(o.t) && !got.includes(o.t)); if(!c.length) break;
+    let r = Math.random()*c.reduce((a,o)=>a+o.w,0); let pick = c[c.length-1]; for(const o of c){ r-=o.w; if(r<=0){ pick=o; break; } }
+    got.push(pick.t);
+  }
+  return got;
+}
+function awayDiary(mins){
+  const n = mins>=480 ? 3 : mins>=120 ? 2 : 1;
+  pickDiary(n).forEach(t=>addDiary('るすのあいだ、'+t));
+}
+// 開いているあいだも ときどき（40〜70分に1つ、1日 さいだい6つ）
+let liveDiaryNext = 0;
+function liveDiaryTick(){
+  if(!S || document.hidden || (typeof DESK_RING!=='undefined' && DESK_RING)) return;
+  const now = Date.now(); if(!liveDiaryNext){ liveDiaryNext = now + rand(40,70)*60000; return; }
+  if(now < liveDiaryNext) return; liveDiaryNext = now + rand(40,70)*60000;
+  const d = (S.diaryLive && S.diaryLive.day===todayStr()) ? S.diaryLive : (S.diaryLive = {day:todayStr(), n:0});
+  if(d.n >= 6) return; const t = pickDiary(1)[0]; if(!t) return; d.n++; addDiary(t); save();
 }
 // ---------- ながめモード ----------
 let nagame=false, wakeLock=null, nagT=0;
@@ -4856,7 +4949,7 @@ function boot(data){
   const mins = saved && saved.last ? (Date.now()-saved.last)/60000 : 0;
   if(rescued){ const w=new Date(rescued.t); setTimeout(()=>toast(`セーブが読めなかったので、${w.getMonth()+1}/${w.getDate()} ${w.getHours()}:${String(w.getMinutes()).padStart(2,'0')} の じどうバックアップから 戻したよ`),900); }
   else if(!S.welcomed && !isBirthday()){ S.welcomed=true; setTimeout(()=>toast(night>.5 ? 'ようこそ。夜なので、みんな少しねむそう' : 'ようこそ、ウミミの箱庭へ。タップでなでてあげてね'),600); }
-  else if(mins>=15){ const n=Math.min(5,Math.floor(mins/15)); S.shards+=n; refreshShards(true); setTimeout(()=>toast(`おかえり。つきのかけらが ${n} こ 落ちてたよ`),600); setTimeout(()=>{ const w=S.umimi.filter(u=>u.state!=='sleep'&&u.state!=='leaving'); const u=w[Math.floor(Math.random()*w.length)]; if(u){ u.state='idle'; u.timer=2.6; setPose(u,'wave',2.6); say(u,'おかえり！'); } },900); awayDiary(); awayDrops(mins); feederAway(mins); }
+  else if(mins>=15){ const n=Math.min(5,Math.floor(mins/15)); S.shards+=n; refreshShards(true); setTimeout(()=>toast(`おかえり。つきのかけらが ${n} こ 落ちてたよ`),600); setTimeout(()=>{ const w=S.umimi.filter(u=>u.state!=='sleep'&&u.state!=='leaving'); const u=w[Math.floor(Math.random()*w.length)]; if(u){ u.state='idle'; u.timer=2.6; setPose(u,'wave',2.6); say(u,'おかえり！'); } },900); awayDiary(mins); awayDrops(mins); feederAway(mins); }
   if(!Array.isArray(S.diary)) S.diary=[]; if(!Array.isArray(S.unlocked)) S.unlocked=[];
   if(!Array.isArray(S.closet)) S.closet=['normal']; if(!Array.isArray(S.metVisitors)) S.metVisitors=[];
   S.umimi.forEach(u=>{ if(u.outfit && !S.closet.includes(u.outfit)) S.closet.push(u.outfit); });
@@ -4876,6 +4969,7 @@ function boot(data){
   bkNag();
   new ResizeObserver(resize).observe(stage);
   document.addEventListener('visibilitychange', () => { if(document.hidden) save(); });
+  setInterval(liveDiaryTick, 60000);
   requestAnimationFrame(frame);
 }
 window.claude?.hot?.snapshot?.(() => ({save: serialize()}));
